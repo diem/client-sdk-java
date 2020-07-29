@@ -1,4 +1,4 @@
-# Contributing to pubsub-proxy
+# Contributing to libra-client-sdk-java
 
 This project welcomes contributions.
 
@@ -12,6 +12,6 @@ When submitting a PR, the libra-github-bot will check your comment for a valid C
 
 ## Issues
 
-off-chain-api uses [GitHub issues](https://github.com/libra/off-chain-api/issues) to track
+libra-client-sdk-java uses [GitHub issues](https://github.com/libra/libra-client-sdk-java/issues) to track
 bugs. Please include necessary information and instructions to reproduce your
 issue.
