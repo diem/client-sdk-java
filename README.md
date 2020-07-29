@@ -35,3 +35,7 @@ gradle genstdlib
 // confirm everything works
 gradle test
 ```
+
+# How to use
+
+See [TestNetIntegrationTest](../blob/master/src/test/java/org/libra/librasdk/TestNetIntegrationTest.java)
