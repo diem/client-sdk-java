@@ -2,6 +2,11 @@
 
 Java client for the Libra network.
 
+# Requirements
+
+* [gradle](https://gradle.org/install/)
+* JDK 8+
+
 # Build
 
 ```
