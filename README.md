@@ -39,3 +39,7 @@ gradle test
 # How to use
 
 See [TestNetIntegrationTest](../blob/master/src/test/java/org/libra/librasdk/TestNetIntegrationTest.java)
+
+# Contributing
+
+[CONTRIBUTING](../blob/master/CONTRIBUTING.md)
