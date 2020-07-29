@@ -2,6 +2,8 @@
 
 Java client for the Libra network.
 
+![Java CI with Gradle](https://github.com/libra/libra-client-sdk-java/workflows/Java%20CI%20with%20Gradle/badge.svg)
+
 # Requirements
 
 * [gradle](https://gradle.org/install/)
@@ -39,6 +41,10 @@ gradle test
 # How to use
 
 See [TestNetIntegrationTest](../blob/src/test/java/org/libra/librasdk/TestNetIntegrationTest.java)
+
+# License
+
+[Apache License V2](../blob/LICENSE)
 
 # Contributing
 
