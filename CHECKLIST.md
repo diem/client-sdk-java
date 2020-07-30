@@ -30,7 +30,7 @@
 # Testnet support
 
 - [ ] Gen local wallet account keys: private key, public key, auth key
-- [x] Create onchain account and mint coins through Faucet service [doc](https://github.com/libra/libra/blob/master/client/libra-dev/README.md#creating-accounts-and-minting-with-the-faucet)
+- [x] Create onchain account and mint coins through Faucet service
 - [ ] Handle multiple signature auth key
 
-See [doc](https://github.com/libra/libra/blob/master/client/libra-dev/README.md#addresses-authentication-keys-and-cryptographic-keys) for how to generate keys
+See [doc](https://github.com/libra/libra/blob/master/client/libra-dev/README.md) for above concepts.
