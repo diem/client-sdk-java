@@ -49,3 +49,7 @@ See [TestNetIntegrationTest](../blob/src/test/java/org/libra/librasdk/TestNetInt
 # Contributing
 
 [CONTRIBUTING](../blob/CONTRIBUTING.md)
+
+# Features and Plan
+
+[CHECKLIST](../blob/CHECKLIST.md)
