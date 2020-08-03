@@ -75,6 +75,10 @@ public class Transaction {
         public String script_hash;
         public Script script;
 
+        public String getType() {
+            return type;
+        }
+
         @Override
         public String toString() {
             return "Data{" +

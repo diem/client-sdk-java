@@ -1,0 +1,70 @@
+[
+  {
+    "events": [],
+    "gas_used": 70,
+    "hash": "6bad47a8d5334b56eae81182d4ef7e7b3467a03580d9ec4697537c677125548e",
+    "transaction": {
+      "chain_id": 2,
+      "expiration_timestamp_secs": 1595707150,
+      "gas_currency": "LBR",
+      "gas_unit_price": 0,
+      "max_gas_amount": 1000000,
+      "public_key": "79560c29053956730b8de7f3af715d06cf74d6e2f05ac2c49846e44f3b7a7f27",
+      "script": {
+        "amount": 450000000000000,
+        "currency": "LBR",
+        "metadata": "",
+        "metadata_signature": "",
+        "receiver": "7f6add9d5d2813c63a15a0457234ef37",
+        "type": "peer_to_peer_transaction"
+      },
+      "script_hash": "61749d43d8f10940be6944df85ddf13f0f8fb830269c601f481cc5ee3de731c8",
+      "sender": "747f3bdf4afcb4e4237ad8eaa1654a52",
+      "sequence_number": 0,
+      "signature": "b6c6171ce6c8df6fb8593d975efa92ab011d170eaf844213099227af0eb1b920b941b8e08272417ebf12f000c081f97e368e564034bbe74fc7a091c4c218250b",
+      "signature_scheme": "Scheme::Ed25519",
+      "type": "user"
+    },
+    "version": 732723,
+    "vm_status": {
+      "move_abort": {
+        "abort_code": 5,
+        "location": "00000000000000000000000000000001::LibraAccount"
+      }
+    }
+  },
+  {
+    "events": [],
+    "gas_used": 70,
+    "hash": "6bad47a8d5334b56eae81182d4ef7e7b3467a03580d9ec4697537c677125548e",
+    "transaction": {
+      "chain_id": 2,
+      "expiration_timestamp_secs": 1595707150,
+      "gas_currency": "LBR",
+      "gas_unit_price": 0,
+      "max_gas_amount": 1000000,
+      "public_key": "79560c29053956730b8de7f3af715d06cf74d6e2f05ac2c49846e44f3b7a7f27",
+      "script": {
+        "amount": 450000000000000,
+        "currency": "LBR",
+        "metadata": "",
+        "metadata_signature": "",
+        "receiver": "7f6add9d5d2813c63a15a0457234ef37",
+        "type": "peer_to_peer_transaction"
+      },
+      "script_hash": "61749d43d8f10940be6944df85ddf13f0f8fb830269c601f481cc5ee3de731c8",
+      "sender": "747f3bdf4afcb4e4237ad8eaa1654a52",
+      "sequence_number": 0,
+      "signature": "b6c6171ce6c8df6fb8593d975efa92ab011d170eaf844213099227af0eb1b920b941b8e08272417ebf12f000c081f97e368e564034bbe74fc7a091c4c218250b",
+      "signature_scheme": "Scheme::Ed25519",
+      "type": "user"
+    },
+    "version": 732723,
+    "vm_status": {
+      "move_abort": {
+        "abort_code": 5,
+        "location": "00000000000000000000000000000001::LibraAccount"
+      }
+    }
+  }
+]
