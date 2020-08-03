@@ -5,29 +5,22 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.libra.librasdk.dto.Event;
 import org.libra.librasdk.dto.Transaction;
 
-import java.util.Objects;
-
 public class LibraTransaction {
     private BaseTransaction transaction;
-    private Transaction rawTransaction;
-
-    public LibraTransaction(Transaction rawTransaction) {
-        this.rawTransaction = rawTransaction;
-    }
 
     public Event[] getEvents() {
-        return rawTransaction.events;
+        return transaction.rawTransaction.events;
     }
 
     public long getGasUsed() {
-        return rawTransaction.gas_used;
+        return transaction.rawTransaction.gas_used;
     }
 
     public String getHash() {
-        return rawTransaction.hash;
+        return transaction.rawTransaction.hash;
     }
 
-    public BaseTransaction getTransaction() {
+    public BaseTransaction getBaseTransaction() {
         return transaction;
     }
 
@@ -36,32 +29,19 @@ public class LibraTransaction {
     }
 
     public long getVersion() {
-        return rawTransaction.version;
+        return transaction.rawTransaction.version;
     }
 
     public String getVmStatus() {
-        return rawTransaction.vmStatus();
+        return transaction.rawTransaction.vmStatus();
     }
 
     public Transaction getRawTransaction() {
-        return rawTransaction;
+        return transaction.rawTransaction;
     }
 
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LibraTransaction that = (LibraTransaction) o;
-        return transaction.equals(that.transaction) &&
-                rawTransaction.equals(that.rawTransaction);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(transaction, rawTransaction);
-    }
 }

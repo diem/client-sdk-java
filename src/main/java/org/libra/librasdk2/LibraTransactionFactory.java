@@ -7,9 +7,11 @@ public class LibraTransactionFactory {
 
 
     public static LibraTransaction create(Transaction transaction) {
-        String type = transaction.transaction.getType();
+        String type = transaction.transaction.type;
+
+
         BaseTransaction baseTransaction = null;
-        LibraTransaction libraTransaction = new LibraTransaction(transaction);
+        LibraTransaction libraTransaction = new LibraTransaction();
 
         switch (type) {
             case "peer_to_peer_transaction":
@@ -17,7 +19,7 @@ public class LibraTransactionFactory {
                 break;
 
             case "blockmetadata":
-            baseTransaction = new BlockMetadataTransaction();
+                baseTransaction = new BlockMetadataTransaction();
                 break;
 
             case "writeset":
@@ -28,6 +30,7 @@ public class LibraTransactionFactory {
                 break;
         }
 
+        baseTransaction.setRawTransaction(transaction);
         libraTransaction.setTransaction(baseTransaction);
         return libraTransaction;
     }

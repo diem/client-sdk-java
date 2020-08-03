@@ -3,8 +3,7 @@ package org.libra.librasdk2;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.libra.librasdk2.resources.LibraAccount;
-import org.libra.librasdk2.resources.LibraTransaction;
+import org.libra.librasdk2.resources.*;
 
 import java.util.List;
 
@@ -30,9 +29,20 @@ public class LibraSDKTest {
     @Test
     public void getTransaction() {
         LibraTransaction transaction = libraSDK.getTransaction(123, false);
-//        PeerToPeerTransaction transaction1 = (PeerToPeerTransaction) transaction.getAmount();
 
         assertNotNull(transaction);
+        assertNotNull(transaction.getRawTransaction());
+
+        BaseTransaction baseTransaction = transaction.getBaseTransaction();
+        if(baseTransaction instanceof PeerToPeerTransaction) {
+            PeerToPeerTransaction peerToPeerTransaction = (PeerToPeerTransaction) baseTransaction;
+            assertNotNull(peerToPeerTransaction.getScript());
+                peerToPeerTransaction.getAmount();
+                peerToPeerTransaction.getSender();
+        }else if(baseTransaction instanceof BlockMetadataTransaction){
+            ((BlockMetadataTransaction)baseTransaction).getTimestampUsecs();
+        }
+
     }
 
     @Test
