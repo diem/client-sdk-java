@@ -7,7 +7,11 @@ public class LibraTransactionFactory {
 
 
     public static LibraTransaction create(Transaction transaction) {
+
         String type = transaction.transaction.type;
+        if(transaction.transaction.script != null){
+            type = transaction.transaction.script.type;
+        }
 
 
         BaseTransaction baseTransaction = null;

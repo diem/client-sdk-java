@@ -5,6 +5,7 @@ import com.thetransactioncompany.jsonrpc2.JSONRPC2Request;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Response;
 import com.thetransactioncompany.jsonrpc2.client.JSONRPC2Session;
 import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
+import org.libra.librasdk.Method;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,9 +30,9 @@ class JSONRPCClient {
         mySession = new JSONRPC2Session(serverURL);
     }
 
-    public String call(String method, List<Object> params) {
+    public String call(Method method, List<Object> params) {
         int requestId = 0;
-        JSONRPC2Request request = new JSONRPC2Request(method, params, requestId);
+        JSONRPC2Request request = new JSONRPC2Request(method.name(), params, requestId);
 
         JSONRPC2Response response;
         String result = null;

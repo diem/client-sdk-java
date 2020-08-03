@@ -1,5 +1,8 @@
 package org.libra.librasdk2;
 
+import org.libra.librasdk.dto.Currency;
+import org.libra.librasdk.dto.Event;
+import org.libra.librasdk.dto.Metadata;
 import org.libra.librasdk.dto.Transaction;
 import org.libra.librasdk2.resources.LibraAccount;
 import org.libra.librasdk2.resources.LibraTransaction;
@@ -15,13 +18,13 @@ public class LibraSDK {
         this.client = new LibraClient(network);
     }
 
-    public List<LibraTransaction> getTransactions(int fromVersion, int limit, boolean includeEvents){
+    public List<LibraTransaction> getTransactions(int fromVersion, int limit, boolean includeEvents) {
         List<Transaction> transactions = client.getTransactions(fromVersion, limit, includeEvents);
-        List<LibraTransaction> libraTransactions = convert(transactions);
+        List<LibraTransaction> libraTransactions = convertList(transactions);
         return libraTransactions;
     }
 
-    private List<LibraTransaction> convert(List<Transaction> transactions) {
+    private List<LibraTransaction> convertList(List<Transaction> transactions) {
         List<LibraTransaction> libraTransactions = new ArrayList<>();
         transactions.forEach(transaction -> {
             LibraTransaction libraTransaction = LibraTransactionFactory.create(transaction);
@@ -31,17 +34,59 @@ public class LibraSDK {
         return libraTransactions;
     }
 
-    public LibraTransaction getTransaction(int fromVersion, boolean includeEvents){
-        List<Transaction> transactions = client.getTransactions(fromVersion, 1, includeEvents);
-        List<LibraTransaction> libraTransactions = convert(transactions);
+    public LibraTransaction getTransaction(int version, boolean includeEvents) {
+        List<Transaction> transactions = client.getTransactions(version, 1, includeEvents);
+        List<LibraTransaction> libraTransactions = convertList(transactions);
 
         return libraTransactions.get(0);
     }
 
-    public LibraAccount getAccount(String address){
+    public LibraAccount getAccount(String address) {
         LibraAccount account = client.getAccount(address);
 
         return account;
+    }
+
+    public Metadata getMetadata(long version) {
+        Metadata metadata = client.getMetadata(version);
+
+        return metadata;
+    }
+
+    public Metadata getMetadata() {
+        Metadata metadata = client.getMetadata();
+
+        return metadata;
+    }
+
+    public Currency[] getCurrencies() {
+        Currency[] currencies = client.getCurrencies();
+
+        return currencies;
+    }
+
+    public void submit(String data) {
+        client.submit(data);
+    }
+
+    public LibraTransaction waitForTransaction(String address, long sequence, boolean includeEvents, long timeoutMillis) throws InterruptedException {
+        Transaction transaction = client.waitForTransaction(address, sequence, includeEvents, timeoutMillis);
+        LibraTransaction libraTransaction = LibraTransactionFactory.create(transaction);
+
+        return libraTransaction;
+    }
+
+    public LibraTransaction getAccountTransaction(String address, long sequence, boolean includeEvents) {
+        Transaction transaction = client.getAccountTransaction(address, sequence, includeEvents);
+        LibraTransaction libraTransaction = LibraTransactionFactory.create(transaction);
+
+        return libraTransaction;
+    }
+
+    public List<Event> getEvents(String eventsKey, long start, long limit) {
+        List<Event> events = client.getEvents(eventsKey, start, limit);
+
+        return events;
     }
 
 }

@@ -7,6 +7,7 @@ import com.thetransactioncompany.jsonrpc2.client.JSONRPC2Session;
 import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
 import org.junit.Before;
 import org.junit.Test;
+import org.libra.librasdk.Method;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -44,7 +45,7 @@ public class JSONRPCClientTest{
             when(jsonrpc2Error.getMessage()).thenReturn("");
 
             ArrayList<Object> params = new ArrayList<>() {};
-            String response = jsonrpcClient.call("", params);
+            String response = jsonrpcClient.call(Method.get_account, params);
             assertNull(response);
         }
 
@@ -55,7 +56,7 @@ public class JSONRPCClientTest{
             when(jsonrpc2Response.getResult()).thenReturn(new Object());
 
             ArrayList<Object> params = new ArrayList<>() {};
-            String response = jsonrpcClient.call("", params);
+            String response = jsonrpcClient.call(Method.get_transactions, params);
             assertNotNull(response);
         }
     }

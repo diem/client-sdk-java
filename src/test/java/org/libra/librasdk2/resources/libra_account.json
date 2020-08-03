@@ -1,0 +1,24 @@
+{
+  "authentication_key": "22bbf3af0bb537b48b85793b0c9b38847f4644ae2b51b65bd3c9d414aa853407",
+  "balances": [
+    {
+      "amount": 60001900,
+      "currency": "LBR"
+    }
+  ],
+  "delegated_key_rotation_capability": false,
+  "delegated_withdrawal_capability": false,
+  "is_frozen": false,
+  "received_events_key": "00000000000000007f4644ae2b51b65bd3c9d414aa853407",
+  "role": {
+    "parent_vasp": {
+      "base_url": "https://libra.org",
+      "compliance_key": "b7a3c12dc0c8c748ab07525b701122b88bd78f600c76342d27f25e5f92444cde",
+      "expiration_time": 18446744073709552000,
+      "human_name": "testnet",
+      "num_children": 0
+    }
+  },
+  "sent_events_key": "01000000000000007f4644ae2b51b65bd3c9d414aa853407",
+  "sequence_number": 1
+}

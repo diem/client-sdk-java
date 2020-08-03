@@ -16,8 +16,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 public class LibraClientTest {
@@ -38,17 +38,17 @@ public class LibraClientTest {
         String path = "./src/test/java/org/libra/librasdk2/resources/libra_transactions.json";
         String content = Files.readString(Paths.get(path), StandardCharsets.US_ASCII);
 
-        when(jsonrpcClient.call(anyString(), anyList())).thenReturn(content);
+        when(jsonrpcClient.call(any(), anyList())).thenReturn(content);
         List<Transaction> transactions = libraClient.getTransactions(1, 3, false);
         assertEquals(2, transactions.size());
     }
 
     @Test
     public void getAccount() throws IOException {
-        String path = "./src/main/resources/libra/libra_account.json";
+        String path = "./src/test/java/org/libra/librasdk2/resources/libra_account.json";
         String content = Files.readString(Paths.get(path), StandardCharsets.US_ASCII);
 
-        when(jsonrpcClient.call(anyString(), anyList())).thenReturn(content);
+        when(jsonrpcClient.call(any(), anyList())).thenReturn(content);
         LibraAccount account = libraClient.getAccount("");
         assertFalse(account.getIsFrozen());
     }
