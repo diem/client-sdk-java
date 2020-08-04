@@ -42,29 +42,29 @@ public class LibraClient {
     public LibraAccount getAccount(String address) {
         List<Object> params = new ArrayList<>();
         params.add(address);
-        return getCall(params, Method.get_account, LibraAccount.class);
+        return executeCall(params, Method.get_account, LibraAccount.class);
     }
 
-    private <T> T getCall(List<Object> params, Method method, Class<T> responseType) {
-        String accountJson = jsonrpcClient.call(method, params);
-        T result = new Gson().fromJson(accountJson, responseType);
+    private <T> T executeCall(List<Object> params, Method method, Class<T> responseType) {
+        String response = jsonrpcClient.call(method, params);
+        T result = new Gson().fromJson(response, responseType);
 
         return result;
     }
 
     public Metadata getMetadata(){
-        return getCall(null, Method.get_metadata, Metadata.class);
+        return executeCall(null, Method.get_metadata, Metadata.class);
     }
 
     public Metadata getMetadata(long version) {
         List<Object> params = new ArrayList<>();
         params.add(version);
 
-        return getCall(params, Method.get_metadata, Metadata.class);
+        return executeCall(params, Method.get_metadata, Metadata.class);
     }
 
     public Currency[] getCurrencies() {
-        return getCall(null, Method.get_currencies, Currency[].class);
+        return executeCall(null, Method.get_currencies, Currency[].class);
     }
 
     public Transaction getAccountTransaction(String address, long sequence, boolean includeEvents) {
@@ -73,14 +73,15 @@ public class LibraClient {
         params.add(sequence);
         params.add(includeEvents);
 
-        return getCall(params, Method.get_account_transaction, Transaction.class);
+        return executeCall(params, Method.get_account_transaction, Transaction.class);
     }
 
     public void submit(String data) {
         List<Object> params = new ArrayList<>();
         params.add(data);
 
-        getCall(params, null, Transaction.class);
+        // FIXME why null?
+        executeCall(params, null, Transaction.class);
     }
 
     public Transaction waitForTransaction(String address, long sequence, boolean includeEvents, long timeoutMillis) throws InterruptedException {
