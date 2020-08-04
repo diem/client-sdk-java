@@ -18,7 +18,7 @@ public class TestNetFaucetService {
         long seq = mintCoinsAsync(amount, authKey, currencyCode);
         LibraTransaction txn = null;
         try {
-            txn = client.waitForTransaction(Constants.DD_ADDRESS, seq, false, DEFAULT_TIMEOUT);
+            txn = client.waitForTransaction(Constants.DD_ADDRESS, seq - 1, false, DEFAULT_TIMEOUT);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

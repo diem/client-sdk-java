@@ -4,7 +4,6 @@ package org.libra.librasdk;
 import com.facebook.serde.Bytes;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.libra.librasdk.dto.*;
 import org.libra.librasdk.resources.*;
@@ -82,7 +81,6 @@ public class LibraSDKTest {
         Assert.assertTrue(response.getRawTransaction().isExecuted());
     }
 
-    // FIXME
     @Test
     public void testSubmitTransaction() throws Exception {
         TestData data = TestData.get();
@@ -122,7 +120,6 @@ public class LibraSDKTest {
         Assert.assertEquals("receivedpayment", p2p.getEvents()[1].data.type);
     }
 
-    @Ignore
     @Test
     public void testSubmitExpiredTransaction() throws Exception {
         TestData data = TestData.get();
@@ -144,11 +141,10 @@ public class LibraSDKTest {
                 0L,
                 Constants.TEST_NET_CHAIN_ID);
 //        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED", JsonRpcErrorException.class, () -> {
-//            libraSDK.submit(Utils.toLCSHex(st));
+            libraSDK.submit(Utils.toLCSHex(st));
 //        });
     }
 
-    @Ignore
     @Test()
     public void testSubmitTransactionAndExecuteFailed() throws Exception {
         TestData data = TestData.get();

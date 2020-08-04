@@ -47,8 +47,11 @@ public class LibraClient {
 
     private <T> T executeCall(List<Object> params, Method method, Class<T> responseType) {
         String response = jsonrpcClient.call(method, params);
-        T result = new Gson().fromJson(response, responseType);
+        T result = null;
 
+        if(responseType != null) {
+            result = new Gson().fromJson(response, responseType);
+        }
         return result;
     }
 
@@ -81,7 +84,7 @@ public class LibraClient {
         params.add(data);
 
         // FIXME why null?
-        executeCall(params, null, Transaction.class);
+        executeCall(params, Method.submit, null);
     }
 
     public Transaction waitForTransaction(String address, long sequence, boolean includeEvents, long timeoutMillis) throws InterruptedException {
