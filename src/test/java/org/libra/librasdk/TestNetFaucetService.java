@@ -15,16 +15,16 @@ public class TestNetFaucetService {
     public static String SERVER_URL = "http://faucet.testnet.libra.org/";
 
     public static void mintCoins(LibraSDK client, long amount, String authKey, String currencyCode) {
-        long seq = mintCoinsAsync(amount, authKey, currencyCode);
+        long nextAccountSeq = mintCoinsAsync(amount, authKey, currencyCode);
         LibraTransaction txn = null;
         try {
-            txn = client.waitForTransaction(Constants.DD_ADDRESS, seq - 1, false, DEFAULT_TIMEOUT);
+            txn = client.waitForTransaction(Constants.DD_ADDRESS, nextAccountSeq - 1, false, DEFAULT_TIMEOUT);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         if (txn == null) {
-            throw new RuntimeException("mint coins transaction does not exist / failed");
+            throw new RuntimeException("mint coins transaction does not exist / failed, sequence: ");
         }
         if (!txn.getRawTransaction().isExecuted()) {
             throw new RuntimeException("mint coins transaction failed: " + txn.toString());
