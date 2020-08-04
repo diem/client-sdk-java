@@ -1,12 +1,11 @@
-package org.libra.librasdk2;
+package org.libra.librasdk;
 
 import org.libra.librasdk.dto.Transaction;
-import org.libra.librasdk2.resources.*;
+import org.libra.librasdk.resources.*;
 
 public class LibraTransactionFactory {
 
-
-    public static LibraTransaction create(Transaction transaction) {
+    public static LibraTransaction create(Transaction transaction) throws Exception {
 
         String type = transaction.transaction.type;
         if(transaction.transaction.script != null){
@@ -14,24 +13,25 @@ public class LibraTransactionFactory {
         }
 
 
-        BaseTransaction baseTransaction = null;
+        BaseTransaction baseTransaction;
         LibraTransaction libraTransaction = new LibraTransaction();
 
         switch (type) {
             case "peer_to_peer_transaction":
                 baseTransaction = new PeerToPeerTransaction();
                 break;
-
             case "blockmetadata":
                 baseTransaction = new BlockMetadataTransaction();
                 break;
-
             case "writeset":
                 baseTransaction = new WritesetTransaction();
                 break;
-            default:
-                System.out.println("No such transaction type");
+            case "unknown_transaction":
+                baseTransaction = new BaseTransaction() {
+                };
                 break;
+            default:
+                throw new Exception("No such transaction type");
         }
 
         baseTransaction.setRawTransaction(transaction);

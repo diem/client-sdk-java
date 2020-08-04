@@ -1,4 +1,4 @@
-package org.libra.librasdk2;
+package org.libra.librasdk;
 
 public enum LibraNetwork {
     MAINNET("https://client.libra.org"),

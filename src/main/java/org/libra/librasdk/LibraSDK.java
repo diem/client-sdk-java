@@ -1,11 +1,11 @@
-package org.libra.librasdk2;
+package org.libra.librasdk;
 
 import org.libra.librasdk.dto.Currency;
 import org.libra.librasdk.dto.Event;
 import org.libra.librasdk.dto.Metadata;
 import org.libra.librasdk.dto.Transaction;
-import org.libra.librasdk2.resources.LibraAccount;
-import org.libra.librasdk2.resources.LibraTransaction;
+import org.libra.librasdk.resources.LibraAccount;
+import org.libra.librasdk.resources.LibraTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,23 +18,23 @@ public class LibraSDK {
         this.client = new LibraClient(network);
     }
 
-    public List<LibraTransaction> getTransactions(int fromVersion, int limit, boolean includeEvents) {
+    public List<LibraTransaction> getTransactions(int fromVersion, int limit, boolean includeEvents) throws Exception {
         List<Transaction> transactions = client.getTransactions(fromVersion, limit, includeEvents);
         List<LibraTransaction> libraTransactions = convertList(transactions);
         return libraTransactions;
     }
 
-    private List<LibraTransaction> convertList(List<Transaction> transactions) {
+    public List<LibraTransaction> convertList(List<Transaction> transactions) throws Exception {
         List<LibraTransaction> libraTransactions = new ArrayList<>();
-        transactions.forEach(transaction -> {
+        for (Transaction transaction : transactions) {
             LibraTransaction libraTransaction = LibraTransactionFactory.create(transaction);
             libraTransactions.add(libraTransaction);
-        });
+        }
 
         return libraTransactions;
     }
 
-    public LibraTransaction getTransaction(int version, boolean includeEvents) {
+    public LibraTransaction getTransaction(int version, boolean includeEvents) throws Exception {
         List<Transaction> transactions = client.getTransactions(version, 1, includeEvents);
         List<LibraTransaction> libraTransactions = convertList(transactions);
 
@@ -69,14 +69,14 @@ public class LibraSDK {
         client.submit(data);
     }
 
-    public LibraTransaction waitForTransaction(String address, long sequence, boolean includeEvents, long timeoutMillis) throws InterruptedException {
+    public LibraTransaction waitForTransaction(String address, long sequence, boolean includeEvents, long timeoutMillis) throws Exception {
         Transaction transaction = client.waitForTransaction(address, sequence, includeEvents, timeoutMillis);
         LibraTransaction libraTransaction = LibraTransactionFactory.create(transaction);
 
         return libraTransaction;
     }
 
-    public LibraTransaction getAccountTransaction(String address, long sequence, boolean includeEvents) {
+    public LibraTransaction getAccountTransaction(String address, long sequence, boolean includeEvents) throws Exception {
         Transaction transaction = client.getAccountTransaction(address, sequence, includeEvents);
         LibraTransaction libraTransaction = LibraTransactionFactory.create(transaction);
 

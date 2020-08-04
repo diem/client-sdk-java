@@ -1,11 +1,10 @@
-package org.libra.librasdk2;
+package org.libra.librasdk;
 
 import com.google.gson.Gson;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Request;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Response;
 import com.thetransactioncompany.jsonrpc2.client.JSONRPC2Session;
 import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
-import org.libra.librasdk.Method;
 
 import java.net.MalformedURLException;
 import java.net.URL;

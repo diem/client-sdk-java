@@ -1,4 +1,4 @@
-package org.libra.librasdk2;
+package org.libra.librasdk;
 
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Request;
@@ -7,7 +7,6 @@ import com.thetransactioncompany.jsonrpc2.client.JSONRPC2Session;
 import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
 import org.junit.Before;
 import org.junit.Test;
-import org.libra.librasdk.Method;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;

@@ -1,6 +1,7 @@
 
-package org.libra.librasdk2.resources;
+package org.libra.librasdk.resources;
 
+import com.google.gson.JsonElement;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -33,7 +34,7 @@ public class LibraAccount {
     private String receivedEventsKey;
     @SerializedName("role")
     @Expose
-    private Role role;
+    private JsonElement role;
     @SerializedName("sent_events_key")
     @Expose
     private String sentEventsKey;
@@ -89,11 +90,11 @@ public class LibraAccount {
         this.receivedEventsKey = receivedEventsKey;
     }
 
-    public Role getRole() {
+    public JsonElement getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(JsonElement role) {
         this.role = role;
     }
 

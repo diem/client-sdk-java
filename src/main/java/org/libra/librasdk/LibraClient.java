@@ -1,13 +1,12 @@
-package org.libra.librasdk2;
+package org.libra.librasdk;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import org.libra.librasdk.Method;
 import org.libra.librasdk.dto.Currency;
 import org.libra.librasdk.dto.Event;
 import org.libra.librasdk.dto.Metadata;
 import org.libra.librasdk.dto.Transaction;
-import org.libra.librasdk2.resources.LibraAccount;
+import org.libra.librasdk.resources.LibraAccount;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

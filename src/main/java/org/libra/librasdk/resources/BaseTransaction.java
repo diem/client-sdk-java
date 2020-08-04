@@ -1,4 +1,4 @@
-package org.libra.librasdk2.resources;
+package org.libra.librasdk.resources;
 
 import org.libra.librasdk.dto.Transaction;
 

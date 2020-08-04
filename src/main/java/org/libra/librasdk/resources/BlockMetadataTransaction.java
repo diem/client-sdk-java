@@ -1,5 +1,5 @@
 
-package org.libra.librasdk2.resources;
+package org.libra.librasdk.resources;
 
 public class BlockMetadataTransaction extends BaseTransaction {
 

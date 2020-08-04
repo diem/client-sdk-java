@@ -1,5 +1,5 @@
 
-package org.libra.librasdk2.resources;
+package org.libra.librasdk.resources;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

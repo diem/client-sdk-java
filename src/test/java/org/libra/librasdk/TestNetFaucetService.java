@@ -3,7 +3,7 @@
 
 package org.libra.librasdk;
 
-import org.libra.librasdk.dto.Transaction;
+import org.libra.librasdk.resources.LibraTransaction;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -14,9 +14,9 @@ public class TestNetFaucetService {
     private static final long DEFAULT_TIMEOUT = 10 * 1000;
     public static String SERVER_URL = "http://faucet.testnet.libra.org/";
 
-    public static void mintCoins(Client client, long amount, String authKey, String currencyCode) {
+    public static void mintCoins(LibraSDK client, long amount, String authKey, String currencyCode) {
         long seq = mintCoinsAsync(amount, authKey, currencyCode);
-        Transaction txn = null;
+        LibraTransaction txn = null;
         try {
             txn = client.waitForTransaction(Constants.DD_ADDRESS, seq, false, DEFAULT_TIMEOUT);
         } catch (Exception e) {
@@ -26,7 +26,7 @@ public class TestNetFaucetService {
         if (txn == null) {
             throw new RuntimeException("mint coins transaction does not exist / failed");
         }
-        if (!txn.isExecuted()) {
+        if (!txn.getRawTransaction().isExecuted()) {
             throw new RuntimeException("mint coins transaction failed: " + txn.toString());
         }
     }

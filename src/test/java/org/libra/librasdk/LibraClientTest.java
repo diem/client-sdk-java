@@ -1,9 +1,9 @@
-package org.libra.librasdk2;
+package org.libra.librasdk;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.libra.librasdk.dto.Transaction;
-import org.libra.librasdk2.resources.LibraAccount;
+import org.libra.librasdk.resources.LibraAccount;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -35,7 +35,7 @@ public class LibraClientTest {
 
     @Test
     public void getTransactions() throws IOException {
-        String path = "./src/test/java/org/libra/librasdk2/resources/libra_transactions.json";
+        String path = "./src/test/java/org/libra/librasdk/resources/libra_transactions.json";
         String content = Files.readString(Paths.get(path), StandardCharsets.US_ASCII);
 
         when(jsonrpcClient.call(any(), anyList())).thenReturn(content);
@@ -45,7 +45,7 @@ public class LibraClientTest {
 
     @Test
     public void getAccount() throws IOException {
-        String path = "./src/test/java/org/libra/librasdk2/resources/libra_account.json";
+        String path = "./src/test/java/org/libra/librasdk/resources/libra_account.json";
         String content = Files.readString(Paths.get(path), StandardCharsets.US_ASCII);
 
         when(jsonrpcClient.call(any(), anyList())).thenReturn(content);
