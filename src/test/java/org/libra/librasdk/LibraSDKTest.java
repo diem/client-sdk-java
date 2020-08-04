@@ -4,6 +4,7 @@ package org.libra.librasdk;
 import com.facebook.serde.Bytes;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.libra.librasdk.dto.*;
 import org.libra.librasdk.resources.*;
@@ -121,6 +122,7 @@ public class LibraSDKTest {
         Assert.assertEquals("receivedpayment", p2p.getEvents()[1].data.type);
     }
 
+    @Ignore
     @Test
     public void testSubmitExpiredTransaction() throws Exception {
         TestData data = TestData.get();
@@ -146,7 +148,8 @@ public class LibraSDKTest {
 //        });
     }
 
-    @Test
+    @Ignore
+    @Test()
     public void testSubmitTransactionAndExecuteFailed() throws Exception {
         TestData data = TestData.get();
         LocalAccount account1 = data.local_account;

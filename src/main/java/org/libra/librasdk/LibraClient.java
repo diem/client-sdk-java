@@ -53,7 +53,7 @@ public class LibraClient {
     }
 
     public Metadata getMetadata(){
-        return executeCall(null, Method.get_metadata, Metadata.class);
+        return executeCall(new ArrayList<>(), Method.get_metadata, Metadata.class);
     }
 
     public Metadata getMetadata(long version) {
@@ -64,7 +64,7 @@ public class LibraClient {
     }
 
     public Currency[] getCurrencies() {
-        return executeCall(null, Method.get_currencies, Currency[].class);
+        return executeCall(new ArrayList<>(), Method.get_currencies, Currency[].class);
     }
 
     public Transaction getAccountTransaction(String address, long sequence, boolean includeEvents) {

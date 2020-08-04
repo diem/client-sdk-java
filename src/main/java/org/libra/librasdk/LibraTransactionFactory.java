@@ -12,7 +12,6 @@ public class LibraTransactionFactory {
             type = transaction.transaction.script.type;
         }
 
-
         BaseTransaction baseTransaction;
         LibraTransaction libraTransaction = new LibraTransaction();
 
