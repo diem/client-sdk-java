@@ -15,17 +15,18 @@ public class LibraTransactionFactory {
         BaseTransaction baseTransaction;
         LibraTransaction libraTransaction = new LibraTransaction();
 
-        switch (type) {
-            case "peer_to_peer_transaction":
+        TransactionType transactionType = TransactionType.valueOf(type);
+        switch (transactionType) {
+            case peer_to_peer_transaction:
                 baseTransaction = new PeerToPeerTransaction();
                 break;
-            case "blockmetadata":
+            case blockmetadata:
                 baseTransaction = new BlockMetadataTransaction();
                 break;
-            case "writeset":
+            case writeset:
                 baseTransaction = new WritesetTransaction();
                 break;
-            case "unknown_transaction":
+            case unknown_transaction:
                 baseTransaction = new BaseTransaction() {
                 };
                 break;
