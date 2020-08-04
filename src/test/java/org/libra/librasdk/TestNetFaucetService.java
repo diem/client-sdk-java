@@ -3,7 +3,7 @@
 
 package org.libra.librasdk;
 
-import org.libra.librasdk.resources.LibraTransaction;
+import org.libra.librasdk.model.LibraTransaction;
 
 import java.net.URI;
 import java.net.http.HttpClient;

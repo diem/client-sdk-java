@@ -6,7 +6,7 @@ import org.libra.librasdk.dto.Currency;
 import org.libra.librasdk.dto.Event;
 import org.libra.librasdk.dto.Metadata;
 import org.libra.librasdk.dto.Transaction;
-import org.libra.librasdk.resources.LibraAccount;
+import org.libra.librasdk.model.LibraAccount;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

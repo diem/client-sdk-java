@@ -1,7 +1,7 @@
 package org.libra.librasdk;
 
 import org.libra.librasdk.dto.Transaction;
-import org.libra.librasdk.resources.*;
+import org.libra.librasdk.model.*;
 
 public class LibraTransactionFactory {
 

@@ -1,5 +1,5 @@
 
-package org.libra.librasdk.resources;
+package org.libra.librasdk.model;
 
 public class WritesetTransaction extends BaseTransaction {
 

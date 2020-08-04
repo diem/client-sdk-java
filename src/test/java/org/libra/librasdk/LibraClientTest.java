@@ -3,7 +3,7 @@ package org.libra.librasdk;
 import org.junit.Before;
 import org.junit.Test;
 import org.libra.librasdk.dto.Transaction;
-import org.libra.librasdk.resources.LibraAccount;
+import org.libra.librasdk.model.LibraAccount;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;

@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.libra.librasdk.dto.*;
-import org.libra.librasdk.resources.*;
+import org.libra.librasdk.model.*;
 import org.libra.stdlib.Stdlib;
 import org.libra.types.AccountAddress;
 import org.libra.types.SignedTransaction;

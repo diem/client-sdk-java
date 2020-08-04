@@ -1,5 +1,5 @@
 
-package org.libra.librasdk.resources;
+package org.libra.librasdk.model;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.libra.librasdk.dto.Transaction;

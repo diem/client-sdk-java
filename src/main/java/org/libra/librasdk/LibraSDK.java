@@ -4,8 +4,8 @@ import org.libra.librasdk.dto.Currency;
 import org.libra.librasdk.dto.Event;
 import org.libra.librasdk.dto.Metadata;
 import org.libra.librasdk.dto.Transaction;
-import org.libra.librasdk.resources.LibraAccount;
-import org.libra.librasdk.resources.LibraTransaction;
+import org.libra.librasdk.model.LibraAccount;
+import org.libra.librasdk.model.LibraTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
