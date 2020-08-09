@@ -4,36 +4,36 @@
 package org.libra.librasdk;
 
 import com.facebook.serde.Bytes;
+import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.libra.librasdk.dto.*;
 import org.libra.librasdk.dto.Metadata;
 import org.libra.librasdk.dto.Transaction;
-import org.libra.librasdk.jsonrpc.JsonRpcClient;
-import org.libra.librasdk.jsonrpc.JsonRpcErrorException;
+import org.libra.librasdk.dto.*;
 import org.libra.stdlib.Stdlib;
 import org.libra.types.*;
 
-import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.libra.librasdk.LibraNetwork.TESTNET;
 
 
 public class TestNetIntegrationTest {
 
     public static final int DEFAULT_TIMEOUT = 10 * 1000; // 10 seconds
-    private Client client;
+    private LibraClient libraClient;
 
     @Before
-    public void setup() throws IOException {
-        client = new JsonRpcClient(Constants.TEST_NET_JSON_RPC_V1_URL);
+    public void setup() {
+        libraClient = new LibraClient(TESTNET);
     }
 
     @Test
     public void testGetMetadata() throws Exception {
-        Metadata response = client.getMetadata();
+        Metadata response = libraClient.getMetadata();
         Assert.assertNotNull(response);
         Assert.assertTrue(response.timestamp > new Date().getTime() - 600);
         Assert.assertTrue(response.version > 1000);
@@ -41,7 +41,7 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testGetMetadataByVersion() throws Exception {
-        Metadata response = client.getMetadata(1);
+        Metadata response = libraClient.getMetadata(1);
         Assert.assertNotNull(response);
         Assert.assertEquals(1, response.version);
         Assert.assertEquals(0, response.timestamp);
@@ -49,7 +49,7 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testGetCurrencies() throws Exception {
-        Currency[] response = client.getCurrencies();
+        Currency[] response = libraClient.getCurrencies();
         Assert.assertNotNull(response);
         Assert.assertEquals(3, response.length);
         Assert.assertEquals("Coin1", response[0].code);
@@ -58,15 +58,8 @@ public class TestNetIntegrationTest {
     }
 
     @Test
-    public void testHandleRPCCallError() {
-        assertThrows(JsonRpcErrorException.class, () -> {
-            client.call(Method.get_currencies, Currency[].class, "invalid argument");
-        });
-    }
-
-    @Test
     public void testGetAccount() throws Exception {
-        Account response = client.getAccount(Constants.ROOT_ACCOUNT_ADDRESS);
+        Account response = libraClient.getAccount(Constants.ROOT_ACCOUNT_ADDRESS);
         Assert.assertNotNull(response);
         Assert.assertEquals("unknown", response.role.getAsString());
         Assert.assertFalse(response.authentication_key.isEmpty());
@@ -79,8 +72,8 @@ public class TestNetIntegrationTest {
     }
 
     @Test
-    public void testGetAccountTransaction() throws LibraSDKException {
-        Transaction response = client.getAccountTransaction(Constants.ROOT_ACCOUNT_ADDRESS, 1, true);
+    public void testGetAccountTransaction() throws JSONRPC2Error {
+        Transaction response = libraClient.getAccountTransaction(Constants.ROOT_ACCOUNT_ADDRESS, 1, true);
         Assert.assertNotNull(response);
         Assert.assertTrue(response.version > 0);
         Assert.assertTrue(response.hash.length() > 0);
@@ -96,21 +89,21 @@ public class TestNetIntegrationTest {
         LocalAccount account2 = data.local_account2;
         String currencyCode = "LBR";
 
-        TestNetFaucetService.mintCoins(client, coins(100), account1.libra_auth_key, currencyCode);
-        TestNetFaucetService.mintCoins(client, coins(100), account2.libra_auth_key, currencyCode);
+        TestNetFaucetService.mintCoins(libraClient, coins(100), account1.libra_auth_key, currencyCode);
+        TestNetFaucetService.mintCoins(libraClient, coins(100), account2.libra_auth_key, currencyCode);
 
         Script script = createP2PScript(account2.getAccountAddress(), currencyCode, coins(1));
-        Account account1Data = client.getAccount(account1.libra_account_address);
+        Account account1Data = libraClient.getAccount(account1.libra_account_address);
         SignedTransaction st = Utils.signTransaction(account1,
                 account1Data.sequence_number,
                 script,
                 coins(1),
                 0,
                 currencyCode,
-                100000000000l,
+                100000000000L,
                 Constants.TEST_NET_CHAIN_ID);
-        client.submit(Utils.toLCSHex(st));
-        Transaction p2p = client.waitForTransaction(
+        libraClient.submit(Utils.toLCSHex(st));
+        Transaction p2p = libraClient.waitForTransaction(
                 Utils.addressToHex(st.raw_txn.sender),
                 st.raw_txn.sequence_number,
                 true,
@@ -133,22 +126,20 @@ public class TestNetIntegrationTest {
         LocalAccount account2 = data.local_account2;
 
         String currencyCode = "LBR";
-        TestNetFaucetService.mintCoins(client, coins(100), account1.libra_auth_key, currencyCode);
-        TestNetFaucetService.mintCoins(client, coins(100), account2.libra_auth_key, currencyCode);
+        TestNetFaucetService.mintCoins(libraClient, coins(100), account1.libra_auth_key, currencyCode);
+        TestNetFaucetService.mintCoins(libraClient, coins(100), account2.libra_auth_key, currencyCode);
 
         Script script = createP2PScript(account2.getAccountAddress(), currencyCode, coins(1));
-        Account account1Data = client.getAccount(account1.libra_account_address);
+        Account account1Data = libraClient.getAccount(account1.libra_account_address);
         SignedTransaction st = Utils.signTransaction(account1,
                 account1Data.sequence_number,
                 script,
                 coins(1),
                 0,
                 currencyCode,
-                0l,
+                0L,
                 Constants.TEST_NET_CHAIN_ID);
-        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED", JsonRpcErrorException.class, () -> {
-            client.submit(Utils.toLCSHex(st));
-        });
+        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED", JSONRPC2Error.class, () -> libraClient.submit(Utils.toLCSHex(st)));
     }
 
     @Test
@@ -158,21 +149,21 @@ public class TestNetIntegrationTest {
         LocalAccount account3 = data.local_account3;
 
         String currencyCode = "LBR";
-        TestNetFaucetService.mintCoins(client, coins(100), account1.libra_auth_key, currencyCode);
+        TestNetFaucetService.mintCoins(libraClient, coins(100), account1.libra_auth_key, currencyCode);
 
         Script script = createP2PScript(account3.getAccountAddress(), currencyCode, coins(1));
-        Account account1Data = client.getAccount(account1.libra_account_address);
+        Account account1Data = libraClient.getAccount(account1.libra_account_address);
         SignedTransaction st = Utils.signTransaction(account1,
                 account1Data.sequence_number,
                 script,
                 coins(1),
                 0,
                 currencyCode,
-                100000000000l,
+                100000000000L,
                 Constants.TEST_NET_CHAIN_ID);
-        client.submit(Utils.toLCSHex(st));
+        libraClient.submit(Utils.toLCSHex(st));
 
-        Transaction p2p = client.waitForTransaction(
+        Transaction p2p = libraClient.waitForTransaction(
                 Utils.addressToHex(st.raw_txn.sender),
                 st.raw_txn.sequence_number,
                 true,
@@ -182,19 +173,19 @@ public class TestNetIntegrationTest {
     }
 
     @Test
-    public void testGetTransactions() throws LibraSDKException {
-        Transaction[] transactions = client.getTransactions(0, 1000, true);
+    public void testGetTransactions() throws JSONRPC2Error {
+        List<Transaction> transactions = libraClient.getTransactions(0, 1000, true);
         Assert.assertNotNull(transactions);
-        Assert.assertTrue(transactions.length > 0);
+        Assert.assertTrue(transactions.size() > 0);
     }
 
     @Test
-    public void testGetEvents() throws LibraSDKException {
-        Currency[] currencies = client.getCurrencies();
+    public void testGetEvents() throws JSONRPC2Error {
+        Currency[] currencies = libraClient.getCurrencies();
 
-        Event[] events = client.getEvents(currencies[0].mint_events_key, 0l, 1000l);
+        List<Event> events = libraClient.getEvents(currencies[0].mint_events_key, 0L, 1000L);
         Assert.assertNotNull(events);
-        Assert.assertTrue(events.length > 0);
+        Assert.assertTrue(events.size() > 0);
     }
 
     private Script createP2PScript(AccountAddress address, String currencyCode, long amount) {

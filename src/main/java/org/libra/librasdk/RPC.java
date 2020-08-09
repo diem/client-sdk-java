@@ -3,6 +3,10 @@
 
 package org.libra.librasdk;
 
+import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
+
+import java.util.List;
+
 public interface RPC {
-    <T> T call(Method method, Class<T> responseType, Object... args) throws LibraSDKException;
+    String call(Method method, List<Object> params) throws JSONRPC2Error;
 }

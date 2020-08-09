@@ -3,24 +3,27 @@
 
 package org.libra.librasdk;
 
+import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
 import org.libra.librasdk.dto.*;
 
-public interface Client extends RPC {
-    Metadata getMetadata() throws LibraSDKException;
+import java.util.List;
 
-    Metadata getMetadata(long version) throws LibraSDKException;
+public interface Client {
+    Metadata getMetadata() throws LibraSDKException, JSONRPC2Error;
 
-    Currency[] getCurrencies() throws LibraSDKException;
+    Metadata getMetadata(long version) throws LibraSDKException, JSONRPC2Error;
 
-    Account getAccount(String address) throws LibraSDKException;
+    Currency[] getCurrencies() throws LibraSDKException, JSONRPC2Error;
 
-    Transaction getAccountTransaction(String address, long sequence, boolean includeEvents) throws LibraSDKException;
+    Account getAccount(String address) throws LibraSDKException, JSONRPC2Error;
 
-    void submit(String data) throws LibraSDKException;
+    Transaction getAccountTransaction(String address, long sequence, boolean includeEvents) throws LibraSDKException, JSONRPC2Error;
 
-    Transaction waitForTransaction(String address, long sequence, boolean includeEvents, long timeout) throws LibraSDKException, InterruptedException;
+    void submit(String data) throws LibraSDKException, JSONRPC2Error;
 
-    Transaction[] getTransactions(long start_version, long limit, boolean includeEvents) throws LibraSDKException;
+    Transaction waitForTransaction(String address, long sequence, boolean includeEvents, long timeout) throws LibraSDKException, InterruptedException, JSONRPC2Error;
 
-    Event[] getEvents(String events_key, long start, long limit) throws LibraSDKException;
+    List<Transaction> getTransactions(int fromVersion, int limit, boolean includeEvents) throws JSONRPC2Error;
+
+    List<Event> getEvents(String events_key, long start, long limit) throws LibraSDKException, JSONRPC2Error;
 }
