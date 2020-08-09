@@ -3,12 +3,8 @@
 
 package org.libra.librasdk;
 
+import com.squareup.okhttp.*;
 import org.libra.librasdk.dto.Transaction;
-
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 public class TestNetFaucetService {
     private static final long DEFAULT_TIMEOUT = 10 * 1000;
@@ -24,7 +20,7 @@ public class TestNetFaucetService {
         }
 
         if (txn == null) {
-            throw new RuntimeException("mint coins transaction does not exist / failed, sequence: "+nextAccountSeq);
+            throw new RuntimeException("mint coins transaction does not exist / failed, sequence: " + nextAccountSeq);
         }
         if (!txn.isExecuted()) {
             throw new RuntimeException("mint coins transaction failed: " + txn.toString());
@@ -32,25 +28,29 @@ public class TestNetFaucetService {
     }
 
     public static long mintCoinsAsync(long amount, String authKey, String currencyCode) {
-        HttpClient httpClient = HttpClient.newHttpClient();
+        OkHttpClient client = new OkHttpClient();
+        HttpUrl.Builder builder = HttpUrl.parse(SERVER_URL).newBuilder();
+        builder.addQueryParameter("amount", String.valueOf(amount));
+        builder.addQueryParameter("auth_key", authKey);
+        builder.addQueryParameter("currency_code", currencyCode);
 
-        URI uri = URI.create(SERVER_URL + "?amount=" + amount + "&auth_key=" + authKey + "&currency_code=" + currencyCode);
-        HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(uri)
-                .POST(HttpRequest.BodyPublishers.noBody())
-                .build();
+        HttpUrl url = builder.build();
+        RequestBody emptyBody = RequestBody.create(null, new byte[0]);
+        Request request = new Request.Builder().url(url).post(emptyBody).build();
+
         int retry = 3;
         for (int i = 0; i <= retry; i++) {
             try {
-                HttpResponse<String> resp = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-                if (resp.statusCode() != 200) {
+                Response response = client.newCall(request).execute();
+                if (response.code() != 200) {
                     if (i < retry) {
                         waitAWhile();
                         continue;
                     }
-                    throw new RuntimeException(resp.toString());
+                    throw new RuntimeException(response.toString());
                 }
-                return Long.parseLong(resp.body());
+                String body = response.body().string();
+                return Long.parseLong(body);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

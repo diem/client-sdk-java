@@ -22,6 +22,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.66'
     implementation 'com.thetransactioncompany:jsonrpc2-client:1.15'
+    implementation 'com.squareup.okhttp:okhttp:2.5.0'
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation 'com.google.guava:guava:29.0-jre'
     // Use JUnit test framework
