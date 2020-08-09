@@ -5,6 +5,7 @@ package org.libra.librasdk;
 
 import com.facebook.serde.Bytes;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
+import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,7 +73,7 @@ public class TestNetIntegrationTest {
     }
 
     @Test
-    public void testGetAccountTransaction() throws JSONRPC2Error {
+    public void testGetAccountTransaction() throws JSONRPC2Error, JSONRPC2SessionException {
         Transaction response = libraClient.getAccountTransaction(Constants.ROOT_ACCOUNT_ADDRESS, 1, true);
         Assert.assertNotNull(response);
         Assert.assertTrue(response.version > 0);
@@ -173,14 +174,14 @@ public class TestNetIntegrationTest {
     }
 
     @Test
-    public void testGetTransactions() throws JSONRPC2Error {
+    public void testGetTransactions() throws JSONRPC2Error, JSONRPC2SessionException {
         List<Transaction> transactions = libraClient.getTransactions(0, 1000, true);
         Assert.assertNotNull(transactions);
         Assert.assertTrue(transactions.size() > 0);
     }
 
     @Test
-    public void testGetEvents() throws JSONRPC2Error {
+    public void testGetEvents() throws JSONRPC2Error, JSONRPC2SessionException {
         Currency[] currencies = libraClient.getCurrencies();
 
         List<Event> events = libraClient.getEvents(currencies[0].mint_events_key, 0L, 1000L);

@@ -30,14 +30,13 @@ class JSONRPCClient implements RPC{
         mySession = new JSONRPC2Session(serverURL);
     }
 
-    public String call(Method method, List<Object> params) throws JSONRPC2Error {
+    public String call(Method method, List<Object> params) throws JSONRPC2Error, JSONRPC2SessionException {
         int requestId = 0;
         JSONRPC2Request request = new JSONRPC2Request(method.name(), params, requestId);
 
         JSONRPC2Response response;
         String result = null;
 
-        try {
             response = mySession.send(request);
 
             if (response.indicatesSuccess()) {
@@ -47,10 +46,6 @@ class JSONRPCClient implements RPC{
             } else {
                 throw new JSONRPC2Error(response.getError().getCode(), response.getError().getMessage());
             }
-
-        } catch (JSONRPC2SessionException e) {
-            System.err.println(e.getMessage());
-        }
 
         return result;
     }
