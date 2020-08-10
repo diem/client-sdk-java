@@ -75,7 +75,7 @@ public class TestNetIntegrationTest {
         Assert.assertFalse(response.delegated_withdrawal_capability);
         Assert.assertFalse(response.is_frozen);
         Assert.assertFalse(response.sent_events_key.isEmpty());
-        Assert.assertEquals(0, response.balances.length);
+        Assert.assertEquals(2, response.balances.length);
     }
 
     @Test
