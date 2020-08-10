@@ -36,8 +36,13 @@ compileJava {
     options.compilerArgs.addAll(['--release', '11'])
 }
 
-task genstdlib {
+task gen {
     doLast {
+        exec {
+            workingDir 'libra'
+            executable "sh"
+            args "-c", "git fetch && git reset --hard origin/testnet"
+        }
         exec {
             workingDir 'libra'
             executable "sh"

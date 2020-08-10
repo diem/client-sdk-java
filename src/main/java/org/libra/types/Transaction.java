@@ -10,7 +10,7 @@ public abstract class Transaction {
         int index = deserializer.deserialize_variant_index();
         switch (index) {
             case 0: return UserTransaction.load(deserializer);
-            case 1: return WaypointWriteSet.load(deserializer);
+            case 1: return GenesisTransaction.load(deserializer);
             case 2: return BlockMetadata.load(deserializer);
             default: throw new java.lang.Exception("Unknown variant index for Transaction: " + index);
         }
@@ -61,10 +61,10 @@ public abstract class Transaction {
         }
     }
 
-    public static final class WaypointWriteSet extends Transaction {
-        public final org.libra.types.ChangeSet value;
+    public static final class GenesisTransaction extends Transaction {
+        public final org.libra.types.WriteSetPayload value;
 
-        public WaypointWriteSet(org.libra.types.ChangeSet value) {
+        public GenesisTransaction(org.libra.types.WriteSetPayload value) {
            assert value != null;
            this.value = value;
         }
@@ -74,9 +74,9 @@ public abstract class Transaction {
             value.serialize(serializer);
         }
 
-        static WaypointWriteSet load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static GenesisTransaction load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
-            builder.value = org.libra.types.ChangeSet.deserialize(deserializer);
+            builder.value = org.libra.types.WriteSetPayload.deserialize(deserializer);
             return builder.build();
         }
 
@@ -84,7 +84,7 @@ public abstract class Transaction {
             if (this == obj) return true;
             if (obj == null) return false;
             if (getClass() != obj.getClass()) return false;
-            WaypointWriteSet other = (WaypointWriteSet) obj;
+            GenesisTransaction other = (GenesisTransaction) obj;
             if (!java.util.Objects.equals(this.value, other.value)) { return false; }
             return true;
         }
@@ -96,10 +96,10 @@ public abstract class Transaction {
         }
 
         public static final class Builder {
-            public org.libra.types.ChangeSet value;
+            public org.libra.types.WriteSetPayload value;
 
-            public WaypointWriteSet build() {
-                return new WaypointWriteSet(
+            public GenesisTransaction build() {
+                return new GenesisTransaction(
                     value
                 );
             }

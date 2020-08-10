@@ -26,13 +26,8 @@ gradle test
 # Upgrade to latest libra testnet release
 
 ```
-cd libra
-git fetch
-git reset --hard origin/testnet
-cd ..
-
-// re-generate stdlib and lcs type classes
-gradle genstdlib
+// reset libra submodule to testnet branch, re-generate stdlib and lcs type classes
+gradle gen
 
 // confirm everything works
 gradle test
