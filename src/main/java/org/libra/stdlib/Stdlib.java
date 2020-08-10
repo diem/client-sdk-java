@@ -167,12 +167,13 @@ public static Script encode_create_designated_dealer_script(TypeTag currency, @U
  * `add_all_currencies` is true, 0 balances for all available currencies in the system
  * will
  * also be added. This can only be invoked by an Association account.
+ * `sliding_nonce` is a unique nonce for operation, see sliding_nonce.move for details.
  */
-public static Script encode_create_parent_vasp_account_script(TypeTag coin_type, AccountAddress new_account_address, Bytes auth_key_prefix, Bytes human_name, Bytes base_url, Bytes compliance_public_key, Boolean add_all_currencies) {
+public static Script encode_create_parent_vasp_account_script(TypeTag coin_type, @Unsigned Long sliding_nonce, AccountAddress new_account_address, Bytes auth_key_prefix, Bytes human_name, Bytes base_url, Bytes compliance_public_key, Boolean add_all_currencies) {
     Script.Builder builder = new Script.Builder();
-    builder.code = new Bytes(new byte[]{-95, 28, -21, 11, 1, 0, 0, 0, 6, 1, 0, 2, 3, 2, 6, 4, 8, 2, 5, 10, 17, 7, 27, 40, 8, 67, 16, 0, 0, 0, 1, 0, 1, 1, 1, 0, 2, 7, 6, 12, 5, 10, 2, 10, 2, 10, 2, 10, 2, 1, 0, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 26, 99, 114, 101, 97, 116, 101, 95, 112, 97, 114, 101, 110, 116, 95, 118, 97, 115, 112, 95, 97, 99, 99, 111, 117, 110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 9, 11, 0, 10, 1, 11, 2, 11, 3, 11, 4, 11, 5, 10, 6, 56, 0, 2});
+    builder.code = new Bytes(new byte[]{-95, 28, -21, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 11, 4, 15, 2, 5, 17, 35, 7, 52, 75, 8, 127, 16, 0, 0, 0, 1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 1, 1, 1, 4, 2, 6, 12, 3, 0, 7, 6, 12, 5, 10, 2, 10, 2, 10, 2, 10, 2, 1, 8, 6, 12, 3, 5, 10, 2, 10, 2, 10, 2, 10, 2, 1, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 26, 99, 114, 101, 97, 116, 101, 95, 112, 97, 114, 101, 110, 116, 95, 118, 97, 115, 112, 95, 97, 99, 99, 111, 117, 110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 12, 10, 0, 10, 1, 17, 0, 11, 0, 10, 2, 11, 3, 11, 4, 11, 5, 11, 6, 10, 7, 56, 0, 2});
     builder.ty_args = Arrays.asList(coin_type);
-    builder.args = Arrays.asList(new TransactionArgument.Address(new_account_address), new TransactionArgument.U8Vector(auth_key_prefix), new TransactionArgument.U8Vector(human_name), new TransactionArgument.U8Vector(base_url), new TransactionArgument.U8Vector(compliance_public_key), new TransactionArgument.Bool(add_all_currencies));
+    builder.args = Arrays.asList(new TransactionArgument.U64(sliding_nonce), new TransactionArgument.Address(new_account_address), new TransactionArgument.U8Vector(auth_key_prefix), new TransactionArgument.U8Vector(human_name), new TransactionArgument.U8Vector(base_url), new TransactionArgument.U8Vector(compliance_public_key), new TransactionArgument.Bool(add_all_currencies));
     return builder.build();
 }
 
@@ -606,12 +607,13 @@ public static Script encode_update_exchange_rate_script(TypeTag currency, @Unsig
 
 /**
  * Update Libra version.
+ * `sliding_nonce` is a unique nonce for operation, see sliding_nonce.move for details.
  */
-public static Script encode_update_libra_version_script(@Unsigned Long major) {
+public static Script encode_update_libra_version_script(@Unsigned Long sliding_nonce, @Unsigned Long major) {
     Script.Builder builder = new Script.Builder();
-    builder.code = new Bytes(new byte[]{-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 2, 3, 2, 5, 5, 7, 5, 7, 12, 17, 8, 29, 16, 0, 0, 0, 1, 0, 1, 0, 2, 6, 12, 3, 0, 12, 76, 105, 98, 114, 97, 86, 101, 114, 115, 105, 111, 110, 3, 115, 101, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 4, 11, 0, 10, 1, 17, 0, 2});
+    builder.code = new Bytes(new byte[]{-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 10, 7, 24, 52, 8, 76, 16, 0, 0, 0, 1, 0, 2, 0, 1, 0, 1, 3, 0, 1, 0, 2, 6, 12, 3, 0, 3, 6, 12, 3, 3, 12, 76, 105, 98, 114, 97, 86, 101, 114, 115, 105, 111, 110, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 3, 115, 101, 116, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1, 7, 10, 0, 10, 1, 17, 1, 11, 0, 10, 2, 17, 0, 2});
     builder.ty_args = Arrays.asList();
-    builder.args = Arrays.asList(new TransactionArgument.U64(major));
+    builder.args = Arrays.asList(new TransactionArgument.U64(sliding_nonce), new TransactionArgument.U64(major));
     return builder.build();
 }
 
