@@ -4,8 +4,6 @@
 package org.libra.librasdk;
 
 import com.facebook.serde.Bytes;
-import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
-import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,7 +71,7 @@ public class TestNetIntegrationTest {
     }
 
     @Test
-    public void testGetAccountTransaction() throws JSONRPC2Error, JSONRPC2SessionException {
+    public void testGetAccountTransaction() throws LibraSDKException {
         Transaction response = libraClient.getAccountTransaction(Constants.ROOT_ACCOUNT_ADDRESS, 1, true);
         Assert.assertNotNull(response);
         Assert.assertTrue(response.version > 0);
@@ -140,7 +138,7 @@ public class TestNetIntegrationTest {
                 currencyCode,
                 0L,
                 Constants.TEST_NET_CHAIN_ID);
-        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED", JSONRPC2Error.class, () -> libraClient.submit(Utils.toLCSHex(st)));
+        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED", LibraSDKException.class, () -> libraClient.submit(Utils.toLCSHex(st)));
     }
 
     @Test
@@ -174,14 +172,14 @@ public class TestNetIntegrationTest {
     }
 
     @Test
-    public void testGetTransactions() throws JSONRPC2Error, JSONRPC2SessionException {
+    public void testGetTransactions() throws LibraSDKException {
         List<Transaction> transactions = libraClient.getTransactions(0, 1000, true);
         Assert.assertNotNull(transactions);
         Assert.assertTrue(transactions.size() > 0);
     }
 
     @Test
-    public void testGetEvents() throws JSONRPC2Error, JSONRPC2SessionException {
+    public void testGetEvents() throws LibraSDKException {
         Currency[] currencies = libraClient.getCurrencies();
 
         List<Event> events = libraClient.getEvents(currencies[0].mint_events_key, 0L, 1000L);

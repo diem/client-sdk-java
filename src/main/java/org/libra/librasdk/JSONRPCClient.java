@@ -1,7 +1,6 @@
 package org.libra.librasdk;
 
 import com.google.gson.Gson;
-import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Request;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Response;
 import com.thetransactioncompany.jsonrpc2.client.JSONRPC2Session;
@@ -12,7 +11,6 @@ import java.net.URL;
 import java.util.List;
 
 class JSONRPCClient implements RPC {
-
     private URL serverURL;
     private final JSONRPC2Session mySession;
 
@@ -26,22 +24,24 @@ class JSONRPCClient implements RPC {
         mySession = new JSONRPC2Session(serverURL);
     }
 
-    public String call(Method method, List<Object> params) throws JSONRPC2Error,
-            JSONRPC2SessionException {
+    public String call(Method method, List<Object> params) throws LibraSDKException {
         int requestId = 0;
         JSONRPC2Request request = new JSONRPC2Request(method.name(), params, requestId);
 
         JSONRPC2Response response;
         String result;
 
-        response = mySession.send(request);
+        try {
+            response = mySession.send(request);
+        } catch (JSONRPC2SessionException e) {
+            throw new LibraSDKException(e);
+        }
 
         if (response.indicatesSuccess()) {
             Object resultObj = response.getResult();
             result = new Gson().toJson(resultObj);
         } else {
-            throw new JSONRPC2Error(response.getError().getCode(),
-                    response.getError().getMessage(), new JSONRPCClient(""));
+            throw new LibraSDKException(response.getError());
         }
 
         return result;

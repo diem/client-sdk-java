@@ -2,8 +2,6 @@ package org.libra.librasdk;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
-import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
 import org.libra.librasdk.dto.*;
 
 import java.lang.reflect.Type;
@@ -18,7 +16,7 @@ public class LibraClient implements Client {
         jsonrpcClient = new JSONRPCClient(libraNetwork.url);
     }
 
-    public List<Transaction> getTransactions(int fromVersion, int limit, boolean includeEvents) throws JSONRPC2Error, JSONRPC2SessionException {
+    public List<Transaction> getTransactions(int fromVersion, int limit, boolean includeEvents) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(fromVersion);
         params.add(limit);
@@ -34,13 +32,13 @@ public class LibraClient implements Client {
         return libraTransactions;
     }
 
-    public Account getAccount(String address) throws JSONRPC2Error, JSONRPC2SessionException {
+    public Account getAccount(String address) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(address);
         return executeCall(params, Method.get_account, Account.class);
     }
 
-    private <T> T executeCall(List<Object> params, Method method, Class<T> responseType) throws JSONRPC2Error, JSONRPC2SessionException {
+    private <T> T executeCall(List<Object> params, Method method, Class<T> responseType) throws LibraSDKException {
         String response = jsonrpcClient.call(method, params);
         T result = null;
 
@@ -50,24 +48,23 @@ public class LibraClient implements Client {
         return result;
     }
 
-    public Metadata getMetadata() throws JSONRPC2Error, JSONRPC2SessionException {
+    public Metadata getMetadata() throws LibraSDKException {
         return executeCall(new ArrayList<>(), Method.get_metadata, Metadata.class);
     }
 
-    public Metadata getMetadata(long version) throws JSONRPC2Error, JSONRPC2SessionException {
+    public Metadata getMetadata(long version) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(version);
 
         return executeCall(params, Method.get_metadata, Metadata.class);
     }
 
-    public Currency[] getCurrencies() throws JSONRPC2Error, JSONRPC2SessionException {
+    public Currency[] getCurrencies() throws LibraSDKException {
         return executeCall(new ArrayList<>(), Method.get_currencies, Currency[].class);
     }
 
     public Transaction getAccountTransaction(String address, long sequence,
-                                             boolean includeEvents) throws JSONRPC2Error,
-            JSONRPC2SessionException {
+                                             boolean includeEvents) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(address);
         params.add(sequence);
@@ -76,7 +73,7 @@ public class LibraClient implements Client {
         return executeCall(params, Method.get_account_transaction, Transaction.class);
     }
 
-    public void submit(String data) throws JSONRPC2Error, JSONRPC2SessionException {
+    public void submit(String data) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(data);
 
@@ -85,7 +82,7 @@ public class LibraClient implements Client {
 
     public Transaction waitForTransaction(String address, long sequence, boolean includeEvents,
                                           long timeoutMillis) throws InterruptedException,
-            JSONRPC2Error, JSONRPC2SessionException {
+            LibraSDKException {
         for (long millis = 0, step = 100; millis < timeoutMillis; millis += step) {
             Transaction transaction = this.getAccountTransaction(address, sequence, includeEvents);
             if (transaction != null) {
@@ -97,8 +94,7 @@ public class LibraClient implements Client {
         return null;
     }
 
-    public List<Event> getEvents(String eventsKey, long start, long limit) throws JSONRPC2Error,
-            JSONRPC2SessionException {
+    public List<Event> getEvents(String eventsKey, long start, long limit) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(eventsKey);
         params.add(start);
