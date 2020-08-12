@@ -11,16 +11,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-class JSONRPCClient implements RPC{
+class JSONRPCClient implements RPC {
 
     private URL serverURL;
-    private JSONRPC2Session mySession;
+    private final JSONRPC2Session mySession;
 
     public JSONRPCClient(String url) {
-        init(url);
-    }
-
-    private void init(String url) {
         try {
             serverURL = new URL(url);
             //JSONRPCClient is protected and is instantiated only with LibraNetwork.url
@@ -30,22 +26,23 @@ class JSONRPCClient implements RPC{
         mySession = new JSONRPC2Session(serverURL);
     }
 
-    public String call(Method method, List<Object> params) throws JSONRPC2Error, JSONRPC2SessionException {
+    public String call(Method method, List<Object> params) throws JSONRPC2Error,
+            JSONRPC2SessionException {
         int requestId = 0;
         JSONRPC2Request request = new JSONRPC2Request(method.name(), params, requestId);
 
         JSONRPC2Response response;
-        String result = null;
+        String result;
 
-            response = mySession.send(request);
+        response = mySession.send(request);
 
-            if (response.indicatesSuccess()) {
-                Object resultObj = response.getResult();
-                result = new Gson().toJson(resultObj);
-                System.out.println(result);
-            } else {
-                throw new JSONRPC2Error(response.getError().getCode(), response.getError().getMessage());
-            }
+        if (response.indicatesSuccess()) {
+            Object resultObj = response.getResult();
+            result = new Gson().toJson(resultObj);
+        } else {
+            throw new JSONRPC2Error(response.getError().getCode(),
+                    response.getError().getMessage(), new JSONRPCClient(""));
+        }
 
         return result;
     }
