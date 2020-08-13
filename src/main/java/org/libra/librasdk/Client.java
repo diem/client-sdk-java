@@ -23,7 +23,7 @@ public interface Client {
     Transaction waitForTransaction(String address, long sequence, boolean includeEvents,
                                    long timeout) throws InterruptedException, LibraSDKException;
 
-    List<Transaction> getTransactions(int fromVersion, int limit, boolean includeEvents) throws LibraSDKException;
+    List<Transaction> getTransactions(long fromVersion, int limit, boolean includeEvents) throws LibraSDKException;
 
     List<Event> getEvents(String events_key, long start, long limit) throws LibraSDKException;
 }

@@ -173,7 +173,7 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testGetTransactions() throws LibraSDKException {
-        List<Transaction> transactions = libraClient.getTransactions(0, 1000, true);
+        List<Transaction> transactions = libraClient.getTransactions(0L, 1000, true);
         Assert.assertNotNull(transactions);
         Assert.assertTrue(transactions.size() > 0);
     }

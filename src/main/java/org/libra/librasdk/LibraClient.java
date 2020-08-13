@@ -16,7 +16,7 @@ public class LibraClient implements Client {
         jsonrpcClient = new JSONRPCClient(libraNetwork.url);
     }
 
-    public List<Transaction> getTransactions(int fromVersion, int limit, boolean includeEvents) throws LibraSDKException {
+    public List<Transaction> getTransactions(long fromVersion, int limit, boolean includeEvents) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(fromVersion);
         params.add(limit);
@@ -35,10 +35,10 @@ public class LibraClient implements Client {
     public Account getAccount(String address) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(address);
-        return executeCall(params, Method.get_account, Account.class);
+        return executeCall(Method.get_account, params, Account.class);
     }
 
-    private <T> T executeCall(List<Object> params, Method method, Class<T> responseType) throws LibraSDKException {
+    private <T> T executeCall(Method method, List<Object> params, Class<T> responseType) throws LibraSDKException {
         String response = jsonrpcClient.call(method, params);
         T result = null;
 
@@ -49,18 +49,18 @@ public class LibraClient implements Client {
     }
 
     public Metadata getMetadata() throws LibraSDKException {
-        return executeCall(new ArrayList<>(), Method.get_metadata, Metadata.class);
+        return executeCall(Method.get_metadata, new ArrayList<>(), Metadata.class);
     }
 
     public Metadata getMetadata(long version) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(version);
 
-        return executeCall(params, Method.get_metadata, Metadata.class);
+        return executeCall(Method.get_metadata, params, Metadata.class);
     }
 
     public Currency[] getCurrencies() throws LibraSDKException {
-        return executeCall(new ArrayList<>(), Method.get_currencies, Currency[].class);
+        return executeCall(Method.get_currencies, new ArrayList<>(), Currency[].class);
     }
 
     public Transaction getAccountTransaction(String address, long sequence,
@@ -70,14 +70,14 @@ public class LibraClient implements Client {
         params.add(sequence);
         params.add(includeEvents);
 
-        return executeCall(params, Method.get_account_transaction, Transaction.class);
+        return executeCall(Method.get_account_transaction, params, Transaction.class);
     }
 
     public void submit(String data) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(data);
 
-        executeCall(params, Method.submit, null);
+        executeCall(Method.submit, params, null);
     }
 
     public Transaction waitForTransaction(String address, long sequence, boolean includeEvents,
