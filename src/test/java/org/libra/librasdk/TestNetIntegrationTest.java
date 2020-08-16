@@ -198,7 +198,7 @@ public class TestNetIntegrationTest {
         );
     }
 
-    public static long coins(long n) {
+    private static long coins(long n) {
         return n * 1000000;
     }
 }
