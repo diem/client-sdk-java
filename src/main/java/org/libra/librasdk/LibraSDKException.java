@@ -8,15 +8,7 @@ package org.libra.librasdk;
  * and sub packages.
  */
 public class LibraSDKException extends Exception {
-    public LibraSDKException(String msg) {
-        super(msg);
-    }
-
     public LibraSDKException(Throwable e) {
         super((e));
-    }
-
-    public LibraSDKException(String msg, Throwable e) {
-        super(msg, e);
     }
 }

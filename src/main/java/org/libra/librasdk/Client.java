@@ -5,7 +5,9 @@ package org.libra.librasdk;
 
 import org.libra.librasdk.dto.*;
 
-public interface Client extends RPC {
+import java.util.List;
+
+public interface Client {
     Metadata getMetadata() throws LibraSDKException;
 
     Metadata getMetadata(long version) throws LibraSDKException;
@@ -18,9 +20,10 @@ public interface Client extends RPC {
 
     void submit(String data) throws LibraSDKException;
 
-    Transaction waitForTransaction(String address, long sequence, boolean includeEvents, long timeout) throws LibraSDKException, InterruptedException;
+    Transaction waitForTransaction(String address, long sequence, boolean includeEvents,
+                                   long timeout) throws InterruptedException, LibraSDKException;
 
-    Transaction[] getTransactions(long start_version, long limit, boolean includeEvents) throws LibraSDKException;
+    List<Transaction> getTransactions(long fromVersion, int limit, boolean includeEvents) throws LibraSDKException;
 
-    Event[] getEvents(String events_key, long start, long limit) throws LibraSDKException;
+    List<Event> getEvents(String events_key, long start, long limit) throws LibraSDKException;
 }

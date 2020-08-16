@@ -3,6 +3,8 @@
 
 package org.libra.librasdk;
 
+import java.util.List;
+
 public interface RPC {
-    <T> T call(Method method, Class<T> responseType, Object... args) throws LibraSDKException;
+    String call(Method method, List<Object> params) throws LibraSDKException;
 }
