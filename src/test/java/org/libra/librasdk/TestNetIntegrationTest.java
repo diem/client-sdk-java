@@ -32,10 +32,17 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testGetMetadata() throws Exception {
+        libraClient = new LibraClient(2);
+
         Metadata response = libraClient.getMetadata();
         Assert.assertNotNull(response);
         Assert.assertTrue(response.timestamp > new Date().getTime() - 600);
         Assert.assertTrue(response.version > 1000);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLibraClient_badChainId() {
+        libraClient = new LibraClient(17);
     }
 
     @Test

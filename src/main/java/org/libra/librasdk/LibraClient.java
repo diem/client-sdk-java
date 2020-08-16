@@ -16,6 +16,10 @@ public class LibraClient implements Client {
         jsonrpcClient = new JSONRPCClient(libraNetwork.url);
     }
 
+    public LibraClient(int chainId) {
+        this(LibraNetwork.getChainIdUrl(chainId));
+    }
+
     public List<Transaction> getTransactions(long fromVersion, int limit, boolean includeEvents) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(fromVersion);
