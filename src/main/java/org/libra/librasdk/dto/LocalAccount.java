@@ -48,4 +48,12 @@ public class LocalAccount {
     public int hashCode() {
         return Objects.hash(libra_account_address, libra_auth_key, private_key, public_key);
     }
+
+    public LocalAccount(String libra_account_address, String libra_auth_key, String private_key,
+                        String public_key) {
+        this.libra_account_address = libra_account_address;
+        this.libra_auth_key = libra_auth_key;
+        this.private_key = private_key;
+        this.public_key = public_key;
+    }
 }
