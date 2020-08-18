@@ -11,9 +11,13 @@ import java.util.List;
 public class LibraClient implements Client {
 
     private JSONRPCClient jsonrpcClient;
+    private LibraLedgerState libraLedgerState;
 
     public LibraClient(LibraNetwork libraNetwork) {
-        jsonrpcClient = new JSONRPCClient(libraNetwork.url);
+        this.jsonrpcClient = new JSONRPCClient(libraNetwork.url);
+
+        // TODO: initialize
+        this.libraLedgerState = new LibraLedgerState();
     }
 
     public List<Transaction> getTransactions(long fromVersion, int limit, boolean includeEvents) throws LibraSDKException {
@@ -29,13 +33,21 @@ public class LibraClient implements Client {
 
         List<Transaction> libraTransactions = new Gson().fromJson(transactionJson, listType);
 
+        Transaction firstTransaction = libraTransactions.get(0);
+        libraLedgerState.handleLedgerState(firstTransaction.transaction.chain_id,
+                firstTransaction.version, firstTransaction.transaction.timestamp_usecs,
+                firstTransaction.transaction.expiration_timestamp_secs);
+
         return libraTransactions;
     }
 
     public Account getAccount(String address) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(address);
-        return executeCall(Method.get_account, params, Account.class);
+        Account account = executeCall(Method.get_account, params, Account.class);
+
+        libraLedgerState.handleLedgerState(null, 0, 0, null);
+        return account;
     }
 
     private <T> T executeCall(Method method, List<Object> params, Class<T> responseType) throws LibraSDKException {
@@ -49,18 +61,28 @@ public class LibraClient implements Client {
     }
 
     public Metadata getMetadata() throws LibraSDKException {
-        return executeCall(Method.get_metadata, new ArrayList<>(), Metadata.class);
+        Metadata metadata = executeCall(Method.get_metadata, new ArrayList<>(), Metadata.class);
+        libraLedgerState.handleLedgerState(null, metadata.version, metadata.timestamp, null);
+
+        return metadata;
     }
 
     public Metadata getMetadata(long version) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(version);
 
-        return executeCall(Method.get_metadata, params, Metadata.class);
+        Metadata metadata = executeCall(Method.get_metadata, params, Metadata.class);
+        libraLedgerState.handleLedgerState(null, metadata.version, metadata.timestamp, null);
+
+        return metadata;
     }
 
     public Currency[] getCurrencies() throws LibraSDKException {
-        return executeCall(Method.get_currencies, new ArrayList<>(), Currency[].class);
+        Currency[] currencies = executeCall(Method.get_currencies, new ArrayList<>(),
+                Currency[].class);
+        libraLedgerState.handleLedgerState(null,0,0,null);
+
+        return currencies;
     }
 
     public Transaction getAccountTransaction(String address, long sequence,
@@ -70,7 +92,13 @@ public class LibraClient implements Client {
         params.add(sequence);
         params.add(includeEvents);
 
-        return executeCall(Method.get_account_transaction, params, Transaction.class);
+        Transaction transaction = executeCall(Method.get_account_transaction, params,
+                Transaction.class);
+        libraLedgerState.handleLedgerState(transaction.transaction.chain_id, transaction.version,
+                transaction.transaction.timestamp_usecs,
+                transaction.transaction.expiration_timestamp_secs);
+
+        return transaction;
     }
 
     public void submit(String data) throws LibraSDKException {
@@ -105,6 +133,9 @@ public class LibraClient implements Client {
 
         String eventsJson = jsonrpcClient.call(Method.get_events, params);
         List<Event> libraEvents = new Gson().fromJson(eventsJson, listType);
+
+        Event event = libraEvents.get(0);
+        libraLedgerState.handleLedgerState(null,0,0,null);
 
         return libraEvents;
     }
