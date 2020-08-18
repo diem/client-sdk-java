@@ -14,8 +14,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.libra.librasdk.Utils.coins;
-
 public class LibraClient implements Client {
 
     private JSONRPCClient jsonrpcClient;
@@ -88,16 +86,17 @@ public class LibraClient implements Client {
         executeCall(Method.submit, params, null);
     }
 
-    public SignedTransaction transfer(String senderAccountAddress, String libraAuthKey, String privateKey,
+    public SignedTransaction transfer(String senderAccountAddress, String libraAuthKey,
+                                      String privateKey,
                                       String publicKey, String receiverAccountAddress,
-                                      long maxGasAmount, long gasPriceUnit, String currencyCode,
+                                      long amount, long maxGasAmount, long gasPriceUnit,
+                                      String currencyCode,
                                       long expirationTimestampSecs, byte chainId) throws LibraSDKException {
 
         LocalAccount localAccount = new LocalAccount(senderAccountAddress, libraAuthKey,
                 privateKey, publicKey);
         AccountAddress accountAddressObject = Utils.hexToAddress(receiverAccountAddress);
-        long coins = coins(maxGasAmount);
-        Script script = createP2PScript(accountAddressObject, currencyCode, coins);
+        Script script = createP2PScript(accountAddressObject, currencyCode, amount);
         Account account = getAccount(localAccount.libra_account_address);
 
         SignedTransaction signedTransaction;
@@ -105,7 +104,7 @@ public class LibraClient implements Client {
             signedTransaction = Utils.signTransaction(localAccount,
                     account.sequence_number,
                     script,
-                    coins,
+                    maxGasAmount,
                     gasPriceUnit,
                     currencyCode,
                     expirationTimestampSecs,

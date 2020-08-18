@@ -154,8 +154,4 @@ public class Utils {
     public static String Bech32Encode(String humanReadablePart, char[] data) {
         return Bech32.encode(humanReadablePart, data);
     }
-
-    public static long coins(long n) {
-        return n * 1000000;
-    }
 }

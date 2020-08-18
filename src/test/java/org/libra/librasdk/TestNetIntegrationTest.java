@@ -136,8 +136,8 @@ public class TestNetIntegrationTest {
         SignedTransaction signedTransaction = libraClient.transfer(account1.libra_account_address,
                 account1.libra_auth_key,
                 account1.private_key, account1.public_key,
-                account2.libra_account_address,
-                1L, 0L, currencyCode, 100000000000L, Constants.TEST_NET_CHAIN_ID);
+                account2.libra_account_address,1000000L,
+                1000000L, 0L, currencyCode, 100000000000L, Constants.TEST_NET_CHAIN_ID);
         Transaction p2p = libraClient.waitForTransaction(
                 Utils.addressToHex(signedTransaction.raw_txn.sender),
                 signedTransaction.raw_txn.sequence_number,
