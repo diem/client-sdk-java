@@ -7,6 +7,7 @@ import com.facebook.lcs.LcsSerializer;
 import com.facebook.serde.Bytes;
 import com.facebook.serde.Serializer;
 import com.google.common.io.BaseEncoding;
+import design.contract.bech32.Bech32;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
 import org.bouncycastle.crypto.signers.Ed25519Signer;
@@ -148,6 +149,10 @@ public class Utils {
 
     public static byte[] hashRawTransaction(RawTransaction txn) throws Exception {
         return concat(sha3Hash("LIBRA::RawTransaction".getBytes()), toLCS(txn));
+    }
+
+    public static String Bech32Encode(String humanReadablePart, char[] data) {
+        return Bech32.encode(humanReadablePart, data);
     }
 
     public static long coins(long n) {
