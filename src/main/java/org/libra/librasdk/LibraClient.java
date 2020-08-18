@@ -13,11 +13,20 @@ public class LibraClient implements Client {
     private JSONRPCClient jsonrpcClient;
     private LibraLedgerState libraLedgerState;
 
-    public LibraClient(LibraNetwork libraNetwork) {
+    public LibraClient(LibraNetwork libraNetwork, Integer chainId) {
         this.jsonrpcClient = new JSONRPCClient(libraNetwork.url);
+        initLedgerState(chainId);
+    }
 
-        // TODO: initialize
-        this.libraLedgerState = new LibraLedgerState();
+    private void initLedgerState(Integer chainId) {
+        try {
+            Metadata metadata = getMetadataInner();
+            this.libraLedgerState = new LibraLedgerState(chainId, metadata.version,
+                    metadata.timestamp);
+        } catch (LibraSDKException e) {
+            // fail initialization if no metadata
+            throw new RuntimeException(e);
+        }
     }
 
     public List<Transaction> getTransactions(long fromVersion, int limit, boolean includeEvents) throws LibraSDKException {
@@ -46,6 +55,7 @@ public class LibraClient implements Client {
         params.add(address);
         Account account = executeCall(Method.get_account, params, Account.class);
 
+        // FIXME: what to pass
         libraLedgerState.handleLedgerState(null, 0, 0, null);
         return account;
     }
@@ -61,9 +71,14 @@ public class LibraClient implements Client {
     }
 
     public Metadata getMetadata() throws LibraSDKException {
-        Metadata metadata = executeCall(Method.get_metadata, new ArrayList<>(), Metadata.class);
+        Metadata metadata = getMetadataInner();
         libraLedgerState.handleLedgerState(null, metadata.version, metadata.timestamp, null);
 
+        return metadata;
+    }
+
+    private Metadata getMetadataInner() throws LibraSDKException {
+        Metadata metadata = executeCall(Method.get_metadata, new ArrayList<>(), Metadata.class);
         return metadata;
     }
 
@@ -80,7 +95,8 @@ public class LibraClient implements Client {
     public Currency[] getCurrencies() throws LibraSDKException {
         Currency[] currencies = executeCall(Method.get_currencies, new ArrayList<>(),
                 Currency[].class);
-        libraLedgerState.handleLedgerState(null,0,0,null);
+        // FIXME: what to pass
+        libraLedgerState.handleLedgerState(null, 0, 0, null);
 
         return currencies;
     }
@@ -134,8 +150,9 @@ public class LibraClient implements Client {
         String eventsJson = jsonrpcClient.call(Method.get_events, params);
         List<Event> libraEvents = new Gson().fromJson(eventsJson, listType);
 
+        // FIXME: what to pass
         Event event = libraEvents.get(0);
-        libraLedgerState.handleLedgerState(null,0,0,null);
+        libraLedgerState.handleLedgerState(null, 0, 0, null);
 
         return libraEvents;
     }
