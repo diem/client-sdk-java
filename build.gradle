@@ -14,11 +14,6 @@ buildscript {
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.22.0"
     }
 }
-apply plugin: 'io.codearte.nexus-staging'
-
-nexusStaging {
-    packageGroup = "org.libra.java-sdk"
-}
 
 plugins {
     // Apply the java-library plugin to add support for Java Library
@@ -72,4 +67,10 @@ task gen {
                     ' "language/stdlib/compiled/transaction_scripts/abi"'
         }
     }
+}
+
+apply plugin: 'io.codearte.nexus-staging'
+
+nexusStaging {
+    packageGroup = "org.libra.java-sdk"
 }
