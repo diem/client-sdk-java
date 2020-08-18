@@ -6,6 +6,20 @@
  * User Manual available at https://docs.gradle.org/6.5.1/userguide/java_library_plugin.html
  */
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.22.0"
+    }
+}
+apply plugin: 'io.codearte.nexus-staging'
+
+nexusStaging {
+    packageGroup = "org.libra.java-sdk"
+}
+
 plugins {
     // Apply the java-library plugin to add support for Java Library
     id 'java-library'
@@ -62,18 +76,4 @@ task gen {
                     ' "language/stdlib/compiled/transaction_scripts/abi"'
         }
     }
-}
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.22.0"
-    }
-}
-apply plugin: 'io.codearte.nexus-staging'
-
-nexusStaging {
-    packageGroup = "org.libra.java-sdk"
 }
