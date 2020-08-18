@@ -59,3 +59,17 @@ task gen {
         }
     }
 }
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.22.0"
+    }
+}
+apply plugin: 'io.codearte.nexus-staging'
+
+nexusStaging {
+    packageGroup = "org.libra.java-sdk"
+}
