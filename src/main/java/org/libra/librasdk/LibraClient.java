@@ -12,12 +12,13 @@ public class LibraClient implements Client {
 
     private JSONRPCClient jsonrpcClient;
 
-    public LibraClient(LibraNetwork libraNetwork) {
-        jsonrpcClient = new JSONRPCClient(libraNetwork.url);
+    public LibraClient(String url, Integer chainId) {
+        // TODO: pass chain id to validate ledger state
+        jsonrpcClient = new JSONRPCClient(url);
     }
 
-    public LibraClient(int chainId) {
-        this(LibraNetwork.getChainIdUrl(chainId));
+    public LibraClient(String url) {
+        this(url, null);
     }
 
     public List<Transaction> getTransactions(long fromVersion, int limit, boolean includeEvents) throws LibraSDKException {
