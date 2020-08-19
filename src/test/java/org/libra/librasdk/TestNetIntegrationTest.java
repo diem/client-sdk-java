@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.libra.librasdk.LibraNetwork.TESTNET;
 
 
 public class TestNetIntegrationTest {
@@ -27,15 +26,22 @@ public class TestNetIntegrationTest {
 
     @Before
     public void setup() {
-        libraClient = new LibraClient(TESTNET, 2);
+        libraClient = new LibraClient("https://client.testnet.libra.org/v1", 2);
     }
 
     @Test
     public void testGetMetadata() throws Exception {
+        libraClient = new LibraClient("https://client.testnet.libra.org/v1", 2);
+
         Metadata response = libraClient.getMetadata();
         Assert.assertNotNull(response);
         Assert.assertTrue(response.timestamp > new Date().getTime() - 600);
         Assert.assertTrue(response.version > 1000);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLibraClient_badChainId() {
+        libraClient = new LibraClient("invalidUrl", 2);
     }
 
     @Test

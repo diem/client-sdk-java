@@ -13,8 +13,8 @@ public class LibraClient implements Client {
     private JSONRPCClient jsonrpcClient;
     private LibraLedgerState libraLedgerState;
 
-    public LibraClient(LibraNetwork libraNetwork, Integer chainId) {
-        this.jsonrpcClient = new JSONRPCClient(libraNetwork.url);
+    public LibraClient(String url, Integer chainId) {
+        this.jsonrpcClient = new JSONRPCClient(url);
         initLedgerState(chainId);
     }
 
@@ -27,6 +27,13 @@ public class LibraClient implements Client {
             // fail initialization if no metadata
             throw new RuntimeException(e);
         }
+    public LibraClient(String url, Integer chainId) {
+        // TODO: pass chain id to validate ledger state
+        jsonrpcClient = new JSONRPCClient(url);
+    }
+
+    public LibraClient(String url) {
+        this(url, null);
     }
 
     public List<Transaction> getTransactions(long fromVersion, int limit, boolean includeEvents) throws LibraSDKException {

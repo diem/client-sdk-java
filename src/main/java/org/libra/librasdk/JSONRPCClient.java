@@ -18,8 +18,8 @@ class JSONRPCClient implements RPC {
         try {
             serverURL = new URL(url);
             //JSONRPCClient is protected and is instantiated only with LibraNetwork.url
-        } catch (MalformedURLException ignored) {
-            throw new RuntimeException();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
         }
 
         mySession = new JSONRPC2Session(serverURL);
