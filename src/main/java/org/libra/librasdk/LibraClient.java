@@ -10,12 +10,16 @@ import java.util.List;
 
 public class LibraClient implements Client {
 
-    private JSONRPCClient jsonrpcClient;
+    private JSONRPCHandler jsonrpcHandler;
     private LibraLedgerState libraLedgerState;
 
     public LibraClient(String url, Integer chainId) {
-        this.jsonrpcClient = new JSONRPCClient(url);
+        this.jsonrpcHandler = new JSONRPCHandler(url);
         initLedgerState(chainId);
+    }
+
+    public LibraClient(String url) {
+        this(url, null);
     }
 
     private void initLedgerState(Integer chainId) {
@@ -27,13 +31,6 @@ public class LibraClient implements Client {
             // fail initialization if no metadata
             throw new RuntimeException(e);
         }
-    public LibraClient(String url, Integer chainId) {
-        // TODO: pass chain id to validate ledger state
-        jsonrpcClient = new JSONRPCClient(url);
-    }
-
-    public LibraClient(String url) {
-        this(url, null);
     }
 
     public List<Transaction> getTransactions(long fromVersion, int limit, boolean includeEvents) throws LibraSDKException {
@@ -42,7 +39,7 @@ public class LibraClient implements Client {
         params.add(limit);
         params.add(includeEvents);
 
-        String transactionJson = jsonrpcClient.call(Method.get_transactions, params);
+        String transactionJson = jsonrpcHandler.call(Method.get_transactions, params);
         // get the type of a list of LibraTransaction to ease deserialization
         Type listType = new TypeToken<List<Transaction>>() {
         }.getType();
@@ -68,7 +65,7 @@ public class LibraClient implements Client {
     }
 
     private <T> T executeCall(Method method, List<Object> params, Class<T> responseType) throws LibraSDKException {
-        String response = jsonrpcClient.call(method, params);
+        String response = jsonrpcHandler.call(method, params);
         T result = null;
 
         if (responseType != null) {
@@ -154,7 +151,7 @@ public class LibraClient implements Client {
         Type listType = new TypeToken<List<Event>>() {
         }.getType();
 
-        String eventsJson = jsonrpcClient.call(Method.get_events, params);
+        String eventsJson = jsonrpcHandler.call(Method.get_events, params);
         List<Event> libraEvents = new Gson().fromJson(eventsJson, listType);
 
         // FIXME: what to pass

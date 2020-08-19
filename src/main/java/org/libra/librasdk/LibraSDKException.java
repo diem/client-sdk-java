@@ -3,6 +3,8 @@
 
 package org.libra.librasdk;
 
+import com.google.gson.JsonSyntaxException;
+
 /**
  * LibraSDKException is root exception of all exceptions created in this
  * and sub packages.
@@ -12,7 +14,11 @@ public class LibraSDKException extends Exception {
         super((e));
     }
 
-    public LibraSDKException(String s) {
-        super(s);
+    public LibraSDKException(String s, JsonSyntaxException e) {
+        super(s, e);
+    }
+
+    public LibraSDKException(String msg) {
+        super(msg);
     }
 }
