@@ -91,29 +91,26 @@ public class LibraClient implements Client {
                                       String publicKey, String receiverAccountAddress,
                                       long amount, long maxGasAmount, long gasPriceUnit,
                                       String currencyCode,
-                                      long expirationTimestampSecs, byte chainId) throws LibraSDKException {
+                                      long expirationTimestampSecs, byte chainId,
+                                      byte[] metadataSignature, byte[] metadata) throws Exception {
 
         LocalAccount localAccount = new LocalAccount(senderAccountAddress, libraAuthKey,
                 privateKey, publicKey);
         AccountAddress accountAddressObject = Utils.hexToAddress(receiverAccountAddress);
-        Script script = createP2PScript(accountAddressObject, currencyCode, amount);
+        Script script = createP2PScript(accountAddressObject, currencyCode, amount, metadata, metadataSignature);
         Account account = getAccount(localAccount.libra_account_address);
 
         SignedTransaction signedTransaction;
-        try {
-            signedTransaction = Utils.signTransaction(localAccount,
-                    account.sequence_number,
-                    script,
-                    maxGasAmount,
-                    gasPriceUnit,
-                    currencyCode,
-                    expirationTimestampSecs,
-                    chainId);
-            String lcsHex = Utils.toLCSHex(signedTransaction);
-            submit(lcsHex);
-        } catch (Exception e) {
-            throw new LibraSDKException(e);
-        }
+        signedTransaction = Utils.signTransaction(localAccount,
+                account.sequence_number,
+                script,
+                maxGasAmount,
+                gasPriceUnit,
+                currencyCode,
+                expirationTimestampSecs,
+                chainId);
+        String lcsHex = Utils.toLCSHex(signedTransaction);
+        submit(lcsHex);
 
         return signedTransaction;
 
@@ -148,14 +145,15 @@ public class LibraClient implements Client {
         return libraEvents;
     }
 
-    private Script createP2PScript(AccountAddress address, String currencyCode, long amount) {
+    private Script createP2PScript(AccountAddress address, String currencyCode, long amount,
+                                   byte[] metadata, byte[] metadataSignature) {
         TypeTag token = Utils.createCurrencyCodeTypeTag(currencyCode);
         return Stdlib.encode_peer_to_peer_with_metadata_script(
                 token,
                 address,
                 amount,
-                new Bytes(new byte[]{}),
-                new Bytes(new byte[]{})
+                new Bytes(metadata),
+                new Bytes(metadataSignature)
         );
     }
 
