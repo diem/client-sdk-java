@@ -23,14 +23,14 @@ public class LibraClient implements Client {
     }
 
     private void initLedgerState(Integer chainId) {
-        try {
-            Metadata metadata = getMetadataInner();
-            this.libraLedgerState = new LibraLedgerState(chainId, metadata.version,
-                    metadata.timestamp);
-        } catch (LibraSDKException e) {
-            // fail initialization if no metadata
-            throw new RuntimeException(e);
-        }
+//        try {
+//            Metadata metadata = getMetadataInner();
+//            this.libraLedgerState = new LibraLedgerState(chainId, metadata.version,
+//                    metadata.timestamp);
+//        } catch (LibraSDKException e) {
+//            // fail initialization if no metadata
+//            throw new RuntimeException(e);
+//        }
     }
 
     public List<Transaction> getTransactions(long fromVersion, int limit, boolean includeEvents) throws LibraSDKException {

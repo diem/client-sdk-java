@@ -4,7 +4,12 @@
 package org.libra.librasdk.jsonrpc;
 
 import com.google.gson.Gson;
-import com.squareup.okhttp.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.libra.librasdk.LibraSDKException;
 import org.libra.librasdk.Method;
 
@@ -12,27 +17,28 @@ import java.io.IOException;
 import java.util.List;
 
 public class JsonRpcClient {
-    private final OkHttpClient httpClient;
-    private final Request.Builder builder;
+
+    private final String uri;
 
     public JsonRpcClient(String uri) {
-        httpClient = new OkHttpClient();
-        builder = new Request.Builder().url(uri);
+        this.uri = uri;
+
     }
 
     public String call(Method method, List<Object> params) throws LibraSDKException {
         int id = 0;
-        JSONRPCRequest JSONRPCRequest = new JSONRPCRequest(id, method.name(), new List[]{params});
+        JSONRPCRequest JSONRPCRequest = new JSONRPCRequest(id, method.name(), params.toArray());
         String requestJson = new Gson().toJson(JSONRPCRequest);
+            String response;
 
-        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-        RequestBody body = RequestBody.create(JSON, requestJson);
-
-        Request request = builder.post(body).build();
-
-        String s = httpCall(request);
-        return s;
-
+        HttpPost post = new HttpPost(uri);
+        post.addHeader("content-type", "application/json");
+        try {
+            post.setEntity(new StringEntity(requestJson));
+            response = sendPOST(post);
+        } catch (IOException e) {
+            throw new LibraSDKException(e);
+        }
 
 //        if (response.statusCode() != 200) {
 //            throw new UnexpectedResponseException(response.toString());
@@ -45,18 +51,16 @@ public class JsonRpcClient {
 //            return null;
 //        }
 
+        return response;
     }
 
-    private String httpCall(Request requestBody) {
-        String result = null;
-        try {
-            Response response = httpClient.newCall(requestBody).execute();
-            result = response.body().string();
-        } catch (IOException e) {
-//            TODO
-        }
+    private static String sendPOST(HttpPost post) throws IOException {
+        String result;
+        try (CloseableHttpClient httpClient = HttpClients.createDefault();
+             CloseableHttpResponse response = httpClient.execute(post)) {
 
+            result = EntityUtils.toString(response.getEntity());
+        }
         return result;
     }
-
 }
