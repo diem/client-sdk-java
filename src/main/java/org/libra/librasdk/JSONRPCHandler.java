@@ -20,8 +20,6 @@ class JSONRPCHandler implements RPC {
     }
 
     public String call(Method method, List<Object> params) throws LibraSDKException {
-        int requestId = 0;
-
         String result;
         try {
             result = jsonRpcClient.call(method, params);
