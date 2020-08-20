@@ -1,8 +1,7 @@
 package org.libra.librasdk;
 
-import com.google.gson.Gson;
 import com.thetransactioncompany.jsonrpc2.client.JSONRPC2Session;
-import org.libra.librasdk.jsonrpc.JsonRpcClient;
+import org.libra.librasdk.jsonrpc.JSONRPCClient;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -11,7 +10,7 @@ import java.util.List;
 class JSONRPCHandler implements RPC {
     private URL serverURL;
     private final JSONRPC2Session mySession;
-    private final JsonRpcClient jsonRpcClient;
+    private final JSONRPCClient jsonRpcClient;
 
     public JSONRPCHandler(String url) {
         try {
@@ -21,15 +20,12 @@ class JSONRPCHandler implements RPC {
         }
 
         mySession = new JSONRPC2Session(serverURL);
-        jsonRpcClient = new JsonRpcClient(url);
+        jsonRpcClient = new JSONRPCClient(url);
 
     }
 
     public String call(Method method, List<Object> params) throws LibraSDKException {
         int requestId = 0;
-//        JSONRPC2Request request = new JSONRPC2Request(method.name(), params, requestId);
-
-
 
         String result;
         try {
@@ -40,7 +36,7 @@ class JSONRPCHandler implements RPC {
 
 //        if (response.indicatesSuccess()) {
 //            Object resultObj = response.getResult();
-            result = new Gson().toJson(result);
+//            result = new Gson().toJson(result);
 //        } else {
 //            throw new LibraSDKException(response.getError());
 //        }

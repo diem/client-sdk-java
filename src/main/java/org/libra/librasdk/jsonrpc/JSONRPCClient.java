@@ -16,51 +16,56 @@ import org.libra.librasdk.Method;
 import java.io.IOException;
 import java.util.List;
 
-public class JsonRpcClient {
+public class JSONRPCClient {
 
     private final String uri;
 
-    public JsonRpcClient(String uri) {
+    public JSONRPCClient(String uri) {
         this.uri = uri;
 
     }
 
     public String call(Method method, List<Object> params) throws LibraSDKException {
         int id = 0;
-        JSONRPCRequest JSONRPCRequest = new JSONRPCRequest(id, method.name(), params.toArray());
-        String requestJson = new Gson().toJson(JSONRPCRequest);
-            String response;
+        JSONRPCRequest jsonrpcRequest = new JSONRPCRequest(id, method.name(), params.toArray());
+        String requestJson = new Gson().toJson(jsonrpcRequest);
+        String response;
 
         HttpPost post = new HttpPost(uri);
         post.addHeader("content-type", "application/json");
         try {
             post.setEntity(new StringEntity(requestJson));
-            response = sendPOST(post);
+            response = httpCall(post);
         } catch (IOException e) {
             throw new LibraSDKException(e);
         }
 
-//        if (response.statusCode() != 200) {
-//            throw new UnexpectedResponseException(response.toString());
-//        }
-
-//        if (resp.error != null) {
-//            throw new JsonRpcErrorException(resp);
-//        }
-//        if (responseType == null) {
-//            return null;
-//        }
 
         return response;
     }
 
-    private static String sendPOST(HttpPost post) throws IOException {
+    private static String httpCall(HttpPost post) throws LibraSDKException {
         String result;
         try (CloseableHttpClient httpClient = HttpClients.createDefault();
              CloseableHttpResponse response = httpClient.execute(post)) {
-
+//            result = EntityUtils.toString(response.getEntity(), "UTF-8");
             result = EntityUtils.toString(response.getEntity());
+
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw new LibraSDKException(response.toString());
+            }
+//            if (resp.error != null) {
+//                throw new JsonRpcErrorException(resp);
+//            }
+//            if (responseType == null) {
+//                return null;
+//            }
+
+        } catch (IOException e) {
+            throw new LibraSDKException(e);
         }
+
+
         return result;
     }
 }
