@@ -36,7 +36,7 @@ public class JSONRPCClient {
             post.setEntity(new StringEntity(requestJson));
             response = httpCall(post);
         } catch (IOException e) {
-            throw new LibraSDKException(e);
+            throw new UnexpectedRemoteCallException(e);
         }
 
         return response;
@@ -52,7 +52,7 @@ public class JSONRPCClient {
                 throw new UnexpectedResponseException(response.toString());
             }
         } catch (IOException e) {
-            throw new UnexpectedResponseException(e);
+            throw new UnexpectedRemoteCallException(e);
         }
 
         return result;

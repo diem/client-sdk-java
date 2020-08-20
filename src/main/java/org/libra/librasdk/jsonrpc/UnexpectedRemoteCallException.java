@@ -5,8 +5,10 @@ package org.libra.librasdk.jsonrpc;
 
 import org.libra.librasdk.LibraSDKException;
 
+import java.io.IOException;
+
 public class UnexpectedRemoteCallException extends LibraSDKException {
-    public UnexpectedRemoteCallException(Throwable e) {
+    public UnexpectedRemoteCallException(IOException e) {
         super(e);
     }
 }
