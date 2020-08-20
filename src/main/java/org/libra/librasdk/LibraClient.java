@@ -1,7 +1,10 @@
 package org.libra.librasdk;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import org.libra.librasdk.dto.*;
+import org.libra.librasdk.jsonrpc.JsonRpcErrorException;
+import org.libra.librasdk.jsonrpc.UnexpectedResponseResultException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -103,20 +106,25 @@ public class LibraClient implements Client {
 
     private <T> T executeCall(Method method, List<Object> params, Class<T> responseType) throws LibraSDKException {
         String response = jsonrpcHandler.call(method, params);
-        LibraResponse libraResponse = new Gson().fromJson(response, LibraResponse.class);
+        T result;
 
-        if (libraResponse.getError() != null) {
-//            JsonRpcErrorException
-            throw new LibraSDKException(libraResponse.getError().toString());
-        }
+        try {
+            LibraResponse libraResponse = new Gson().fromJson(response, LibraResponse.class);
 
-        libraLedgerState.handleLedgerState(libraResponse.getLibra_chain_id(),
-                libraResponse.getLibra_ledger_version(),
-                libraResponse.getLibra_ledger_timestampusec(), null);
-        T result = null;
+            if (libraResponse.getError() != null) {
+                throw new JsonRpcErrorException(libraResponse.getError().toString());
+            }
 
-        if (responseType != null) {
-            result = new Gson().fromJson(libraResponse.getResult(), responseType);
+            libraLedgerState.handleLedgerState(libraResponse.getLibra_chain_id(),
+                    libraResponse.getLibra_ledger_version(),
+                    libraResponse.getLibra_ledger_timestampusec(), null);
+            result = null;
+
+            if (responseType != null) {
+                result = new Gson().fromJson(libraResponse.getResult(), responseType);
+            }
+        } catch (JsonSyntaxException e) {
+            throw new UnexpectedResponseResultException(e);
         }
 
         return result;

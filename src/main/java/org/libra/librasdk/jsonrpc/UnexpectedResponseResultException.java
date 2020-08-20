@@ -7,7 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import org.libra.librasdk.LibraSDKException;
 
 public class UnexpectedResponseResultException extends LibraSDKException {
-    public UnexpectedResponseResultException(String respBody, JsonSyntaxException e) {
-        super(respBody, e);
+    public UnexpectedResponseResultException(JsonSyntaxException e) {
+        super(e);
     }
 }

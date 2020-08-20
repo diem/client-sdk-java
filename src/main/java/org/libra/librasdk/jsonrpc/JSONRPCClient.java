@@ -49,10 +49,10 @@ public class JSONRPCClient {
             result = EntityUtils.toString(response.getEntity());
 
             if (response.getStatusLine().getStatusCode() != 200) {
-                throw new LibraSDKException(response.toString());
+                throw new UnexpectedResponseException(response.toString());
             }
         } catch (IOException e) {
-            throw new LibraSDKException(e);
+            throw new UnexpectedResponseException(e);
         }
 
         return result;
