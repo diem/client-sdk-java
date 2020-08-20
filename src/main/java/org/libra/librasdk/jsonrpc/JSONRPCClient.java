@@ -14,6 +14,8 @@ import org.libra.librasdk.LibraSDKException;
 import org.libra.librasdk.Method;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 public class JSONRPCClient {
@@ -21,6 +23,12 @@ public class JSONRPCClient {
     private final String uri;
 
     public JSONRPCClient(String uri) {
+        try {
+            new URL(uri);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
+
         this.uri = uri;
     }
 

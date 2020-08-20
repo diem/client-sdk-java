@@ -3,6 +3,7 @@ package org.libra.librasdk;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import org.libra.librasdk.dto.*;
+import org.libra.librasdk.jsonrpc.JSONRPCClient;
 import org.libra.librasdk.jsonrpc.JSONRPCErrorException;
 import org.libra.librasdk.jsonrpc.UnexpectedResponseResultException;
 
@@ -12,11 +13,11 @@ import java.util.List;
 
 public class LibraClient implements Client {
 
-    private JSONRPCHandler jsonrpcHandler;
+    private JSONRPCClient jsonRpcClient;
     private LibraLedgerState libraLedgerState;
 
     public LibraClient(String url, int chainId) {
-        this.jsonrpcHandler = new JSONRPCHandler(url);
+        this.jsonRpcClient = new JSONRPCClient(url);
         this.libraLedgerState = new LibraLedgerState(chainId);
     }
 
@@ -105,7 +106,7 @@ public class LibraClient implements Client {
     }
 
     private <T> T executeCall(Method method, List<Object> params, Class<T> responseType) throws LibraSDKException {
-        String response = jsonrpcHandler.call(method, params);
+        String response = jsonRpcClient.call(method, params);
         T result;
 
         try {
