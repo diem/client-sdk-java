@@ -92,7 +92,7 @@ public class LibraClient implements Client {
                                       long amount, long maxGasAmount, long gasPriceUnit,
                                       String currencyCode,
                                       long expirationTimestampSecs, byte chainId,
-                                      byte[] metadataSignature, byte[] metadata) throws Exception {
+                                      byte[] metadata, byte[] metadataSignature) throws Exception {
 
         LocalAccount localAccount = new LocalAccount(senderAccountAddress, libraAuthKey,
                 privateKey, publicKey);
