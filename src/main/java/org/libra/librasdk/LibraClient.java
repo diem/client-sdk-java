@@ -3,7 +3,7 @@ package org.libra.librasdk;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import org.libra.librasdk.dto.*;
-import org.libra.librasdk.jsonrpc.JsonRpcErrorException;
+import org.libra.librasdk.jsonrpc.JSONRPCErrorException;
 import org.libra.librasdk.jsonrpc.UnexpectedResponseResultException;
 
 import java.util.ArrayList;
@@ -112,7 +112,7 @@ public class LibraClient implements Client {
             LibraResponse libraResponse = new Gson().fromJson(response, LibraResponse.class);
 
             if (libraResponse.getError() != null) {
-                throw new JsonRpcErrorException(libraResponse.getError().toString());
+                throw new JSONRPCErrorException(libraResponse.getError().toString());
             }
 
             libraLedgerState.handleLedgerState(libraResponse.getLibra_chain_id(),

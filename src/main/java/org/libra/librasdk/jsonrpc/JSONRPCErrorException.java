@@ -8,8 +8,8 @@ import org.libra.librasdk.LibraSDKException;
 /**
  * This exception is threw when JSON-RPC server response error.
  */
-public class JsonRpcErrorException extends LibraSDKException {
-    public JsonRpcErrorException(String msg) {
+public class JSONRPCErrorException extends LibraSDKException {
+    public JSONRPCErrorException(String msg) {
         super(msg);
     }
 }

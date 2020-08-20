@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.libra.librasdk.dto.Metadata;
 import org.libra.librasdk.dto.Transaction;
 import org.libra.librasdk.dto.*;
-import org.libra.librasdk.jsonrpc.JsonRpcErrorException;
+import org.libra.librasdk.jsonrpc.JSONRPCErrorException;
 import org.libra.stdlib.Stdlib;
 import org.libra.types.*;
 
@@ -145,7 +145,7 @@ public class TestNetIntegrationTest {
                 currencyCode,
                 0L,
                 Constants.TEST_NET_CHAIN_ID);
-        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED", JsonRpcErrorException.class, () -> libraClient.submit(Utils.toLCSHex(st)));
+        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED", JSONRPCErrorException.class, () -> libraClient.submit(Utils.toLCSHex(st)));
     }
 
     @Test

@@ -13,7 +13,7 @@ class JSONRPCHandler implements RPC {
         try {
             new URL(url);
         } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
 
         jsonRpcClient = new JSONRPCClient(url);
