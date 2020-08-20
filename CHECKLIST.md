@@ -13,8 +13,8 @@
       - signing, sha3 hashing, address parsing and converting, hex encoding / decoding
       - LCS utils
 - [ ] JSON-RPC 2.0 Spec:
-  - spec version validation.
-  - batch requests and responses handling.
+  - [ ] spec version validation.
+  - [ ] batch requests and responses handling.
 - [ ] JSON-RPC client error handling should distinguish the following 3 type errors:
   - Transport layer error, e.g. HTTP call failure.
   - JSON-RPC protocol error: e.g. server respond non json data, or can't be parsed into [Libra JSON-RPC SPEC][1] defined data structure, or missing result & error field.
@@ -23,22 +23,25 @@
 - [ ] Client connection pool: keep connection alive for less likely getting inconsistent data from connecting to multiple servers.
 - [ ] Handle stale responses:
   - [ ] client tracks latest server respond block version and timestamp, raise error when received server response contains stale version / timestamp.
-- [ ] Libra User Identifier parsing utils (see [LIP-5][2])
-  - bech32 addresses/subaddresses support
+- [ ] Libra Account Identifier parsing utils (see [LIP-5][2])
 - [ ] language specific standard release publish: e.g. java maven central repo, python pip
 - [ ] Multi-network: initialize Client with chain id, JSON-RPC server URL
+  - [ ] Validate server chain id: client should be initialized with chain id and validate server respond chain id is same.
 - [ ] Handle unsigned int64 data type properly
-- [ ] Validate server chain id: client should be initialized with chain id and validate server respond chain id is same.
 - [ ] Validate input parameters, e.g. invalid account address: "kkk". Should return / raise InvalidArgumentError.
+- [ ] Handle MultiSig keys
+  - [ ] accepts multi-privatekeys / multi-publickeys for signing or submit transactions
+  - [ ] create multi auth keys
 
 # High Level API
 
 - [ ] transfer: wrap peer to peer transfer with metadata script and submit transaction
   - may have option to wait until transaction executed successfully or failed.
-- [ ] waitForTransactionExecuted(String accountAddress, long sequence, String signedTranscationHash, long timeout):
+- [ ] waitForTransactionExecuted(String accountAddress, long sequence, String signature, long timeout):
   - for given signed transaction sender address, sequence number, expiration time (or 5 sec timeout) to wait and validate execution result is executed, otherwise return/raise an error / flag to tell it is not executed.
-  - when signedTransactionHash validation failed, it should return / raise TransactionSequenceNumberConflictError
+  - when signature validation failed, it should return / raise TransactionSequenceNumberConflictError
   - when transaction execution vm_status is not "executed", it should return / raise TransactionExecutionFailure
+  - when transaction expired, it should return / raise TransactionExpiredError
 
 # Read from Blockchain
 
@@ -48,6 +51,7 @@
 - [x] Get transactions
 - [x] Get account
 - [x] Get account transaction 
+- [ ] Get account transactions
 - [x] Handle error response
 - [x] Serialize result JSON to typed data structure
 	
@@ -55,15 +59,11 @@
  
 - [x] Submit [p2p transfer][3] transaction
 - [x] Submit other [Move Stdlib scripts][4]
-- [ ] Wait for transaction executed:
-  - low level API, consider not expose, only for internal or test usage.
-  - wait for a transaction by get_transaction by account and transaction sequence, no validation of vm_status and signature.
 
 # Testnet support
 
 - [ ] Gen local wallet account keys: private key, public key, auth key
 - [x] Create onchain account and mint coins through Faucet service
-- [ ] Handle multiple signature auth key
 
 See [doc][5] for above concepts.
 
