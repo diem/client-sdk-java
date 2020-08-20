@@ -103,13 +103,19 @@ public class LibraClient implements Client {
 
     private <T> T executeCall(Method method, List<Object> params, Class<T> responseType) throws LibraSDKException {
         String response = jsonrpcHandler.call(method, params);
+        LibraResponse libraResponse = new Gson().fromJson(response, LibraResponse.class);
 
+        if (libraResponse.getError() != null) {
+//            JsonRpcErrorException
+            throw new LibraSDKException(libraResponse.getError().toString());
+        }
+
+        libraLedgerState.handleLedgerState(libraResponse.getLibra_chain_id(),
+                libraResponse.getLibra_ledger_version(),
+                libraResponse.getLibra_ledger_timestampusec(), null);
         T result = null;
+
         if (responseType != null) {
-            LibraResponse libraResponse = new Gson().fromJson(response, LibraResponse.class);
-            libraLedgerState.handleLedgerState(libraResponse.getLibra_chain_id(),
-                    libraResponse.getLibra_ledger_version(),
-                    libraResponse.getLibra_ledger_timestampusec(), null);
             result = new Gson().fromJson(libraResponse.getResult(), responseType);
         }
 

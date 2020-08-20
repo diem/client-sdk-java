@@ -144,7 +144,7 @@ public class TestNetIntegrationTest {
                 currencyCode,
                 0L,
                 Constants.TEST_NET_CHAIN_ID);
-//        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED", LibraSDKException.class, () -> libraClient.submit(Utils.toLCSHex(st)));
+        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED", LibraSDKException.class, () -> libraClient.submit(Utils.toLCSHex(st)));
     }
 
     @Test

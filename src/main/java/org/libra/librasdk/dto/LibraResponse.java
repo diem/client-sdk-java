@@ -1,6 +1,7 @@
 package org.libra.librasdk.dto;
 
 import com.google.gson.JsonElement;
+import org.libra.librasdk.jsonrpc.Error;
 
 import java.util.Objects;
 
@@ -11,6 +12,7 @@ public class LibraResponse {
     long libra_ledger_timestampusec;
     long libra_ledger_version;
     JsonElement result;
+    Error error;
 
     public int getId() {
         return id;
@@ -36,6 +38,10 @@ public class LibraResponse {
         return result;
     }
 
+    public Error getError() {
+        return error;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -46,11 +52,12 @@ public class LibraResponse {
                 libra_ledger_timestampusec == that.libra_ledger_timestampusec &&
                 libra_ledger_version == that.libra_ledger_version &&
                 Objects.equals(jsonrpc, that.jsonrpc) &&
-                Objects.equals(result, that.result);
+                Objects.equals(result, that.result) &&
+                Objects.equals(error, that.error);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, jsonrpc, libra_chain_id, libra_ledger_timestampusec, libra_ledger_version, result);
+        return Objects.hash(id, jsonrpc, libra_chain_id, libra_ledger_timestampusec, libra_ledger_version, result, error);
     }
 }

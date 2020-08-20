@@ -22,7 +22,6 @@ public class JSONRPCClient {
 
     public JSONRPCClient(String uri) {
         this.uri = uri;
-
     }
 
     public String call(Method method, List<Object> params) throws LibraSDKException {
@@ -40,7 +39,6 @@ public class JSONRPCClient {
             throw new LibraSDKException(e);
         }
 
-
         return response;
     }
 
@@ -48,23 +46,14 @@ public class JSONRPCClient {
         String result;
         try (CloseableHttpClient httpClient = HttpClients.createDefault();
              CloseableHttpResponse response = httpClient.execute(post)) {
-//            result = EntityUtils.toString(response.getEntity(), "UTF-8");
             result = EntityUtils.toString(response.getEntity());
 
             if (response.getStatusLine().getStatusCode() != 200) {
                 throw new LibraSDKException(response.toString());
             }
-//            if (resp.error != null) {
-//                throw new JsonRpcErrorException(resp);
-//            }
-//            if (responseType == null) {
-//                return null;
-//            }
-
         } catch (IOException e) {
             throw new LibraSDKException(e);
         }
-
 
         return result;
     }
