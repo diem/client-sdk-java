@@ -26,7 +26,7 @@ public class TestNetIntegrationTest {
 
     @Before
     public void setup() {
-        libraClient = new LibraClient("https://client.testnet.libra.org/v1", 2);
+        libraClient = new LibraClient(new TestNet());
     }
 
     @Test
