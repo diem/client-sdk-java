@@ -226,11 +226,11 @@ public abstract class TypeTag {
     }
 
     public static final class Vector extends TypeTag {
-        public final org.libra.types.TypeTag value;
+        public final TypeTag value;
 
-        public Vector(org.libra.types.TypeTag value) {
-           assert value != null;
-           this.value = value;
+        public Vector(TypeTag value) {
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -240,7 +240,7 @@ public abstract class TypeTag {
 
         static Vector load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
-            builder.value = org.libra.types.TypeTag.deserialize(deserializer);
+            builder.value = TypeTag.deserialize(deserializer);
             return builder.build();
         }
 
@@ -260,7 +260,7 @@ public abstract class TypeTag {
         }
 
         public static final class Builder {
-            public org.libra.types.TypeTag value;
+            public TypeTag value;
 
             public Vector build() {
                 return new Vector(
@@ -271,11 +271,11 @@ public abstract class TypeTag {
     }
 
     public static final class Struct extends TypeTag {
-        public final org.libra.types.StructTag value;
+        public final StructTag value;
 
-        public Struct(org.libra.types.StructTag value) {
-           assert value != null;
-           this.value = value;
+        public Struct(StructTag value) {
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -285,7 +285,7 @@ public abstract class TypeTag {
 
         static Struct load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
-            builder.value = org.libra.types.StructTag.deserialize(deserializer);
+            builder.value = StructTag.deserialize(deserializer);
             return builder.build();
         }
 
@@ -305,7 +305,7 @@ public abstract class TypeTag {
         }
 
         public static final class Builder {
-            public org.libra.types.StructTag value;
+            public StructTag value;
 
             public Struct build() {
                 return new Struct(

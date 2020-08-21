@@ -53,8 +53,8 @@ public abstract class WriteOp {
         public final com.facebook.serde.Bytes value;
 
         public Value(com.facebook.serde.Bytes value) {
-           assert value != null;
-           this.value = value;
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {

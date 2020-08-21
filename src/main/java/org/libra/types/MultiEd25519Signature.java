@@ -6,8 +6,8 @@ public final class MultiEd25519Signature {
     public final com.facebook.serde.Bytes value;
 
     public MultiEd25519Signature(com.facebook.serde.Bytes value) {
-       assert value != null;
-       this.value = value;
+        assert value != null;
+        this.value = value;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {

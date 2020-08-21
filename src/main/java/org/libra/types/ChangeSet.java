@@ -3,14 +3,14 @@ package org.libra.types;
 import java.math.BigInteger;
 
 public final class ChangeSet {
-    public final org.libra.types.WriteSet write_set;
-    public final java.util.List<org.libra.types.ContractEvent> events;
+    public final WriteSet write_set;
+    public final java.util.List<ContractEvent> events;
 
-    public ChangeSet(org.libra.types.WriteSet write_set, java.util.List<org.libra.types.ContractEvent> events) {
-       assert write_set != null;
-       assert events != null;
-       this.write_set = write_set;
-       this.events = events;
+    public ChangeSet(WriteSet write_set, java.util.List<ContractEvent> events) {
+        assert write_set != null;
+        assert events != null;
+        this.write_set = write_set;
+        this.events = events;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -20,7 +20,7 @@ public final class ChangeSet {
 
     public static ChangeSet deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
         Builder builder = new Builder();
-        builder.write_set = org.libra.types.WriteSet.deserialize(deserializer);
+        builder.write_set = WriteSet.deserialize(deserializer);
         builder.events = TraitHelpers.deserialize_vector_ContractEvent(deserializer);
         return builder.build();
     }
@@ -43,8 +43,8 @@ public final class ChangeSet {
     }
 
     public static final class Builder {
-        public org.libra.types.WriteSet write_set;
-        public java.util.List<org.libra.types.ContractEvent> events;
+        public WriteSet write_set;
+        public java.util.List<ContractEvent> events;
 
         public ChangeSet build() {
             return new ChangeSet(

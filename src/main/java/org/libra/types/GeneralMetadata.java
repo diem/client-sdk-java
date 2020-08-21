@@ -15,11 +15,11 @@ public abstract class GeneralMetadata {
     }
 
     public static final class GeneralMetadataVersion0 extends GeneralMetadata {
-        public final org.libra.types.GeneralMetadataV0 value;
+        public final GeneralMetadataV0 value;
 
-        public GeneralMetadataVersion0(org.libra.types.GeneralMetadataV0 value) {
-           assert value != null;
-           this.value = value;
+        public GeneralMetadataVersion0(GeneralMetadataV0 value) {
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -29,7 +29,7 @@ public abstract class GeneralMetadata {
 
         static GeneralMetadataVersion0 load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
-            builder.value = org.libra.types.GeneralMetadataV0.deserialize(deserializer);
+            builder.value = GeneralMetadataV0.deserialize(deserializer);
             return builder.build();
         }
 
@@ -49,7 +49,7 @@ public abstract class GeneralMetadata {
         }
 
         public static final class Builder {
-            public org.libra.types.GeneralMetadataV0 value;
+            public GeneralMetadataV0 value;
 
             public GeneralMetadataVersion0 build() {
                 return new GeneralMetadataVersion0(

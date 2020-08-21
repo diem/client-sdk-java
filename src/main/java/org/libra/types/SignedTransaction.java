@@ -3,14 +3,14 @@ package org.libra.types;
 import java.math.BigInteger;
 
 public final class SignedTransaction {
-    public final org.libra.types.RawTransaction raw_txn;
-    public final org.libra.types.TransactionAuthenticator authenticator;
+    public final RawTransaction raw_txn;
+    public final TransactionAuthenticator authenticator;
 
-    public SignedTransaction(org.libra.types.RawTransaction raw_txn, org.libra.types.TransactionAuthenticator authenticator) {
-       assert raw_txn != null;
-       assert authenticator != null;
-       this.raw_txn = raw_txn;
-       this.authenticator = authenticator;
+    public SignedTransaction(RawTransaction raw_txn, TransactionAuthenticator authenticator) {
+        assert raw_txn != null;
+        assert authenticator != null;
+        this.raw_txn = raw_txn;
+        this.authenticator = authenticator;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -20,8 +20,8 @@ public final class SignedTransaction {
 
     public static SignedTransaction deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
         Builder builder = new Builder();
-        builder.raw_txn = org.libra.types.RawTransaction.deserialize(deserializer);
-        builder.authenticator = org.libra.types.TransactionAuthenticator.deserialize(deserializer);
+        builder.raw_txn = RawTransaction.deserialize(deserializer);
+        builder.authenticator = TransactionAuthenticator.deserialize(deserializer);
         return builder.build();
     }
 
@@ -43,8 +43,8 @@ public final class SignedTransaction {
     }
 
     public static final class Builder {
-        public org.libra.types.RawTransaction raw_txn;
-        public org.libra.types.TransactionAuthenticator authenticator;
+        public RawTransaction raw_txn;
+        public TransactionAuthenticator authenticator;
 
         public SignedTransaction build() {
             return new SignedTransaction(

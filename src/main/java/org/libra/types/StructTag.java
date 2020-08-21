@@ -3,20 +3,20 @@ package org.libra.types;
 import java.math.BigInteger;
 
 public final class StructTag {
-    public final org.libra.types.AccountAddress address;
-    public final org.libra.types.Identifier module;
-    public final org.libra.types.Identifier name;
-    public final java.util.List<org.libra.types.TypeTag> type_params;
+    public final AccountAddress address;
+    public final Identifier module;
+    public final Identifier name;
+    public final java.util.List<TypeTag> type_params;
 
-    public StructTag(org.libra.types.AccountAddress address, org.libra.types.Identifier module, org.libra.types.Identifier name, java.util.List<org.libra.types.TypeTag> type_params) {
-       assert address != null;
-       assert module != null;
-       assert name != null;
-       assert type_params != null;
-       this.address = address;
-       this.module = module;
-       this.name = name;
-       this.type_params = type_params;
+    public StructTag(AccountAddress address, Identifier module, Identifier name, java.util.List<TypeTag> type_params) {
+        assert address != null;
+        assert module != null;
+        assert name != null;
+        assert type_params != null;
+        this.address = address;
+        this.module = module;
+        this.name = name;
+        this.type_params = type_params;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -28,9 +28,9 @@ public final class StructTag {
 
     public static StructTag deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
         Builder builder = new Builder();
-        builder.address = org.libra.types.AccountAddress.deserialize(deserializer);
-        builder.module = org.libra.types.Identifier.deserialize(deserializer);
-        builder.name = org.libra.types.Identifier.deserialize(deserializer);
+        builder.address = AccountAddress.deserialize(deserializer);
+        builder.module = Identifier.deserialize(deserializer);
+        builder.name = Identifier.deserialize(deserializer);
         builder.type_params = TraitHelpers.deserialize_vector_TypeTag(deserializer);
         return builder.build();
     }
@@ -57,10 +57,10 @@ public final class StructTag {
     }
 
     public static final class Builder {
-        public org.libra.types.AccountAddress address;
-        public org.libra.types.Identifier module;
-        public org.libra.types.Identifier name;
-        public java.util.List<org.libra.types.TypeTag> type_params;
+        public AccountAddress address;
+        public Identifier module;
+        public Identifier name;
+        public java.util.List<TypeTag> type_params;
 
         public StructTag build() {
             return new StructTag(

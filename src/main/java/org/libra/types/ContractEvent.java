@@ -15,11 +15,11 @@ public abstract class ContractEvent {
     }
 
     public static final class V0 extends ContractEvent {
-        public final org.libra.types.ContractEventV0 value;
+        public final ContractEventV0 value;
 
-        public V0(org.libra.types.ContractEventV0 value) {
-           assert value != null;
-           this.value = value;
+        public V0(ContractEventV0 value) {
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -29,7 +29,7 @@ public abstract class ContractEvent {
 
         static V0 load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
-            builder.value = org.libra.types.ContractEventV0.deserialize(deserializer);
+            builder.value = ContractEventV0.deserialize(deserializer);
             return builder.build();
         }
 
@@ -49,7 +49,7 @@ public abstract class ContractEvent {
         }
 
         public static final class Builder {
-            public org.libra.types.ContractEventV0 value;
+            public ContractEventV0 value;
 
             public V0 build() {
                 return new V0(
