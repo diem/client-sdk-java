@@ -17,11 +17,11 @@ public abstract class TransactionPayload {
     }
 
     public static final class WriteSet extends TransactionPayload {
-        public final org.libra.types.WriteSetPayload value;
+        public final WriteSetPayload value;
 
-        public WriteSet(org.libra.types.WriteSetPayload value) {
-           assert value != null;
-           this.value = value;
+        public WriteSet(WriteSetPayload value) {
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -31,7 +31,7 @@ public abstract class TransactionPayload {
 
         static WriteSet load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
-            builder.value = org.libra.types.WriteSetPayload.deserialize(deserializer);
+            builder.value = WriteSetPayload.deserialize(deserializer);
             return builder.build();
         }
 
@@ -51,7 +51,7 @@ public abstract class TransactionPayload {
         }
 
         public static final class Builder {
-            public org.libra.types.WriteSetPayload value;
+            public WriteSetPayload value;
 
             public WriteSet build() {
                 return new WriteSet(
@@ -65,8 +65,8 @@ public abstract class TransactionPayload {
         public final org.libra.types.Script value;
 
         public Script(org.libra.types.Script value) {
-           assert value != null;
-           this.value = value;
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -110,8 +110,8 @@ public abstract class TransactionPayload {
         public final org.libra.types.Module value;
 
         public Module(org.libra.types.Module value) {
-           assert value != null;
-           this.value = value;
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {

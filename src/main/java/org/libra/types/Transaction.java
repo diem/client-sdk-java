@@ -17,11 +17,11 @@ public abstract class Transaction {
     }
 
     public static final class UserTransaction extends Transaction {
-        public final org.libra.types.SignedTransaction value;
+        public final SignedTransaction value;
 
-        public UserTransaction(org.libra.types.SignedTransaction value) {
-           assert value != null;
-           this.value = value;
+        public UserTransaction(SignedTransaction value) {
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -31,7 +31,7 @@ public abstract class Transaction {
 
         static UserTransaction load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
-            builder.value = org.libra.types.SignedTransaction.deserialize(deserializer);
+            builder.value = SignedTransaction.deserialize(deserializer);
             return builder.build();
         }
 
@@ -51,7 +51,7 @@ public abstract class Transaction {
         }
 
         public static final class Builder {
-            public org.libra.types.SignedTransaction value;
+            public SignedTransaction value;
 
             public UserTransaction build() {
                 return new UserTransaction(
@@ -62,11 +62,11 @@ public abstract class Transaction {
     }
 
     public static final class GenesisTransaction extends Transaction {
-        public final org.libra.types.WriteSetPayload value;
+        public final WriteSetPayload value;
 
-        public GenesisTransaction(org.libra.types.WriteSetPayload value) {
-           assert value != null;
-           this.value = value;
+        public GenesisTransaction(WriteSetPayload value) {
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -76,7 +76,7 @@ public abstract class Transaction {
 
         static GenesisTransaction load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
-            builder.value = org.libra.types.WriteSetPayload.deserialize(deserializer);
+            builder.value = WriteSetPayload.deserialize(deserializer);
             return builder.build();
         }
 
@@ -96,7 +96,7 @@ public abstract class Transaction {
         }
 
         public static final class Builder {
-            public org.libra.types.WriteSetPayload value;
+            public WriteSetPayload value;
 
             public GenesisTransaction build() {
                 return new GenesisTransaction(
@@ -110,8 +110,8 @@ public abstract class Transaction {
         public final org.libra.types.BlockMetadata value;
 
         public BlockMetadata(org.libra.types.BlockMetadata value) {
-           assert value != null;
-           this.value = value;
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {

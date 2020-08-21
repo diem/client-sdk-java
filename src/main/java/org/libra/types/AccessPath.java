@@ -3,14 +3,14 @@ package org.libra.types;
 import java.math.BigInteger;
 
 public final class AccessPath {
-    public final org.libra.types.AccountAddress address;
+    public final AccountAddress address;
     public final com.facebook.serde.Bytes path;
 
-    public AccessPath(org.libra.types.AccountAddress address, com.facebook.serde.Bytes path) {
-       assert address != null;
-       assert path != null;
-       this.address = address;
-       this.path = path;
+    public AccessPath(AccountAddress address, com.facebook.serde.Bytes path) {
+        assert address != null;
+        assert path != null;
+        this.address = address;
+        this.path = path;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -20,7 +20,7 @@ public final class AccessPath {
 
     public static AccessPath deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
         Builder builder = new Builder();
-        builder.address = org.libra.types.AccountAddress.deserialize(deserializer);
+        builder.address = AccountAddress.deserialize(deserializer);
         builder.path = deserializer.deserialize_bytes();
         return builder.build();
     }
@@ -43,7 +43,7 @@ public final class AccessPath {
     }
 
     public static final class Builder {
-        public org.libra.types.AccountAddress address;
+        public AccountAddress address;
         public com.facebook.serde.Bytes path;
 
         public AccessPath build() {

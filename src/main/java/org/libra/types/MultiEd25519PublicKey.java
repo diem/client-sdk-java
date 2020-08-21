@@ -6,8 +6,8 @@ public final class MultiEd25519PublicKey {
     public final com.facebook.serde.Bytes value;
 
     public MultiEd25519PublicKey(com.facebook.serde.Bytes value) {
-       assert value != null;
-       this.value = value;
+        assert value != null;
+        this.value = value;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {

@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.libra.librasdk.dto.Metadata;
 import org.libra.librasdk.dto.Transaction;
 import org.libra.librasdk.dto.*;
-import org.libra.stdlib.Stdlib;
+import org.libra.stdlib.Helpers;
 import org.libra.types.*;
 
 import java.util.Date;
@@ -60,7 +60,7 @@ public class TestNetIntegrationTest {
     public void testGetAccount() throws Exception {
         Account response = libraClient.getAccount(Constants.ROOT_ACCOUNT_ADDRESS);
         Assert.assertNotNull(response);
-        Assert.assertEquals("unknown", response.role.getAsString());
+        Assert.assertEquals("unknown", response.role.getAsJsonObject().get("type").getAsString());
         Assert.assertFalse(response.authentication_key.isEmpty());
         Assert.assertFalse(response.received_events_key.isEmpty());
         Assert.assertFalse(response.delegated_key_rotation_capability);
@@ -189,7 +189,7 @@ public class TestNetIntegrationTest {
 
     private Script createP2PScript(AccountAddress address, String currencyCode, long amount) {
         TypeTag token = Utils.createCurrencyCodeTypeTag(currencyCode);
-        return Stdlib.encode_peer_to_peer_with_metadata_script(
+        return Helpers.encode_peer_to_peer_with_metadata_script(
                 token,
                 address,
                 amount,

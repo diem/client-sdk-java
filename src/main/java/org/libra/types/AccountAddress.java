@@ -6,8 +6,8 @@ public final class AccountAddress {
     public final @com.facebook.serde.Unsigned Byte @com.facebook.serde.ArrayLen(length=16) [] value;
 
     public AccountAddress(@com.facebook.serde.Unsigned Byte @com.facebook.serde.ArrayLen(length=16) [] value) {
-       assert value != null;
-       this.value = value;
+        assert value != null;
+        this.value = value;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {

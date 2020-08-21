@@ -134,10 +134,7 @@ public class Transaction {
     }
 
     public String vmStatus() {
-        if (this.vm_status.isJsonObject()) {
-            return this.vm_status.getAsJsonObject().keySet().iterator().next();
-        }
-        return this.vm_status.getAsString();
+        return this.vm_status.getAsJsonObject().get("type").getAsString();
     }
 
     @Override

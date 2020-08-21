@@ -6,8 +6,8 @@ public final class ChainId {
     public final @com.facebook.serde.Unsigned Byte value;
 
     public ChainId(@com.facebook.serde.Unsigned Byte value) {
-       assert value != null;
-       this.value = value;
+        assert value != null;
+        this.value = value;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
