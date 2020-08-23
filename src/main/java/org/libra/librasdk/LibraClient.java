@@ -24,8 +24,8 @@ public class LibraClient implements Client {
         jsonrpcClient = new JSONRPCClient(url);
     }
 
-    public LibraClient(TestNet testNet) {
-        this(testNet.uri, testNet.chainId);
+    public LibraClient(Net net) {
+        this(net.uri, net.chainId);
     }
 
     public List<Transaction> getTransactions(long fromVersion, int limit, boolean includeEvents) throws LibraSDKException {

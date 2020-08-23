@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.libra.librasdk.Net.TestNet;
 
 
 public class TestNetIntegrationTest {
@@ -26,7 +27,7 @@ public class TestNetIntegrationTest {
 
     @Before
     public void setup() {
-        libraClient = new LibraClient(new TestNet());
+        libraClient = new LibraClient(TestNet());
     }
 
     @Test
@@ -39,8 +40,8 @@ public class TestNetIntegrationTest {
         Assert.assertTrue(response.version > 1000);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testLibraClient_badChainId() {
+    @Test(expected = IllegalArgumentException.class)
+    public void testLibraClient_invalidUrl() {
         libraClient = new LibraClient("invalidUrl", 2);
     }
 
