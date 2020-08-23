@@ -22,15 +22,15 @@ public class LibraResponse {
         return jsonrpc;
     }
 
-    public int getLibra_chain_id() {
+    public int getLibraChainId() {
         return libra_chain_id;
     }
 
-    public long getLibra_ledger_timestampusec() {
+    public long getLibraLedgerTimestampusec() {
         return libra_ledger_timestampusec;
     }
 
-    public long getLibra_ledger_version() {
+    public long getLibraLedgerVersion() {
         return libra_ledger_version;
     }
 

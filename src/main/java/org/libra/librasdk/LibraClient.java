@@ -1,7 +1,6 @@
 package org.libra.librasdk;
 
 import com.facebook.serde.Bytes;
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import org.libra.librasdk.dto.*;
@@ -100,7 +99,8 @@ public class LibraClient implements Client {
         LocalAccount localAccount = new LocalAccount(senderAccountAddress, libraAuthKey,
                 privateKey, publicKey);
         AccountAddress accountAddressObject = Utils.hexToAddress(receiverAccountAddress);
-        Script script = createP2PScript(accountAddressObject, currencyCode, amount, metadata, metadataSignature);
+        Script script = createP2PScript(accountAddressObject, currencyCode, amount, metadata,
+                metadataSignature);
         Account account = getAccount(localAccount.libra_account_address);
 
         SignedTransaction signedTransaction;
@@ -154,9 +154,9 @@ public class LibraClient implements Client {
                 throw new JSONRPCErrorException(libraResponse.getError().toString());
             }
 
-            libraLedgerState.handleLedgerState(libraResponse.getLibra_chain_id(),
-                    libraResponse.getLibra_ledger_version(),
-                    libraResponse.getLibra_ledger_timestampusec(), null);
+            libraLedgerState.handleLedgerState(libraResponse.getLibraChainId(),
+                    libraResponse.getLibraLedgerVersion(),
+                    libraResponse.getLibraLedgerTimestampusec());
             result = null;
 
             if (responseType != null) {

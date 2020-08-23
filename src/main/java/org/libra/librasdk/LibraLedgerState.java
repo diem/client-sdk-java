@@ -2,17 +2,16 @@ package org.libra.librasdk;
 
 public class LibraLedgerState {
 
-    Integer chainId;
-    Long version;
-    Long timestampUsecs;
+    int chainId;
+    long version;
+    long timestampUsecs;
 
     public LibraLedgerState(int chainId) {
         this.chainId = chainId;
     }
 
-    private void validateLedgerState(Integer chainId, long version, long timestampUsecs,
-                                     Long minimumBlockchainTimestampUsecs) throws LibraSDKException {
-        if (chainId != null && this.chainId != chainId) {
+    private void validateLedgerState(int chainId, long version, long timestampUsecs) throws LibraSDKException {
+        if (this.chainId != chainId) {
             throw new LibraSDKException(String.format("chainId mismatch! Expected: %s Received: " +
                     "%s", this.chainId, chainId));
         }
@@ -24,14 +23,6 @@ public class LibraLedgerState {
                             "timestamp usecs: %s"
                     , this.version, version, this.timestampUsecs, timestampUsecs));
         }
-
-        if (minimumBlockchainTimestampUsecs != null && this.timestampUsecs > minimumBlockchainTimestampUsecs) {
-            throw new LibraSDKException(String.format("Current ledger state stale:\n" +
-                            "current blockchain timestamp usecs: %s " +
-                            " is less than minimum blockchain timestamp usecs: %s",
-                    this.timestampUsecs,
-                    minimumBlockchainTimestampUsecs));
-        }
     }
 
     private void updateLedgerState(long version, long timestampUsecs) {
@@ -40,14 +31,13 @@ public class LibraLedgerState {
     }
 
     private boolean isSet() {
-        return this.chainId != null && this.timestampUsecs != null && this.version != null;
+        return this.chainId > 0;
     }
 
-    public void handleLedgerState(Integer chainId, long version, long timestampUsecs,
-                                  Long minimumBlockchainTimestampUsecs) throws LibraSDKException {
+    public void handleLedgerState(int chainId, long version, long timestampUsecs) throws LibraSDKException {
         // dont validate on first call
         if (isSet()) {
-            validateLedgerState(chainId, version, timestampUsecs, minimumBlockchainTimestampUsecs);
+            validateLedgerState(chainId, version, timestampUsecs);
         }
         // will be called only if ledger state validation passed
         updateLedgerState(version, timestampUsecs);
