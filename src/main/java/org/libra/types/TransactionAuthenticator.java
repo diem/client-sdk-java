@@ -16,14 +16,14 @@ public abstract class TransactionAuthenticator {
     }
 
     public static final class Ed25519 extends TransactionAuthenticator {
-        public final org.libra.types.Ed25519PublicKey public_key;
-        public final org.libra.types.Ed25519Signature signature;
+        public final Ed25519PublicKey public_key;
+        public final Ed25519Signature signature;
 
-        public Ed25519(org.libra.types.Ed25519PublicKey public_key, org.libra.types.Ed25519Signature signature) {
-           assert public_key != null;
-           assert signature != null;
-           this.public_key = public_key;
-           this.signature = signature;
+        public Ed25519(Ed25519PublicKey public_key, Ed25519Signature signature) {
+            assert public_key != null;
+            assert signature != null;
+            this.public_key = public_key;
+            this.signature = signature;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -34,8 +34,8 @@ public abstract class TransactionAuthenticator {
 
         static Ed25519 load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
-            builder.public_key = org.libra.types.Ed25519PublicKey.deserialize(deserializer);
-            builder.signature = org.libra.types.Ed25519Signature.deserialize(deserializer);
+            builder.public_key = Ed25519PublicKey.deserialize(deserializer);
+            builder.signature = Ed25519Signature.deserialize(deserializer);
             return builder.build();
         }
 
@@ -57,8 +57,8 @@ public abstract class TransactionAuthenticator {
         }
 
         public static final class Builder {
-            public org.libra.types.Ed25519PublicKey public_key;
-            public org.libra.types.Ed25519Signature signature;
+            public Ed25519PublicKey public_key;
+            public Ed25519Signature signature;
 
             public Ed25519 build() {
                 return new Ed25519(
@@ -70,14 +70,14 @@ public abstract class TransactionAuthenticator {
     }
 
     public static final class MultiEd25519 extends TransactionAuthenticator {
-        public final org.libra.types.MultiEd25519PublicKey public_key;
-        public final org.libra.types.MultiEd25519Signature signature;
+        public final MultiEd25519PublicKey public_key;
+        public final MultiEd25519Signature signature;
 
-        public MultiEd25519(org.libra.types.MultiEd25519PublicKey public_key, org.libra.types.MultiEd25519Signature signature) {
-           assert public_key != null;
-           assert signature != null;
-           this.public_key = public_key;
-           this.signature = signature;
+        public MultiEd25519(MultiEd25519PublicKey public_key, MultiEd25519Signature signature) {
+            assert public_key != null;
+            assert signature != null;
+            this.public_key = public_key;
+            this.signature = signature;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -88,8 +88,8 @@ public abstract class TransactionAuthenticator {
 
         static MultiEd25519 load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
-            builder.public_key = org.libra.types.MultiEd25519PublicKey.deserialize(deserializer);
-            builder.signature = org.libra.types.MultiEd25519Signature.deserialize(deserializer);
+            builder.public_key = MultiEd25519PublicKey.deserialize(deserializer);
+            builder.signature = MultiEd25519Signature.deserialize(deserializer);
             return builder.build();
         }
 
@@ -111,8 +111,8 @@ public abstract class TransactionAuthenticator {
         }
 
         public static final class Builder {
-            public org.libra.types.MultiEd25519PublicKey public_key;
-            public org.libra.types.MultiEd25519Signature signature;
+            public MultiEd25519PublicKey public_key;
+            public MultiEd25519Signature signature;
 
             public MultiEd25519 build() {
                 return new MultiEd25519(

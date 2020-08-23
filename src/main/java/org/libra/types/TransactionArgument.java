@@ -23,8 +23,8 @@ public abstract class TransactionArgument {
         public final @com.facebook.serde.Unsigned Byte value;
 
         public U8(@com.facebook.serde.Unsigned Byte value) {
-           assert value != null;
-           this.value = value;
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -68,8 +68,8 @@ public abstract class TransactionArgument {
         public final @com.facebook.serde.Unsigned Long value;
 
         public U64(@com.facebook.serde.Unsigned Long value) {
-           assert value != null;
-           this.value = value;
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -113,8 +113,8 @@ public abstract class TransactionArgument {
         public final @com.facebook.serde.Unsigned @com.facebook.serde.Int128 BigInteger value;
 
         public U128(@com.facebook.serde.Unsigned @com.facebook.serde.Int128 BigInteger value) {
-           assert value != null;
-           this.value = value;
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -155,11 +155,11 @@ public abstract class TransactionArgument {
     }
 
     public static final class Address extends TransactionArgument {
-        public final org.libra.types.AccountAddress value;
+        public final AccountAddress value;
 
-        public Address(org.libra.types.AccountAddress value) {
-           assert value != null;
-           this.value = value;
+        public Address(AccountAddress value) {
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -169,7 +169,7 @@ public abstract class TransactionArgument {
 
         static Address load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
-            builder.value = org.libra.types.AccountAddress.deserialize(deserializer);
+            builder.value = AccountAddress.deserialize(deserializer);
             return builder.build();
         }
 
@@ -189,7 +189,7 @@ public abstract class TransactionArgument {
         }
 
         public static final class Builder {
-            public org.libra.types.AccountAddress value;
+            public AccountAddress value;
 
             public Address build() {
                 return new Address(
@@ -203,8 +203,8 @@ public abstract class TransactionArgument {
         public final com.facebook.serde.Bytes value;
 
         public U8Vector(com.facebook.serde.Bytes value) {
-           assert value != null;
-           this.value = value;
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -248,8 +248,8 @@ public abstract class TransactionArgument {
         public final Boolean value;
 
         public Bool(Boolean value) {
-           assert value != null;
-           this.value = value;
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {

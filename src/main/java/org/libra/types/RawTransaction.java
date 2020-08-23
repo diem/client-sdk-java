@@ -3,32 +3,32 @@ package org.libra.types;
 import java.math.BigInteger;
 
 public final class RawTransaction {
-    public final org.libra.types.AccountAddress sender;
+    public final AccountAddress sender;
     public final @com.facebook.serde.Unsigned Long sequence_number;
-    public final org.libra.types.TransactionPayload payload;
+    public final TransactionPayload payload;
     public final @com.facebook.serde.Unsigned Long max_gas_amount;
     public final @com.facebook.serde.Unsigned Long gas_unit_price;
     public final String gas_currency_code;
     public final @com.facebook.serde.Unsigned Long expiration_timestamp_secs;
-    public final org.libra.types.ChainId chain_id;
+    public final ChainId chain_id;
 
-    public RawTransaction(org.libra.types.AccountAddress sender, @com.facebook.serde.Unsigned Long sequence_number, org.libra.types.TransactionPayload payload, @com.facebook.serde.Unsigned Long max_gas_amount, @com.facebook.serde.Unsigned Long gas_unit_price, String gas_currency_code, @com.facebook.serde.Unsigned Long expiration_timestamp_secs, org.libra.types.ChainId chain_id) {
-       assert sender != null;
-       assert sequence_number != null;
-       assert payload != null;
-       assert max_gas_amount != null;
-       assert gas_unit_price != null;
-       assert gas_currency_code != null;
-       assert expiration_timestamp_secs != null;
-       assert chain_id != null;
-       this.sender = sender;
-       this.sequence_number = sequence_number;
-       this.payload = payload;
-       this.max_gas_amount = max_gas_amount;
-       this.gas_unit_price = gas_unit_price;
-       this.gas_currency_code = gas_currency_code;
-       this.expiration_timestamp_secs = expiration_timestamp_secs;
-       this.chain_id = chain_id;
+    public RawTransaction(AccountAddress sender, @com.facebook.serde.Unsigned Long sequence_number, TransactionPayload payload, @com.facebook.serde.Unsigned Long max_gas_amount, @com.facebook.serde.Unsigned Long gas_unit_price, String gas_currency_code, @com.facebook.serde.Unsigned Long expiration_timestamp_secs, ChainId chain_id) {
+        assert sender != null;
+        assert sequence_number != null;
+        assert payload != null;
+        assert max_gas_amount != null;
+        assert gas_unit_price != null;
+        assert gas_currency_code != null;
+        assert expiration_timestamp_secs != null;
+        assert chain_id != null;
+        this.sender = sender;
+        this.sequence_number = sequence_number;
+        this.payload = payload;
+        this.max_gas_amount = max_gas_amount;
+        this.gas_unit_price = gas_unit_price;
+        this.gas_currency_code = gas_currency_code;
+        this.expiration_timestamp_secs = expiration_timestamp_secs;
+        this.chain_id = chain_id;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -44,14 +44,14 @@ public final class RawTransaction {
 
     public static RawTransaction deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
         Builder builder = new Builder();
-        builder.sender = org.libra.types.AccountAddress.deserialize(deserializer);
+        builder.sender = AccountAddress.deserialize(deserializer);
         builder.sequence_number = deserializer.deserialize_u64();
-        builder.payload = org.libra.types.TransactionPayload.deserialize(deserializer);
+        builder.payload = TransactionPayload.deserialize(deserializer);
         builder.max_gas_amount = deserializer.deserialize_u64();
         builder.gas_unit_price = deserializer.deserialize_u64();
         builder.gas_currency_code = deserializer.deserialize_str();
         builder.expiration_timestamp_secs = deserializer.deserialize_u64();
-        builder.chain_id = org.libra.types.ChainId.deserialize(deserializer);
+        builder.chain_id = ChainId.deserialize(deserializer);
         return builder.build();
     }
 
@@ -85,14 +85,14 @@ public final class RawTransaction {
     }
 
     public static final class Builder {
-        public org.libra.types.AccountAddress sender;
+        public AccountAddress sender;
         public @com.facebook.serde.Unsigned Long sequence_number;
-        public org.libra.types.TransactionPayload payload;
+        public TransactionPayload payload;
         public @com.facebook.serde.Unsigned Long max_gas_amount;
         public @com.facebook.serde.Unsigned Long gas_unit_price;
         public String gas_currency_code;
         public @com.facebook.serde.Unsigned Long expiration_timestamp_secs;
-        public org.libra.types.ChainId chain_id;
+        public ChainId chain_id;
 
         public RawTransaction build() {
             return new RawTransaction(

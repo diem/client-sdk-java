@@ -8,12 +8,12 @@ public final class GeneralMetadataV0 {
     public final java.util.Optional<@com.facebook.serde.Unsigned Long> referenced_event;
 
     public GeneralMetadataV0(java.util.Optional<com.facebook.serde.Bytes> to_subaddress, java.util.Optional<com.facebook.serde.Bytes> from_subaddress, java.util.Optional<@com.facebook.serde.Unsigned Long> referenced_event) {
-       assert to_subaddress != null;
-       assert from_subaddress != null;
-       assert referenced_event != null;
-       this.to_subaddress = to_subaddress;
-       this.from_subaddress = from_subaddress;
-       this.referenced_event = referenced_event;
+        assert to_subaddress != null;
+        assert from_subaddress != null;
+        assert referenced_event != null;
+        this.to_subaddress = to_subaddress;
+        this.from_subaddress = from_subaddress;
+        this.referenced_event = referenced_event;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {

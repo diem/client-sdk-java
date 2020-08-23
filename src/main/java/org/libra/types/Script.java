@@ -4,16 +4,16 @@ import java.math.BigInteger;
 
 public final class Script {
     public final com.facebook.serde.Bytes code;
-    public final java.util.List<org.libra.types.TypeTag> ty_args;
-    public final java.util.List<org.libra.types.TransactionArgument> args;
+    public final java.util.List<TypeTag> ty_args;
+    public final java.util.List<TransactionArgument> args;
 
-    public Script(com.facebook.serde.Bytes code, java.util.List<org.libra.types.TypeTag> ty_args, java.util.List<org.libra.types.TransactionArgument> args) {
-       assert code != null;
-       assert ty_args != null;
-       assert args != null;
-       this.code = code;
-       this.ty_args = ty_args;
-       this.args = args;
+    public Script(com.facebook.serde.Bytes code, java.util.List<TypeTag> ty_args, java.util.List<TransactionArgument> args) {
+        assert code != null;
+        assert ty_args != null;
+        assert args != null;
+        this.code = code;
+        this.ty_args = ty_args;
+        this.args = args;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -51,8 +51,8 @@ public final class Script {
 
     public static final class Builder {
         public com.facebook.serde.Bytes code;
-        public java.util.List<org.libra.types.TypeTag> ty_args;
-        public java.util.List<org.libra.types.TransactionArgument> args;
+        public java.util.List<TypeTag> ty_args;
+        public java.util.List<TransactionArgument> args;
 
         public Script build() {
             return new Script(

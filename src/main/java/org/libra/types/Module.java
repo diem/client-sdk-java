@@ -6,8 +6,8 @@ public final class Module {
     public final com.facebook.serde.Bytes code;
 
     public Module(com.facebook.serde.Bytes code) {
-       assert code != null;
-       this.code = code;
+        assert code != null;
+        this.code = code;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {

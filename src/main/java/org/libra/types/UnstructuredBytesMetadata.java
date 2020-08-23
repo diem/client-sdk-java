@@ -6,8 +6,8 @@ public final class UnstructuredBytesMetadata {
     public final java.util.Optional<com.facebook.serde.Bytes> metadata;
 
     public UnstructuredBytesMetadata(java.util.Optional<com.facebook.serde.Bytes> metadata) {
-       assert metadata != null;
-       this.metadata = metadata;
+        assert metadata != null;
+        this.metadata = metadata;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
