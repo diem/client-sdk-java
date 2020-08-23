@@ -4,7 +4,6 @@ import com.facebook.serde.Bytes;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import org.libra.librasdk.dto.*;
-import org.libra.stdlib.Stdlib;
 import org.libra.types.AccountAddress;
 import org.libra.types.Script;
 import org.libra.types.SignedTransaction;
@@ -13,6 +12,8 @@ import org.libra.types.TypeTag;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.libra.stdlib.Helpers.encode_peer_to_peer_with_metadata_script;
 
 public class LibraClient implements Client {
 
@@ -148,7 +149,7 @@ public class LibraClient implements Client {
     private Script createP2PScript(AccountAddress address, String currencyCode, long amount,
                                    byte[] metadata, byte[] metadataSignature) {
         TypeTag token = Utils.createCurrencyCodeTypeTag(currencyCode);
-        return Stdlib.encode_peer_to_peer_with_metadata_script(
+        return encode_peer_to_peer_with_metadata_script(
                 token,
                 address,
                 amount,
