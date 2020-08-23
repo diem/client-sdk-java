@@ -82,7 +82,6 @@ final class TraitHelpers {
             AccessPath.deserialize(deserializer),
             WriteOp.deserialize(deserializer)
         );
-
     }
 
     static void serialize_vector_AccountAddress(java.util.List<AccountAddress> value, com.facebook.serde.Serializer serializer) throws java.lang.Exception {

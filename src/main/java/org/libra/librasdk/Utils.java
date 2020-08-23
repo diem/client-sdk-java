@@ -22,7 +22,8 @@ import java.security.SignatureException;
 import java.util.ArrayList;
 
 public class Utils {
-    public static SignedTransaction signTransaction(LocalAccount sender, long sequence_number, Script script, long maxGasAmount, long gasPriceUnit, String currencyCode, long expirationTimestampSecs, byte chainId) throws Exception {
+    public static SignedTransaction signTransaction(LocalAccount sender, long sequence_number, Script script, long
+            maxGasAmount, long gasPriceUnit, String currencyCode, long expirationTimestampSecs, byte chainId) throws Exception {
         RawTransaction rt = createRawTransaction(sender.getAccountAddress(), sequence_number,
                 script, maxGasAmount, gasPriceUnit, currencyCode, expirationTimestampSecs, chainId);
 

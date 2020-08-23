@@ -6,8 +6,8 @@ public final class Identifier {
     public final String value;
 
     public Identifier(String value) {
-       assert value != null;
-       this.value = value;
+        assert value != null;
+        this.value = value;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {

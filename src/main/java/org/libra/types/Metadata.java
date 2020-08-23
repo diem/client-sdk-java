@@ -55,8 +55,8 @@ public abstract class Metadata {
         public final org.libra.types.GeneralMetadata value;
 
         public GeneralMetadata(org.libra.types.GeneralMetadata value) {
-           assert value != null;
-           this.value = value;
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -100,8 +100,8 @@ public abstract class Metadata {
         public final org.libra.types.TravelRuleMetadata value;
 
         public TravelRuleMetadata(org.libra.types.TravelRuleMetadata value) {
-           assert value != null;
-           this.value = value;
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -145,8 +145,8 @@ public abstract class Metadata {
         public final org.libra.types.UnstructuredBytesMetadata value;
 
         public UnstructuredBytesMetadata(org.libra.types.UnstructuredBytesMetadata value) {
-           assert value != null;
-           this.value = value;
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {

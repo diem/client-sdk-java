@@ -6,8 +6,8 @@ public final class TravelRuleMetadataV0 {
     public final java.util.Optional<String> off_chain_reference_id;
 
     public TravelRuleMetadataV0(java.util.Optional<String> off_chain_reference_id) {
-       assert off_chain_reference_id != null;
-       this.off_chain_reference_id = off_chain_reference_id;
+        assert off_chain_reference_id != null;
+        this.off_chain_reference_id = off_chain_reference_id;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {

@@ -7,7 +7,7 @@ import com.facebook.lcs.LcsDeserializer;
 import com.facebook.serde.Bytes;
 import com.facebook.serde.Deserializer;
 import org.junit.Test;
-import org.libra.stdlib.Stdlib;
+import org.libra.stdlib.Helpers;
 import org.libra.types.RawTransaction;
 import org.libra.types.Script;
 import org.libra.types.TypeTag;
@@ -39,7 +39,7 @@ public class UtilsTest {
         String currencyCode = "LBR";
 
         TypeTag token = Utils.createCurrencyCodeTypeTag(currencyCode);
-        Script script = Stdlib.encode_peer_to_peer_with_metadata_script(
+        Script script = Helpers.encode_peer_to_peer_with_metadata_script(
                 token,
                 Utils.hexToAddress(recipient),
                 amount,

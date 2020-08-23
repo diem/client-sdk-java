@@ -56,7 +56,7 @@ task gen {
             executable "sh"
             args '-c', 'target/debug/generate-transaction-builders' +
                     ' --language java' +
-                    ' --module-name org.libra.stdlib.Stdlib' +
+                    ' --module-name org.libra.stdlib' +
                     ' --with-libra-types "testsuite/generate-format/tests/staged/libra.yaml"' +
                     ' --target-source-dir "./../src/main/java"' +
                     ' "language/stdlib/compiled/transaction_scripts/abi"'
