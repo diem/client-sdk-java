@@ -6,95 +6,92 @@
  * User Manual available at https://docs.gradle.org/6.5.1/userguide/java_library_plugin.html
  */
 
-plugins {
-    // Apply the java-library plugin to add support for Java Library
-    id 'java-library'
-    id "jacoco"
-}
-
-// Building
-apply plugin: 'java'
 repositories {
     mavenCentral()
 }
-dependencies {
-    compile 'com.rabbitmq:amqp-client:5.1.0'
-}
 
-// Signing
-apply plugin: 'signing'
-signing {
-    sign configurations.archives
-}
+group 'org.libra'
+version '1.0.0'
 
+apply plugin: 'java-library'
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'maven-publish'
 
-// Deploying
-apply plugin: 'maven'
-
-// Add Javadoc JAR and sources JAR to artifact
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
+task sourceJar(type: Jar, dependsOn: classes) {
+    classifier 'sources'
     from sourceSets.main.allSource
 }
-artifacts {
-    archives javadocJar, sourcesJar
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
 }
 
-// Configure group ID, artifact ID, and version
-group = "org.libra"
-archivesBaseName = "libra-sdk"
-version = "1.0.0"
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
 
-// Build, sign, and upload
-uploadArchives {
-    repositories {
-        mavenDeployer {
+            artifact sourceJar
+            artifact javadocJar
 
-            // Sign POM
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            // Destination
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            // Add required metadata to POM
-            pom.project {
-                name 'Libra sdk'
-                packaging 'jar'
-                description 'libra SDK for Java'
-                url 'https://github.com/libra/libra-client-sdk-java'
-
-                scm {
-                    connection 'scm:git:git://github.com/libra/libra-client-sdk-java.git'
-                    developerConnection 'scm:git:ssh://github.com/libra/libra-client-sdk-java.git'
-                    url 'http://github.com/libra/libra-client-sdk-java/tree/master'
-                }
-
-                licenses {
-                    license {
-                        name 'The Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            pom.withXml {
+                asNode().with {
+                    appendNode('packaging', 'jar')
+                    appendNode('name', 'Libra SDK')
+                    appendNode('description', 'PROJECT_DESCRIPTION')
+                    appendNode('url', 'PROJECT_URL')
+                    appendNode('scm').with {
+                        appendNode('url', 'SCM_URL_FOR_PEOPLE')
+                        appendNode('connection', 'SCM_URL_FOR_SCM')
                     }
+                    appendNode('issueManagement').with {
+                        appendNode('url', 'ISSUE_TRACKER_URL')
+                        appendNode('system', 'ISSUE_TRACKER_NAME')
+                    }
+                    appendNode('licenses').with {
+                        appendNode('license').with {
+                            appendNode('name', 'LICENSE_NAME')
+                            appendNode('url', 'LICENSE_URL')
+                        }
+                    }
+                    appendNode('organization').with {
+                        appendNode('name', 'ORG_NAME')
+                        appendNode('url', 'ORG_URL')
+                    }
+                    appendNode('developers').with {
+                        appendNode('developer').with {
+                            appendNode('id', 'DEV_HANDLE')
+                            appendNode('name', 'DEV_NAME')
+                            appendNode('email', 'DEV_MAIL')
+                            appendNode('organization', 'ORG_NAME_AGAIN')
+                            appendNode('organizationUrl', 'ORG_URL_AGAIN')
+                            appendNode('timezone', 'UTC_OFFSET')
+                        }
+                    }
+                }
+            }
+
+            tasks.withType(Jar) {
+                from(project.projectDir) {
+                    include 'LICENSE.md'
+                    into 'META-INF'
                 }
             }
         }
     }
+    repositories {
+        maven {
+            url 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
+//            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+            credentials {
+                username project.ossrhUsername
+                password project.ossrhPassword
+            }
+        }
+    }
 }
-
-
-
-
-
-
-
 
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'

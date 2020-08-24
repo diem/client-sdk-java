@@ -9,7 +9,7 @@ on:
   pull_request:
     branches: [ master ]
   release:
-    types: [ created ]
+    types: [ published ]
 
 jobs:
   build:
@@ -34,12 +34,9 @@ jobs:
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8
-          server-id: ossrh
-          server-username: ossrhUsername
-          server-password: ossrhPassword
+          java-version: 8
       - name: Publish package
-        run: mvn -B deploy
+        run: ./gradlew -i build
         env:
           ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
           ossrhPassword: ${{ secrets.OSSRH_TOKEN }}
