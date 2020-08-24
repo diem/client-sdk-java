@@ -6,26 +6,95 @@
  * User Manual available at https://docs.gradle.org/6.5.1/userguide/java_library_plugin.html
  */
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.22.0"
-    }
-}
-
 plugins {
     // Apply the java-library plugin to add support for Java Library
     id 'java-library'
     id "jacoco"
 }
 
+// Building
+apply plugin: 'java'
 repositories {
-    // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+    mavenCentral()
 }
+dependencies {
+    compile 'com.rabbitmq:amqp-client:5.1.0'
+}
+
+// Signing
+apply plugin: 'signing'
+signing {
+    sign configurations.archives
+}
+
+
+// Deploying
+apply plugin: 'maven'
+
+// Add Javadoc JAR and sources JAR to artifact
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+// Configure group ID, artifact ID, and version
+group = "org.libra"
+archivesBaseName = "libra-sdk"
+version = "1.0.0"
+
+// Build, sign, and upload
+uploadArchives {
+    repositories {
+        mavenDeployer {
+
+            // Sign POM
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            // Destination
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            // Add required metadata to POM
+            pom.project {
+                name 'Libra sdk'
+                packaging 'jar'
+                description 'libra SDK for Java'
+                url 'https://github.com/libra/libra-client-sdk-java'
+
+                scm {
+                    connection 'scm:git:git://github.com/libra/libra-client-sdk-java.git'
+                    developerConnection 'scm:git:ssh://github.com/libra/libra-client-sdk-java.git'
+                    url 'http://github.com/libra/libra-client-sdk-java/tree/master'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
 
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
@@ -44,10 +113,6 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
-//
-//compileJava {
-//    options.compilerArgs.addAll(['--release', '8'])
-//}
 
 task gen {
     doLast {
@@ -67,10 +132,4 @@ task gen {
                     ' "language/stdlib/compiled/transaction_scripts/abi"'
         }
     }
-}
-
-apply plugin: 'io.codearte.nexus-staging'
-
-nexusStaging {
-    packageGroup = "org.libra.java-sdk"
 }
