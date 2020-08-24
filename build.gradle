@@ -23,11 +23,10 @@ task sourceJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-    enabled false
-}
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//    classifier = 'javadoc'
+//    from javadoc.destinationDir
+//}
 
 publishing {
     publications {
@@ -35,7 +34,7 @@ publishing {
             from components.java
 
             artifact sourceJar
-            artifact javadocJar
+//            artifact javadocJar
 
             pom.withXml {
                 asNode().with {
