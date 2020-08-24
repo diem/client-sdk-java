@@ -86,8 +86,8 @@ publishing {
             url 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
 //            url 'https://oss.sonatype.org/content/repositories/snapshots/'
             credentials {
-                username project.ossrhUsername
-                password project.ossrhPassword
+                username ossrhUsername
+                password ossrhPassword
             }
         }
     }
