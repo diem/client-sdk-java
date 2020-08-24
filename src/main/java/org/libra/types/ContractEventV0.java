@@ -3,20 +3,20 @@ package org.libra.types;
 import java.math.BigInteger;
 
 public final class ContractEventV0 {
-    public final org.libra.types.EventKey key;
+    public final EventKey key;
     public final @com.facebook.serde.Unsigned Long sequence_number;
-    public final org.libra.types.TypeTag type_tag;
+    public final TypeTag type_tag;
     public final com.facebook.serde.Bytes event_data;
 
-    public ContractEventV0(org.libra.types.EventKey key, @com.facebook.serde.Unsigned Long sequence_number, org.libra.types.TypeTag type_tag, com.facebook.serde.Bytes event_data) {
-       assert key != null;
-       assert sequence_number != null;
-       assert type_tag != null;
-       assert event_data != null;
-       this.key = key;
-       this.sequence_number = sequence_number;
-       this.type_tag = type_tag;
-       this.event_data = event_data;
+    public ContractEventV0(EventKey key, @com.facebook.serde.Unsigned Long sequence_number, TypeTag type_tag, com.facebook.serde.Bytes event_data) {
+        assert key != null;
+        assert sequence_number != null;
+        assert type_tag != null;
+        assert event_data != null;
+        this.key = key;
+        this.sequence_number = sequence_number;
+        this.type_tag = type_tag;
+        this.event_data = event_data;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -28,9 +28,9 @@ public final class ContractEventV0 {
 
     public static ContractEventV0 deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
         Builder builder = new Builder();
-        builder.key = org.libra.types.EventKey.deserialize(deserializer);
+        builder.key = EventKey.deserialize(deserializer);
         builder.sequence_number = deserializer.deserialize_u64();
-        builder.type_tag = org.libra.types.TypeTag.deserialize(deserializer);
+        builder.type_tag = TypeTag.deserialize(deserializer);
         builder.event_data = deserializer.deserialize_bytes();
         return builder.build();
     }
@@ -57,9 +57,9 @@ public final class ContractEventV0 {
     }
 
     public static final class Builder {
-        public org.libra.types.EventKey key;
+        public EventKey key;
         public @com.facebook.serde.Unsigned Long sequence_number;
-        public org.libra.types.TypeTag type_tag;
+        public TypeTag type_tag;
         public com.facebook.serde.Bytes event_data;
 
         public ContractEventV0 build() {

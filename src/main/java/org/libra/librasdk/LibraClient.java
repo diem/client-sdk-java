@@ -1,12 +1,19 @@
 package org.libra.librasdk;
 
+import com.facebook.serde.Bytes;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import org.libra.librasdk.dto.*;
+import org.libra.types.AccountAddress;
+import org.libra.types.Script;
+import org.libra.types.SignedTransaction;
+import org.libra.types.TypeTag;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.libra.stdlib.Helpers.encode_peer_to_peer_with_metadata_script;
 
 public class LibraClient implements Client {
 
@@ -80,6 +87,36 @@ public class LibraClient implements Client {
         executeCall(Method.submit, params, null);
     }
 
+    public SignedTransaction transfer(String senderAccountAddress, String libraAuthKey,
+                                      String privateKey,
+                                      String publicKey, String receiverAccountAddress,
+                                      long amount, long maxGasAmount, long gasPriceUnit,
+                                      String currencyCode,
+                                      long expirationTimestampSecs, byte chainId,
+                                      byte[] metadata, byte[] metadataSignature) throws Exception {
+
+        LocalAccount localAccount = new LocalAccount(senderAccountAddress, libraAuthKey,
+                privateKey, publicKey);
+        AccountAddress accountAddressObject = Utils.hexToAddress(receiverAccountAddress);
+        Script script = createP2PScript(accountAddressObject, currencyCode, amount, metadata, metadataSignature);
+        Account account = getAccount(localAccount.libra_account_address);
+
+        SignedTransaction signedTransaction;
+        signedTransaction = Utils.signTransaction(localAccount,
+                account.sequence_number,
+                script,
+                maxGasAmount,
+                gasPriceUnit,
+                currencyCode,
+                expirationTimestampSecs,
+                chainId);
+        String lcsHex = Utils.toLCSHex(signedTransaction);
+        submit(lcsHex);
+
+        return signedTransaction;
+
+    }
+
     public Transaction waitForTransaction(String address, long sequence, boolean includeEvents,
                                           long timeoutMillis) throws InterruptedException,
             LibraSDKException {
@@ -108,4 +145,18 @@ public class LibraClient implements Client {
 
         return libraEvents;
     }
+
+    private Script createP2PScript(AccountAddress address, String currencyCode, long amount,
+                                   byte[] metadata, byte[] metadataSignature) {
+        TypeTag token = Utils.createCurrencyCodeTypeTag(currencyCode);
+        return encode_peer_to_peer_with_metadata_script(
+                token,
+                address,
+                amount,
+                new Bytes(metadata),
+                new Bytes(metadataSignature)
+        );
+    }
+
 }
+

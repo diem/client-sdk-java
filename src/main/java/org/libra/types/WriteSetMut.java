@@ -3,11 +3,11 @@ package org.libra.types;
 import java.math.BigInteger;
 
 public final class WriteSetMut {
-    public final java.util.List<com.facebook.serde.Tuple2<org.libra.types.AccessPath, org.libra.types.WriteOp>> write_set;
+    public final java.util.List<com.facebook.serde.Tuple2<AccessPath, WriteOp>> write_set;
 
-    public WriteSetMut(java.util.List<com.facebook.serde.Tuple2<org.libra.types.AccessPath, org.libra.types.WriteOp>> write_set) {
-       assert write_set != null;
-       this.write_set = write_set;
+    public WriteSetMut(java.util.List<com.facebook.serde.Tuple2<AccessPath, WriteOp>> write_set) {
+        assert write_set != null;
+        this.write_set = write_set;
     }
 
     public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -36,7 +36,7 @@ public final class WriteSetMut {
     }
 
     public static final class Builder {
-        public java.util.List<com.facebook.serde.Tuple2<org.libra.types.AccessPath, org.libra.types.WriteOp>> write_set;
+        public java.util.List<com.facebook.serde.Tuple2<AccessPath, WriteOp>> write_set;
 
         public WriteSetMut build() {
             return new WriteSetMut(

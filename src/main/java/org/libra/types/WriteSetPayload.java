@@ -16,11 +16,11 @@ public abstract class WriteSetPayload {
     }
 
     public static final class Direct extends WriteSetPayload {
-        public final org.libra.types.ChangeSet value;
+        public final ChangeSet value;
 
-        public Direct(org.libra.types.ChangeSet value) {
-           assert value != null;
-           this.value = value;
+        public Direct(ChangeSet value) {
+            assert value != null;
+            this.value = value;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -30,7 +30,7 @@ public abstract class WriteSetPayload {
 
         static Direct load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
-            builder.value = org.libra.types.ChangeSet.deserialize(deserializer);
+            builder.value = ChangeSet.deserialize(deserializer);
             return builder.build();
         }
 
@@ -50,7 +50,7 @@ public abstract class WriteSetPayload {
         }
 
         public static final class Builder {
-            public org.libra.types.ChangeSet value;
+            public ChangeSet value;
 
             public Direct build() {
                 return new Direct(
@@ -61,14 +61,14 @@ public abstract class WriteSetPayload {
     }
 
     public static final class Script extends WriteSetPayload {
-        public final org.libra.types.AccountAddress execute_as;
+        public final AccountAddress execute_as;
         public final org.libra.types.Script script;
 
-        public Script(org.libra.types.AccountAddress execute_as, org.libra.types.Script script) {
-           assert execute_as != null;
-           assert script != null;
-           this.execute_as = execute_as;
-           this.script = script;
+        public Script(AccountAddress execute_as, org.libra.types.Script script) {
+            assert execute_as != null;
+            assert script != null;
+            this.execute_as = execute_as;
+            this.script = script;
         }
 
         public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
@@ -79,7 +79,7 @@ public abstract class WriteSetPayload {
 
         static Script load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
-            builder.execute_as = org.libra.types.AccountAddress.deserialize(deserializer);
+            builder.execute_as = AccountAddress.deserialize(deserializer);
             builder.script = org.libra.types.Script.deserialize(deserializer);
             return builder.build();
         }
@@ -102,7 +102,7 @@ public abstract class WriteSetPayload {
         }
 
         public static final class Builder {
-            public org.libra.types.AccountAddress execute_as;
+            public AccountAddress execute_as;
             public org.libra.types.Script script;
 
             public Script build() {
