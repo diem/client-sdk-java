@@ -28,6 +28,10 @@ public class LibraClient implements Client {
         this.libraLedgerState = new LibraLedgerState(chainId);
     }
 
+    public LibraClient(Net net) {
+        this(net.uri, net.chainId);
+    }
+
     public List<Transaction> getTransactions(long fromVersion, int limit, boolean includeEvents) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(fromVersion);
