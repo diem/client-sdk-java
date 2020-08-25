@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.libra.librasdk.dto.Metadata;
 import org.libra.librasdk.dto.Transaction;
 import org.libra.librasdk.dto.*;
+import org.libra.librasdk.jsonrpc.JSONRPCErrorException;
 import org.libra.stdlib.Helpers;
 import org.libra.types.*;
 
@@ -17,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.libra.librasdk.LibraNetwork.TESTNET;
+import static org.libra.librasdk.Net.TestNet;
 
 
 public class TestNetIntegrationTest {
@@ -27,15 +28,22 @@ public class TestNetIntegrationTest {
 
     @Before
     public void setup() {
-        libraClient = new LibraClient(TESTNET);
+        libraClient = new LibraClient(TestNet());
     }
 
     @Test
     public void testGetMetadata() throws Exception {
+        libraClient = new LibraClient("https://client.testnet.libra.org/v1", 2);
+
         Metadata response = libraClient.getMetadata();
         Assert.assertNotNull(response);
         Assert.assertTrue(response.timestamp > new Date().getTime() - 600);
         Assert.assertTrue(response.version > 1000);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testLibraClient_invalidUrl() {
+        libraClient = new LibraClient("invalidUrl", 2);
     }
 
     @Test
@@ -176,8 +184,7 @@ public class TestNetIntegrationTest {
                 currencyCode,
                 0L,
                 Constants.TEST_NET_CHAIN_ID);
-        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED",
-                LibraSDKException.class, () -> libraClient.submit(Utils.toLCSHex(st)));
+        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED", JSONRPCErrorException.class, () -> libraClient.submit(Utils.toLCSHex(st)));
     }
 
     @Test
