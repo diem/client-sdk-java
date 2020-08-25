@@ -6,7 +6,6 @@ package org.libra.librasdk;
 import com.facebook.serde.Bytes;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.libra.librasdk.dto.Metadata;
 import org.libra.librasdk.dto.Transaction;
@@ -83,7 +82,6 @@ public class TestNetIntegrationTest {
         Assert.assertTrue(response.isExecuted());
     }
 
-    @Ignore
     @Test
     public void testSubmitTransaction() throws Exception {
         TestData data = TestData.get();
@@ -123,7 +121,6 @@ public class TestNetIntegrationTest {
         assertEquals("receivedpayment", p2p.events[1].data.type);
     }
 
-    @Ignore
     @Test
     public void testTransferTransaction() throws Exception {
         TestData data = TestData.get();
@@ -157,7 +154,6 @@ public class TestNetIntegrationTest {
         assertEquals("receivedpayment", p2p.events[1].data.type);
     }
 
-    @Ignore
     @Test
     public void testSubmitExpiredTransaction() throws Exception {
         TestData data = TestData.get();
@@ -184,7 +180,6 @@ public class TestNetIntegrationTest {
                 LibraSDKException.class, () -> libraClient.submit(Utils.toLCSHex(st)));
     }
 
-    @Ignore
     @Test
     public void testSubmitTransactionAndExecuteFailed() throws Exception {
         TestData data = TestData.get();
