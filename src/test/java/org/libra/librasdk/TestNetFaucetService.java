@@ -3,7 +3,8 @@
 
 package org.libra.librasdk;
 
-import com.squareup.okhttp.*;
+
+import okhttp3.*;
 import org.libra.librasdk.dto.Transaction;
 
 public class TestNetFaucetService {

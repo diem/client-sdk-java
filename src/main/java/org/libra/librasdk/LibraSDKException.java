@@ -11,4 +11,8 @@ public class LibraSDKException extends Exception {
     public LibraSDKException(Throwable e) {
         super((e));
     }
+
+    public LibraSDKException(String msg) {
+        super(msg);
+    }
 }
