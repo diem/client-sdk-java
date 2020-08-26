@@ -25,10 +25,19 @@ public class TestNetIntegrationTest {
 
     public static final int DEFAULT_TIMEOUT = 10 * 1000; // 10 seconds
     private LibraClient libraClient;
+    private LocalAccount account1;
+    private LocalAccount account2;
+    private LocalAccount account3;
 
     @Before
     public void setup() {
         libraClient = new LibraClient(TestNet());
+        account1 = Utils.generateLocalAccountFromSeed(
+                "76e3de861d516283dc285e12ddadc95245a9e98f351c910b0ad722f790bac273");
+        account2 = Utils.generateLocalAccountFromSeed(
+                "b13968ad5722ee203968f7deea565b2f4266f923b3292065b6e190c368f91036");
+        account3 = Utils.generateLocalAccountFromSeed(
+                "aceb051a2c02ebe6493000613bd467ea97a6051988637440c918584043a769dd");
     }
 
     @Test
@@ -92,11 +101,7 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testSubmitTransaction() throws Exception {
-        TestData data = TestData.get();
-        LocalAccount account1 = data.local_account;
-        LocalAccount account2 = data.local_account2;
         String currencyCode = "LBR";
-
         TestNetFaucetService.mintCoins(libraClient, coins(100), account1.libra_auth_key,
                 currencyCode);
         TestNetFaucetService.mintCoins(libraClient, coins(100), account2.libra_auth_key,
@@ -131,11 +136,7 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testTransferTransaction() throws Exception {
-        TestData data = TestData.get();
-        LocalAccount account1 = data.local_account;
-        LocalAccount account2 = data.local_account2;
         String currencyCode = "LBR";
-
         TestNetFaucetService.mintCoins(libraClient, coins(100), account1.libra_auth_key,
                 currencyCode);
         TestNetFaucetService.mintCoins(libraClient, coins(100), account2.libra_auth_key,
@@ -144,8 +145,9 @@ public class TestNetIntegrationTest {
         SignedTransaction signedTransaction = libraClient.transfer(account1.libra_account_address,
                 account1.libra_auth_key,
                 account1.private_key, account1.public_key,
-                account2.libra_account_address,1000000L,
-                1000000L, 0L, currencyCode, 100000000000L, Constants.TEST_NET_CHAIN_ID, new byte[]{}, new byte[]{});
+                account2.libra_account_address, 1000000L,
+                1000000L, 0L, currencyCode, 100000000000L, Constants.TEST_NET_CHAIN_ID,
+                new byte[]{}, new byte[]{});
         Transaction p2p = libraClient.waitForTransaction(
                 Utils.addressToHex(signedTransaction.raw_txn.sender),
                 signedTransaction.raw_txn.sequence_number,
@@ -164,10 +166,6 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testSubmitExpiredTransaction() throws Exception {
-        TestData data = TestData.get();
-        LocalAccount account1 = data.local_account;
-        LocalAccount account2 = data.local_account2;
-
         String currencyCode = "LBR";
         TestNetFaucetService.mintCoins(libraClient, coins(100), account1.libra_auth_key,
                 currencyCode);
@@ -184,15 +182,12 @@ public class TestNetIntegrationTest {
                 currencyCode,
                 0L,
                 Constants.TEST_NET_CHAIN_ID);
-        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED", JSONRPCErrorException.class, () -> libraClient.submit(Utils.toLCSHex(st)));
+        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED",
+                JSONRPCErrorException.class, () -> libraClient.submit(Utils.toLCSHex(st)));
     }
 
     @Test
     public void testSubmitTransactionAndExecuteFailed() throws Exception {
-        TestData data = TestData.get();
-        LocalAccount account1 = data.local_account;
-        LocalAccount account3 = data.local_account3;
-
         String currencyCode = "LBR";
         TestNetFaucetService.mintCoins(libraClient, coins(100), account1.libra_auth_key,
                 currencyCode);

@@ -7,12 +7,13 @@ import com.facebook.lcs.LcsDeserializer;
 import com.facebook.serde.Bytes;
 import com.facebook.serde.Deserializer;
 import org.junit.Test;
+import org.libra.librasdk.dto.LocalAccount;
 import org.libra.stdlib.Helpers;
 import org.libra.types.RawTransaction;
 import org.libra.types.Script;
 import org.libra.types.TypeTag;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class UtilsTest {
     @Test
@@ -80,5 +81,25 @@ public class UtilsTest {
         String humanReadablePart = "hello";
         String encoded = Utils.Bech32Encode(humanReadablePart, data);
         assertEquals(encoded, "hello1w0rldcs7fw6");
+    }
+
+    @Test
+    public void testGenerateLocalAccount() {
+        LocalAccount localAccount = Utils.generateLocalAccount();
+
+        assertNotNull(localAccount.private_key);
+        assertNotNull(localAccount.public_key);
+        assertNotNull(localAccount.libra_auth_key);
+        assertNotNull(localAccount.libra_account_address);
+    }
+
+    @Test
+    public void testGenerateLocalAccountFromSeed() {
+        LocalAccount localAccount = Utils.generateLocalAccountFromSeed("76e3de861d516283dc285e12ddadc95245a9e98f351c910b0ad722f790bac273");
+
+        assertTrue(localAccount.private_key.equalsIgnoreCase("76e3de861d516283dc285e12ddadc95245a9e98f351c910b0ad722f790bac273"));
+        assertTrue(localAccount.public_key.equalsIgnoreCase("f549a91fb9989883fb4d38b463308f3ea82074fb39ea74dae61f62e11bf55d25"));
+        assertTrue(localAccount.libra_auth_key.equalsIgnoreCase("d939b0214b484bf4d71d08d0247b755a1668f6be25668c1a17cd8caf6b8d2f25"));
+        assertTrue(localAccount.libra_account_address.equalsIgnoreCase("1668f6be25668c1a17cd8caf6b8d2f25"));
     }
 }
