@@ -60,7 +60,7 @@ public class TestNetIntegrationTest {
         Metadata response = libraClient.getMetadata(1);
         Assert.assertNotNull(response);
         Assert.assertEquals(1, response.version);
-        Assert.assertEquals(0, response.timestamp);
+        Assert.assertEquals(1598492123453462L, response.timestamp);
     }
 
     @Test
