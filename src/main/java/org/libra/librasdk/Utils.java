@@ -15,15 +15,17 @@ import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.libra.librasdk.dto.LocalAccount;
 import org.libra.types.*;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SignatureException;
+import java.security.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Utils {
-    public static SignedTransaction signTransaction(LocalAccount sender, long sequence_number, Script script, long
-            maxGasAmount, long gasPriceUnit, String currencyCode, long expirationTimestampSecs, byte chainId) throws Exception {
+    public static SignedTransaction signTransaction(LocalAccount sender, long sequence_number,
+                                                    Script script, long
+                                                            maxGasAmount, long gasPriceUnit,
+                                                    String currencyCode,
+                                                    long expirationTimestampSecs,
+                                                    byte chainId) throws Exception {
         RawTransaction rt = createRawTransaction(sender.getAccountAddress(), sequence_number,
                 script, maxGasAmount, gasPriceUnit, currencyCode, expirationTimestampSecs, chainId);
 
@@ -36,7 +38,11 @@ public class Utils {
         return st;
     }
 
-    public static RawTransaction createRawTransaction(AccountAddress senderAddress, long sequence_number, Script script, long maxGasAmount, long gasPriceUnit, String currencyCode, long expirationTimestampSecs, byte chainId) {
+    public static RawTransaction createRawTransaction(AccountAddress senderAddress,
+                                                      long sequence_number, Script script,
+                                                      long maxGasAmount, long gasPriceUnit,
+                                                      String currencyCode,
+                                                      long expirationTimestampSecs, byte chainId) {
         return new RawTransaction(senderAddress, sequence_number,
                 new TransactionPayload.Script(script),
                 maxGasAmount, gasPriceUnit, currencyCode,
@@ -57,6 +63,16 @@ public class Utils {
     public static byte[] sha3Hash(byte[] data) {
         SHA3.DigestSHA3 digestSHA3 = new SHA3.Digest256();
         return digestSHA3.digest(data);
+    }
+
+    public static byte[] createAuthKeyFromEd25519PublicKey(byte[] data) {
+        SHA3.DigestSHA3 digestSHA3 = new SHA3.Digest256();
+        byte[] singleSign = {(byte) 0};
+
+        digestSHA3.update(data);
+        digestSHA3.update(singleSign);
+
+        return digestSHA3.digest();
     }
 
     private static byte[] concat(byte[] part1, byte[] part2) {
@@ -153,5 +169,37 @@ public class Utils {
 
     public static String Bech32Encode(String humanReadablePart, char[] data) {
         return Bech32.encode(humanReadablePart, data);
+    }
+
+    public static LocalAccount generateLocalAccount() {
+        Ed25519PrivateKeyParameters privateK = new Ed25519PrivateKeyParameters(new SecureRandom());
+        return generateLocalAccountInner(privateK);
+    }
+
+    public static LocalAccount generateLocalAccountFromPrivateKey(String privateKey) {
+        byte[] privateKeyBytes = hexToBytes(privateKey);
+
+        Ed25519PrivateKeyParameters privateKeyParameters =
+                new Ed25519PrivateKeyParameters(privateKeyBytes, 0);
+        return generateLocalAccountInner(privateKeyParameters);
+    }
+
+    private static LocalAccount generateLocalAccountInner(Ed25519PrivateKeyParameters privateKeyParameters) {
+        Ed25519PublicKeyParameters ed25519PublicKeyParameters =
+                privateKeyParameters.generatePublicKey();
+        byte[] privateKeyBytes = privateKeyParameters.getEncoded();
+        String privateKey = bytesToHex(privateKeyBytes);
+
+        byte[] publicKeyBytes = ed25519PublicKeyParameters.getEncoded();
+        String publicKey = bytesToHex(publicKeyBytes);
+
+        byte[] authKeyBytes = createAuthKeyFromEd25519PublicKey(publicKeyBytes);
+        byte[] accountAddressBytes = Arrays.copyOfRange(authKeyBytes, authKeyBytes.length - 16,
+                authKeyBytes.length);
+
+        String authKey = bytesToHex(authKeyBytes);
+        String accountAddress = bytesToHex(accountAddressBytes);
+
+        return new LocalAccount(accountAddress, authKey, privateKey, publicKey);
     }
 }
