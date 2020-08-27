@@ -12,7 +12,7 @@ public class TestNetFaucetService {
     public static String SERVER_URL = "http://faucet.testnet.libra.org/";
 
     public static void mintCoins(Client client, long amount, String authKey, String currencyCode) {
-        long nextAccountSeq = mintCoinsAsync(amount, authKey, currencyCode);
+        long nextAccountSeq = mintCoinsAsync(amount, authKey.toLowerCase(), currencyCode);
         Transaction txn = null;
         try {
             txn = client.waitForTransaction(Constants.DD_ADDRESS, nextAccountSeq - 1, false, DEFAULT_TIMEOUT);
