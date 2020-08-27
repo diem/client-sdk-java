@@ -32,11 +32,11 @@ public class TestNetIntegrationTest {
     @Before
     public void setup() {
         libraClient = new LibraClient(TestNet());
-        account1 = Utils.generateLocalAccountFromSeed(
+        account1 = Utils.generateLocalAccountFromPrivateKey(
                 "76e3de861d516283dc285e12ddadc95245a9e98f351c910b0ad722f790bac273");
-        account2 = Utils.generateLocalAccountFromSeed(
+        account2 = Utils.generateLocalAccountFromPrivateKey(
                 "b13968ad5722ee203968f7deea565b2f4266f923b3292065b6e190c368f91036");
-        account3 = Utils.generateLocalAccountFromSeed(
+        account3 = Utils.generateLocalAccountFromPrivateKey(
                 "aceb051a2c02ebe6493000613bd467ea97a6051988637440c918584043a769dd");
     }
 

@@ -65,7 +65,7 @@ public class Utils {
         return digestSHA3.digest(data);
     }
 
-    public static byte[] sha3HashSingleSign(byte[] data) {
+    public static byte[] createAuthKeyFromEd25519PublicKey(byte[] data) {
         SHA3.DigestSHA3 digestSHA3 = new SHA3.Digest256();
         byte[] singleSign = {(byte) 0};
 
@@ -176,7 +176,7 @@ public class Utils {
         return generateLocalAccountInner(privateK);
     }
 
-    public static LocalAccount generateLocalAccountFromSeed(String privateKey) {
+    public static LocalAccount generateLocalAccountFromPrivateKey(String privateKey) {
         byte[] privateKeyBytes = hexToBytes(privateKey);
 
         Ed25519PrivateKeyParameters privateKeyParameters =
@@ -193,7 +193,7 @@ public class Utils {
         byte[] publicKeyBytes = ed25519PublicKeyParameters.getEncoded();
         String publicKey = bytesToHex(publicKeyBytes);
 
-        byte[] authKeyBytes = sha3HashSingleSign(publicKeyBytes);
+        byte[] authKeyBytes = createAuthKeyFromEd25519PublicKey(publicKeyBytes);
         byte[] accountAddressBytes = Arrays.copyOfRange(authKeyBytes, authKeyBytes.length - 16,
                 authKeyBytes.length);
 

@@ -95,7 +95,7 @@ public class UtilsTest {
 
     @Test
     public void testGenerateLocalAccountFromSeed() {
-        LocalAccount localAccount = Utils.generateLocalAccountFromSeed("76e3de861d516283dc285e12ddadc95245a9e98f351c910b0ad722f790bac273");
+        LocalAccount localAccount = Utils.generateLocalAccountFromPrivateKey("76e3de861d516283dc285e12ddadc95245a9e98f351c910b0ad722f790bac273");
 
         assertTrue(localAccount.private_key.equalsIgnoreCase("76e3de861d516283dc285e12ddadc95245a9e98f351c910b0ad722f790bac273"));
         assertTrue(localAccount.public_key.equalsIgnoreCase("f549a91fb9989883fb4d38b463308f3ea82074fb39ea74dae61f62e11bf55d25"));
