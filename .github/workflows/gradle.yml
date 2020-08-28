@@ -40,5 +40,8 @@ jobs:
         env:
           ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
           ossrhPassword: ${{ secrets.OSSRH_TOKEN }}
+          signingKeyId: ${{ secrets.signingKeyId }}
+          signingKey: ${{ secrets.signingKey }}
+          signingPassword: ${{ secrets.signingPassword }}
 
 
