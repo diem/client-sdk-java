@@ -2,6 +2,7 @@ package org.libra.librasdk.libraid;
 
 
 import okhttp3.HttpUrl;
+import org.apache.http.client.utils.URIBuilder;
 import org.libra.librasdk.LibraSDKException;
 
 import java.net.URI;
@@ -11,17 +12,21 @@ public class Intent {
 
     private Account account;
     private String currency;
-    private int amount;
+    private Integer amount;
 
     private static final String LIBRA_SCHEME = "libra";
     private static final String CURRENCY_PARAM_NAME = "c";
     private static final String AMOUNT_PARAM_NAME = "am";
 
 
-    public Intent(Account account, String currency, int amount) {
+    public Intent(Account account, String currency, Integer amount) {
         this.account = account;
         this.currency = currency;
         this.amount = amount;
+    }
+
+    public Intent(Account account) {
+        this.account = account;
     }
 
     public Intent decodeToIntent(Account.NetworkPrefix prefix, String uriString) throws LibraSDKException {
@@ -54,5 +59,26 @@ public class Intent {
 
 
         return new Intent(account, currency, amount);
+    }
+
+    public String encode() throws LibraSDKException {
+        String encodedAccount = this.account.encode();
+
+        try {
+            URI uri = new URI(LIBRA_SCHEME + "://" + encodedAccount);
+            URIBuilder uriBuilder = new URIBuilder(uri);
+
+            if (this.amount != null) {
+                uriBuilder.addParameter(AMOUNT_PARAM_NAME, String.valueOf(this.amount));
+            }
+
+            if (this.currency != null) {
+                uriBuilder.addParameter(CURRENCY_PARAM_NAME, this.currency);
+            }
+
+            return uriBuilder.build().toString();
+        } catch (URISyntaxException e) {
+            throw new LibraSDKException(e);
+        }
     }
 }

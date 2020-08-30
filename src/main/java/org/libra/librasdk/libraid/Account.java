@@ -36,10 +36,6 @@ public class Account {
         this.subAddress = new SubAddress(new byte[SUB_ADDRESS_LENGTH]);
     }
 
-    public Account() {
-        this.version = V1;
-    }
-
     public static String encodeAccount(NetworkPrefix prefix, AccountAddress accountAddress,
                                        SubAddress subAddress) {
         return new Account(prefix, accountAddress, subAddress).encode();
