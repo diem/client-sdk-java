@@ -32,4 +32,8 @@ public class SubAddress {
     public String toHex(){
         return Utils.bytesToHex(this.subAddress);
     }
+
+    public byte[] getSubAddress() {
+        return subAddress;
+    }
 }

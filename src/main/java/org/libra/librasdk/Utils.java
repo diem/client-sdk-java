@@ -8,6 +8,7 @@ import com.facebook.serde.Bytes;
 import com.facebook.serde.Serializer;
 import com.google.common.io.BaseEncoding;
 import design.contract.bech32.Bech32;
+import design.contract.bech32.HrpAndDp;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
 import org.bouncycastle.crypto.signers.Ed25519Signer;
@@ -169,6 +170,11 @@ public class Utils {
 
     public static String Bech32Encode(String humanReadablePart, char[] data) {
         return Bech32.encode(humanReadablePart, data);
+    }
+
+    public static HrpAndDp Bech32Decode(String data) {
+        HrpAndDp decode = Bech32.decode(data);
+        return decode;
     }
 
     public static LocalAccount generateLocalAccount() {

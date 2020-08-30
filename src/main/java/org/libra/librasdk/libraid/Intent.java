@@ -24,7 +24,7 @@ public class Intent {
         this.amount = amount;
     }
 
-    public Intent decodeToIntent(String uriString) throws LibraSDKException {
+    public Intent decodeToIntent(Account.NetworkPrefix prefix, String uriString) throws LibraSDKException {
 
 
         final HttpUrl url = HttpUrl.parse(uriString);
@@ -49,7 +49,8 @@ public class Intent {
 
         // lbr1p7ujcndcl7nudzwt8fglhx6wxn08kgs5tm6mz4usw5p72t
         Account account =
-                Account.decodeToAccount(uri.getScheme() + uri.getAuthority() + uri.getPath());
+                Account.decodeToAccount(prefix,
+                        uri.getScheme() + uri.getAuthority() + uri.getPath());
 
 
         return new Intent(account, currency, amount);
