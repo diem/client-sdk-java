@@ -39,7 +39,7 @@ public class TestNetFaucetService {
         RequestBody emptyBody = RequestBody.create(null, new byte[0]);
         Request request = new Request.Builder().url(url).post(emptyBody).build();
 
-        int retry = 3;
+        int retry = 5;
         for (int i = 0; i <= retry; i++) {
             try {
                 Response response = client.newCall(request).execute();
