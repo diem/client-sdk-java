@@ -17,6 +17,7 @@ apply plugin: 'java-library'
 apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 task sourceJar(type: Jar, dependsOn: classes) {
     classifier 'sources'
@@ -91,6 +92,14 @@ publishing {
             }
         }
     }
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
 }
 
 dependencies {
