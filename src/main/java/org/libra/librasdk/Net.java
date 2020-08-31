@@ -10,6 +10,6 @@ public class Net {
     }
 
     public static Net TestNet(){
-         return new Net("https://client.testnet.libra.org/v1", 2);
+         return new Net(Constants.TEST_NET_JSON_RPC_V1_URL, Constants.TEST_NET_CHAIN_ID);
      }
 }

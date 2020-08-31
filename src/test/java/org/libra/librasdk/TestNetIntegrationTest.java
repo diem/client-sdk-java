@@ -42,7 +42,7 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testGetMetadata() throws Exception {
-        libraClient = new LibraClient("https://client.testnet.libra.org/v1", 2);
+        libraClient = new LibraClient(Net.TestNet());
 
         Metadata response = libraClient.getMetadata();
         Assert.assertNotNull(response);
@@ -60,7 +60,6 @@ public class TestNetIntegrationTest {
         Metadata response = libraClient.getMetadata(1);
         Assert.assertNotNull(response);
         Assert.assertEquals(1, response.version);
-        Assert.assertEquals(1598492123453462L, response.timestamp);
     }
 
     @Test
