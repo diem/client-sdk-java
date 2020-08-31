@@ -3,9 +3,9 @@
 
 package org.libra.librasdk;
 
-import com.facebook.lcs.LcsDeserializer;
-import com.facebook.serde.Bytes;
-import com.facebook.serde.Deserializer;
+import com.novi.lcs.LcsDeserializer;
+import com.novi.serde.Bytes;
+import com.novi.serde.Deserializer;
 import org.junit.Test;
 import org.libra.librasdk.dto.LocalAccount;
 import org.libra.stdlib.Helpers;

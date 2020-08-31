@@ -2,11 +2,12 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
-public abstract class Metadata {
-    abstract public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception;
 
-    public static Metadata deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
-        Metadata obj;
+public abstract class Metadata {
+
+    abstract public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception;
+
+    public static Metadata deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         int index = deserializer.deserialize_variant_index();
         switch (index) {
             case 0: return Undefined.load(deserializer);
@@ -17,15 +18,30 @@ public abstract class Metadata {
         }
     }
 
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static Metadata lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        Metadata value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
+    }
+
     public static final class Undefined extends Metadata {
         public Undefined() {
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(0);
         }
 
-        static Undefined load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static Undefined load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             return builder.build();
         }
@@ -59,12 +75,12 @@ public abstract class Metadata {
             this.value = value;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(1);
             value.serialize(serializer);
         }
 
-        static GeneralMetadata load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static GeneralMetadata load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.value = org.libra.types.GeneralMetadata.deserialize(deserializer);
             return builder.build();
@@ -104,12 +120,12 @@ public abstract class Metadata {
             this.value = value;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(2);
             value.serialize(serializer);
         }
 
-        static TravelRuleMetadata load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static TravelRuleMetadata load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.value = org.libra.types.TravelRuleMetadata.deserialize(deserializer);
             return builder.build();
@@ -149,12 +165,12 @@ public abstract class Metadata {
             this.value = value;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(3);
             value.serialize(serializer);
         }
 
-        static UnstructuredBytesMetadata load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static UnstructuredBytesMetadata load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.value = org.libra.types.UnstructuredBytesMetadata.deserialize(deserializer);
             return builder.build();

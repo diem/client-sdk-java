@@ -3,9 +3,9 @@
 
 package org.libra.librasdk;
 
-import com.facebook.lcs.LcsSerializer;
-import com.facebook.serde.Bytes;
-import com.facebook.serde.Serializer;
+import com.novi.lcs.LcsSerializer;
+import com.novi.serde.Bytes;
+import com.novi.serde.Serializer;
 import com.google.common.io.BaseEncoding;
 import design.contract.bech32.Bech32;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;

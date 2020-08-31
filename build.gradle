@@ -45,11 +45,6 @@ task gen {
         exec {
             workingDir 'libra'
             executable "sh"
-            args "-c", "git fetch && git reset --hard origin/testnet"
-        }
-        exec {
-            workingDir 'libra'
-            executable "sh"
             args "-c", "cargo build -p transaction-builder-generator"
         }
         exec {

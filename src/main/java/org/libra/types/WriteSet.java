@@ -2,6 +2,7 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
+
 public final class WriteSet {
     public final WriteSetMut value;
 
@@ -10,14 +11,29 @@ public final class WriteSet {
         this.value = value;
     }
 
-    public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+    public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
         value.serialize(serializer);
     }
 
-    public static WriteSet deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static WriteSet deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         Builder builder = new Builder();
         builder.value = WriteSetMut.deserialize(deserializer);
         return builder.build();
+    }
+
+    public static WriteSet lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        WriteSet value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
     }
 
     public boolean equals(Object obj) {

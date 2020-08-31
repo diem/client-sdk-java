@@ -2,14 +2,15 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
+
 public final class BlockMetadata {
     public final HashValue id;
-    public final @com.facebook.serde.Unsigned Long round;
-    public final @com.facebook.serde.Unsigned Long timestamp_usecs;
+    public final @com.novi.serde.Unsigned Long round;
+    public final @com.novi.serde.Unsigned Long timestamp_usecs;
     public final java.util.List<AccountAddress> previous_block_votes;
     public final AccountAddress proposer;
 
-    public BlockMetadata(HashValue id, @com.facebook.serde.Unsigned Long round, @com.facebook.serde.Unsigned Long timestamp_usecs, java.util.List<AccountAddress> previous_block_votes, AccountAddress proposer) {
+    public BlockMetadata(HashValue id, @com.novi.serde.Unsigned Long round, @com.novi.serde.Unsigned Long timestamp_usecs, java.util.List<AccountAddress> previous_block_votes, AccountAddress proposer) {
         assert id != null;
         assert round != null;
         assert timestamp_usecs != null;
@@ -22,7 +23,7 @@ public final class BlockMetadata {
         this.proposer = proposer;
     }
 
-    public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+    public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
         id.serialize(serializer);
         serializer.serialize_u64(round);
         serializer.serialize_u64(timestamp_usecs);
@@ -30,7 +31,13 @@ public final class BlockMetadata {
         proposer.serialize(serializer);
     }
 
-    public static BlockMetadata deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static BlockMetadata deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         Builder builder = new Builder();
         builder.id = HashValue.deserialize(deserializer);
         builder.round = deserializer.deserialize_u64();
@@ -38,6 +45,15 @@ public final class BlockMetadata {
         builder.previous_block_votes = TraitHelpers.deserialize_vector_AccountAddress(deserializer);
         builder.proposer = AccountAddress.deserialize(deserializer);
         return builder.build();
+    }
+
+    public static BlockMetadata lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        BlockMetadata value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
     }
 
     public boolean equals(Object obj) {
@@ -65,8 +81,8 @@ public final class BlockMetadata {
 
     public static final class Builder {
         public HashValue id;
-        public @com.facebook.serde.Unsigned Long round;
-        public @com.facebook.serde.Unsigned Long timestamp_usecs;
+        public @com.novi.serde.Unsigned Long round;
+        public @com.novi.serde.Unsigned Long timestamp_usecs;
         public java.util.List<AccountAddress> previous_block_votes;
         public AccountAddress proposer;
 

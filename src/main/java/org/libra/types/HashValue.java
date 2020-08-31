@@ -2,22 +2,38 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
-public final class HashValue {
-    public final com.facebook.serde.Bytes value;
 
-    public HashValue(com.facebook.serde.Bytes value) {
+public final class HashValue {
+    public final com.novi.serde.Bytes value;
+
+    public HashValue(com.novi.serde.Bytes value) {
         assert value != null;
         this.value = value;
     }
 
-    public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+    public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
         serializer.serialize_bytes(value);
     }
 
-    public static HashValue deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static HashValue deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         Builder builder = new Builder();
         builder.value = deserializer.deserialize_bytes();
         return builder.build();
+    }
+
+    public static HashValue lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        HashValue value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
     }
 
     public boolean equals(Object obj) {
@@ -36,7 +52,7 @@ public final class HashValue {
     }
 
     public static final class Builder {
-        public com.facebook.serde.Bytes value;
+        public com.novi.serde.Bytes value;
 
         public HashValue build() {
             return new HashValue(

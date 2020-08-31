@@ -2,17 +2,33 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
-public abstract class TransactionAuthenticator {
-    abstract public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception;
 
-    public static TransactionAuthenticator deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
-        TransactionAuthenticator obj;
+public abstract class TransactionAuthenticator {
+
+    abstract public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception;
+
+    public static TransactionAuthenticator deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         int index = deserializer.deserialize_variant_index();
         switch (index) {
             case 0: return Ed25519.load(deserializer);
             case 1: return MultiEd25519.load(deserializer);
             default: throw new java.lang.Exception("Unknown variant index for TransactionAuthenticator: " + index);
         }
+    }
+
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static TransactionAuthenticator lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        TransactionAuthenticator value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
     }
 
     public static final class Ed25519 extends TransactionAuthenticator {
@@ -26,13 +42,13 @@ public abstract class TransactionAuthenticator {
             this.signature = signature;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(0);
             public_key.serialize(serializer);
             signature.serialize(serializer);
         }
 
-        static Ed25519 load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static Ed25519 load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.public_key = Ed25519PublicKey.deserialize(deserializer);
             builder.signature = Ed25519Signature.deserialize(deserializer);
@@ -80,13 +96,13 @@ public abstract class TransactionAuthenticator {
             this.signature = signature;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(1);
             public_key.serialize(serializer);
             signature.serialize(serializer);
         }
 
-        static MultiEd25519 load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static MultiEd25519 load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.public_key = MultiEd25519PublicKey.deserialize(deserializer);
             builder.signature = MultiEd25519Signature.deserialize(deserializer);

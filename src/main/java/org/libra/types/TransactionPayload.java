@@ -2,11 +2,12 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
-public abstract class TransactionPayload {
-    abstract public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception;
 
-    public static TransactionPayload deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
-        TransactionPayload obj;
+public abstract class TransactionPayload {
+
+    abstract public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception;
+
+    public static TransactionPayload deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         int index = deserializer.deserialize_variant_index();
         switch (index) {
             case 0: return WriteSet.load(deserializer);
@@ -14,6 +15,21 @@ public abstract class TransactionPayload {
             case 2: return Module.load(deserializer);
             default: throw new java.lang.Exception("Unknown variant index for TransactionPayload: " + index);
         }
+    }
+
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static TransactionPayload lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        TransactionPayload value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
     }
 
     public static final class WriteSet extends TransactionPayload {
@@ -24,12 +40,12 @@ public abstract class TransactionPayload {
             this.value = value;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(0);
             value.serialize(serializer);
         }
 
-        static WriteSet load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static WriteSet load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.value = WriteSetPayload.deserialize(deserializer);
             return builder.build();
@@ -69,12 +85,12 @@ public abstract class TransactionPayload {
             this.value = value;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(1);
             value.serialize(serializer);
         }
 
-        static Script load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static Script load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.value = org.libra.types.Script.deserialize(deserializer);
             return builder.build();
@@ -114,12 +130,12 @@ public abstract class TransactionPayload {
             this.value = value;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(2);
             value.serialize(serializer);
         }
 
-        static Module load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static Module load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.value = org.libra.types.Module.deserialize(deserializer);
             return builder.build();

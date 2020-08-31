@@ -2,16 +2,32 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
-public abstract class TravelRuleMetadata {
-    abstract public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception;
 
-    public static TravelRuleMetadata deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
-        TravelRuleMetadata obj;
+public abstract class TravelRuleMetadata {
+
+    abstract public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception;
+
+    public static TravelRuleMetadata deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         int index = deserializer.deserialize_variant_index();
         switch (index) {
             case 0: return TravelRuleMetadataVersion0.load(deserializer);
             default: throw new java.lang.Exception("Unknown variant index for TravelRuleMetadata: " + index);
         }
+    }
+
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static TravelRuleMetadata lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        TravelRuleMetadata value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
     }
 
     public static final class TravelRuleMetadataVersion0 extends TravelRuleMetadata {
@@ -22,12 +38,12 @@ public abstract class TravelRuleMetadata {
             this.value = value;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(0);
             value.serialize(serializer);
         }
 
-        static TravelRuleMetadataVersion0 load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static TravelRuleMetadataVersion0 load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.value = TravelRuleMetadataV0.deserialize(deserializer);
             return builder.build();

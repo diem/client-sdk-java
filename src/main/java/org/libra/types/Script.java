@@ -2,12 +2,13 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
+
 public final class Script {
-    public final com.facebook.serde.Bytes code;
+    public final com.novi.serde.Bytes code;
     public final java.util.List<TypeTag> ty_args;
     public final java.util.List<TransactionArgument> args;
 
-    public Script(com.facebook.serde.Bytes code, java.util.List<TypeTag> ty_args, java.util.List<TransactionArgument> args) {
+    public Script(com.novi.serde.Bytes code, java.util.List<TypeTag> ty_args, java.util.List<TransactionArgument> args) {
         assert code != null;
         assert ty_args != null;
         assert args != null;
@@ -16,18 +17,33 @@ public final class Script {
         this.args = args;
     }
 
-    public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+    public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
         serializer.serialize_bytes(code);
         TraitHelpers.serialize_vector_TypeTag(ty_args, serializer);
         TraitHelpers.serialize_vector_TransactionArgument(args, serializer);
     }
 
-    public static Script deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static Script deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         Builder builder = new Builder();
         builder.code = deserializer.deserialize_bytes();
         builder.ty_args = TraitHelpers.deserialize_vector_TypeTag(deserializer);
         builder.args = TraitHelpers.deserialize_vector_TransactionArgument(deserializer);
         return builder.build();
+    }
+
+    public static Script lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        Script value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
     }
 
     public boolean equals(Object obj) {
@@ -50,7 +66,7 @@ public final class Script {
     }
 
     public static final class Builder {
-        public com.facebook.serde.Bytes code;
+        public com.novi.serde.Bytes code;
         public java.util.List<TypeTag> ty_args;
         public java.util.List<TransactionArgument> args;
 

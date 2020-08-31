@@ -2,27 +2,43 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
+
 public final class AccessPath {
     public final AccountAddress address;
-    public final com.facebook.serde.Bytes path;
+    public final com.novi.serde.Bytes path;
 
-    public AccessPath(AccountAddress address, com.facebook.serde.Bytes path) {
+    public AccessPath(AccountAddress address, com.novi.serde.Bytes path) {
         assert address != null;
         assert path != null;
         this.address = address;
         this.path = path;
     }
 
-    public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+    public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
         address.serialize(serializer);
         serializer.serialize_bytes(path);
     }
 
-    public static AccessPath deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static AccessPath deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         Builder builder = new Builder();
         builder.address = AccountAddress.deserialize(deserializer);
         builder.path = deserializer.deserialize_bytes();
         return builder.build();
+    }
+
+    public static AccessPath lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        AccessPath value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
     }
 
     public boolean equals(Object obj) {
@@ -44,7 +60,7 @@ public final class AccessPath {
 
     public static final class Builder {
         public AccountAddress address;
-        public com.facebook.serde.Bytes path;
+        public com.novi.serde.Bytes path;
 
         public AccessPath build() {
             return new AccessPath(

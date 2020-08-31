@@ -2,17 +2,33 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
-public abstract class WriteSetPayload {
-    abstract public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception;
 
-    public static WriteSetPayload deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
-        WriteSetPayload obj;
+public abstract class WriteSetPayload {
+
+    abstract public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception;
+
+    public static WriteSetPayload deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         int index = deserializer.deserialize_variant_index();
         switch (index) {
             case 0: return Direct.load(deserializer);
             case 1: return Script.load(deserializer);
             default: throw new java.lang.Exception("Unknown variant index for WriteSetPayload: " + index);
         }
+    }
+
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static WriteSetPayload lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        WriteSetPayload value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
     }
 
     public static final class Direct extends WriteSetPayload {
@@ -23,12 +39,12 @@ public abstract class WriteSetPayload {
             this.value = value;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(0);
             value.serialize(serializer);
         }
 
-        static Direct load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static Direct load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.value = ChangeSet.deserialize(deserializer);
             return builder.build();
@@ -71,13 +87,13 @@ public abstract class WriteSetPayload {
             this.script = script;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(1);
             execute_as.serialize(serializer);
             script.serialize(serializer);
         }
 
-        static Script load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static Script load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.execute_as = AccountAddress.deserialize(deserializer);
             builder.script = org.libra.types.Script.deserialize(deserializer);

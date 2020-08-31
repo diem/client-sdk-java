@@ -2,11 +2,12 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
-public abstract class Transaction {
-    abstract public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception;
 
-    public static Transaction deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
-        Transaction obj;
+public abstract class Transaction {
+
+    abstract public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception;
+
+    public static Transaction deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         int index = deserializer.deserialize_variant_index();
         switch (index) {
             case 0: return UserTransaction.load(deserializer);
@@ -14,6 +15,21 @@ public abstract class Transaction {
             case 2: return BlockMetadata.load(deserializer);
             default: throw new java.lang.Exception("Unknown variant index for Transaction: " + index);
         }
+    }
+
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static Transaction lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        Transaction value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
     }
 
     public static final class UserTransaction extends Transaction {
@@ -24,12 +40,12 @@ public abstract class Transaction {
             this.value = value;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(0);
             value.serialize(serializer);
         }
 
-        static UserTransaction load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static UserTransaction load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.value = SignedTransaction.deserialize(deserializer);
             return builder.build();
@@ -69,12 +85,12 @@ public abstract class Transaction {
             this.value = value;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(1);
             value.serialize(serializer);
         }
 
-        static GenesisTransaction load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static GenesisTransaction load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.value = WriteSetPayload.deserialize(deserializer);
             return builder.build();
@@ -114,12 +130,12 @@ public abstract class Transaction {
             this.value = value;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(2);
             value.serialize(serializer);
         }
 
-        static BlockMetadata load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static BlockMetadata load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.value = org.libra.types.BlockMetadata.deserialize(deserializer);
             return builder.build();

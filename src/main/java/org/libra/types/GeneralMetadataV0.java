@@ -2,12 +2,13 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
-public final class GeneralMetadataV0 {
-    public final java.util.Optional<com.facebook.serde.Bytes> to_subaddress;
-    public final java.util.Optional<com.facebook.serde.Bytes> from_subaddress;
-    public final java.util.Optional<@com.facebook.serde.Unsigned Long> referenced_event;
 
-    public GeneralMetadataV0(java.util.Optional<com.facebook.serde.Bytes> to_subaddress, java.util.Optional<com.facebook.serde.Bytes> from_subaddress, java.util.Optional<@com.facebook.serde.Unsigned Long> referenced_event) {
+public final class GeneralMetadataV0 {
+    public final java.util.Optional<com.novi.serde.Bytes> to_subaddress;
+    public final java.util.Optional<com.novi.serde.Bytes> from_subaddress;
+    public final java.util.Optional<@com.novi.serde.Unsigned Long> referenced_event;
+
+    public GeneralMetadataV0(java.util.Optional<com.novi.serde.Bytes> to_subaddress, java.util.Optional<com.novi.serde.Bytes> from_subaddress, java.util.Optional<@com.novi.serde.Unsigned Long> referenced_event) {
         assert to_subaddress != null;
         assert from_subaddress != null;
         assert referenced_event != null;
@@ -16,18 +17,33 @@ public final class GeneralMetadataV0 {
         this.referenced_event = referenced_event;
     }
 
-    public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+    public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
         TraitHelpers.serialize_option_bytes(to_subaddress, serializer);
         TraitHelpers.serialize_option_bytes(from_subaddress, serializer);
         TraitHelpers.serialize_option_u64(referenced_event, serializer);
     }
 
-    public static GeneralMetadataV0 deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static GeneralMetadataV0 deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         Builder builder = new Builder();
         builder.to_subaddress = TraitHelpers.deserialize_option_bytes(deserializer);
         builder.from_subaddress = TraitHelpers.deserialize_option_bytes(deserializer);
         builder.referenced_event = TraitHelpers.deserialize_option_u64(deserializer);
         return builder.build();
+    }
+
+    public static GeneralMetadataV0 lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        GeneralMetadataV0 value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
     }
 
     public boolean equals(Object obj) {
@@ -50,9 +66,9 @@ public final class GeneralMetadataV0 {
     }
 
     public static final class Builder {
-        public java.util.Optional<com.facebook.serde.Bytes> to_subaddress;
-        public java.util.Optional<com.facebook.serde.Bytes> from_subaddress;
-        public java.util.Optional<@com.facebook.serde.Unsigned Long> referenced_event;
+        public java.util.Optional<com.novi.serde.Bytes> to_subaddress;
+        public java.util.Optional<com.novi.serde.Bytes> from_subaddress;
+        public java.util.Optional<@com.novi.serde.Unsigned Long> referenced_event;
 
         public GeneralMetadataV0 build() {
             return new GeneralMetadataV0(

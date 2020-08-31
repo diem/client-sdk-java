@@ -53,10 +53,10 @@ public class TestNetFaucetService {
                 String body = response.body().string();
                 return Long.parseLong(body);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                // ignore errors and retry
             }
         }
-        throw new RuntimeException();
+        throw new RuntimeException("mint coins failed");
     }
 
     private static void waitAWhile() {

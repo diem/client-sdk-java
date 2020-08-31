@@ -2,11 +2,12 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
-public abstract class TypeTag {
-    abstract public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception;
 
-    public static TypeTag deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
-        TypeTag obj;
+public abstract class TypeTag {
+
+    abstract public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception;
+
+    public static TypeTag deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         int index = deserializer.deserialize_variant_index();
         switch (index) {
             case 0: return Bool.load(deserializer);
@@ -21,15 +22,30 @@ public abstract class TypeTag {
         }
     }
 
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static TypeTag lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        TypeTag value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
+    }
+
     public static final class Bool extends TypeTag {
         public Bool() {
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(0);
         }
 
-        static Bool load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static Bool load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             return builder.build();
         }
@@ -59,11 +75,11 @@ public abstract class TypeTag {
         public U8() {
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(1);
         }
 
-        static U8 load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static U8 load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             return builder.build();
         }
@@ -93,11 +109,11 @@ public abstract class TypeTag {
         public U64() {
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(2);
         }
 
-        static U64 load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static U64 load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             return builder.build();
         }
@@ -127,11 +143,11 @@ public abstract class TypeTag {
         public U128() {
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(3);
         }
 
-        static U128 load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static U128 load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             return builder.build();
         }
@@ -161,11 +177,11 @@ public abstract class TypeTag {
         public Address() {
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(4);
         }
 
-        static Address load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static Address load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             return builder.build();
         }
@@ -195,11 +211,11 @@ public abstract class TypeTag {
         public Signer() {
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(5);
         }
 
-        static Signer load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static Signer load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             return builder.build();
         }
@@ -233,12 +249,12 @@ public abstract class TypeTag {
             this.value = value;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(6);
             value.serialize(serializer);
         }
 
-        static Vector load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static Vector load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.value = TypeTag.deserialize(deserializer);
             return builder.build();
@@ -278,12 +294,12 @@ public abstract class TypeTag {
             this.value = value;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(7);
             value.serialize(serializer);
         }
 
-        static Struct load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static Struct load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.value = StructTag.deserialize(deserializer);
             return builder.build();

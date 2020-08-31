@@ -1,6 +1,6 @@
 package org.libra.librasdk;
 
-import com.facebook.serde.Bytes;
+import com.novi.serde.Bytes;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import org.libra.librasdk.dto.*;
