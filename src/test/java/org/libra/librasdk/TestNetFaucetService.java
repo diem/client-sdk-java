@@ -9,7 +9,7 @@ import org.libra.librasdk.dto.Transaction;
 
 public class TestNetFaucetService {
     private static final long DEFAULT_TIMEOUT = 10 * 1000;
-    public static String SERVER_URL = "http://testnet.libra.org/mint";
+    public static String SERVER_URL = "https://testnet.libra.org/mint";
 
     public static void mintCoins(Client client, long amount, String authKey, String currencyCode) {
         long nextAccountSeq = mintCoinsAsync(amount, authKey.toLowerCase(), currencyCode);
