@@ -19,23 +19,21 @@ import org.libra.types.*;
 import java.security.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Utils {
     public static SignedTransaction signTransaction(LocalAccount sender, long sequence_number,
-                                                    Script script, long
-                                                            maxGasAmount, long gasPriceUnit,
-                                                    String currencyCode,
-                                                    long expirationTimestampSecs,
-                                                    byte chainId) throws Exception {
+                                                    Script script, long maxGasAmount,
+                                                    long gasPriceUnit, String currencyCode,
+                                                    long expirationTimestampSecs, byte chainId) throws Exception {
         RawTransaction rt = createRawTransaction(sender.getAccountAddress(), sequence_number,
                 script, maxGasAmount, gasPriceUnit, currencyCode, expirationTimestampSecs, chainId);
 
         byte[] hash = hashRawTransaction(rt);
         byte[] sign = sign(sender.getPrivateKey(), hash);
-        SignedTransaction st = new SignedTransaction(rt, new TransactionAuthenticator.Ed25519(
-                new Ed25519PublicKey(new Bytes(hexToBytes(sender.public_key))),
-                new Ed25519Signature(new Bytes(sign))
-        ));
+        SignedTransaction st = new SignedTransaction(rt,
+                new TransactionAuthenticator.Ed25519(new Ed25519PublicKey(new Bytes(hexToBytes(sender.public_key))), new Ed25519Signature(new Bytes(sign))));
         return st;
     }
 
@@ -45,8 +43,7 @@ public class Utils {
                                                       String currencyCode,
                                                       long expirationTimestampSecs, byte chainId) {
         return new RawTransaction(senderAddress, sequence_number,
-                new TransactionPayload.Script(script),
-                maxGasAmount, gasPriceUnit, currencyCode,
+                new TransactionPayload.Script(script), maxGasAmount, gasPriceUnit, currencyCode,
                 expirationTimestampSecs, new ChainId(chainId));
     }
 
@@ -156,12 +153,8 @@ public class Utils {
     }
 
     public static StructTag createCurrencyCodeStructTAg(String currencyCode) {
-        return new StructTag(
-                Utils.hexToAddress(Constants.CORE_CODE_ADDRESS),
-                new Identifier(currencyCode),
-                new Identifier(currencyCode),
-                new ArrayList<>()
-        );
+        return new StructTag(Utils.hexToAddress(Constants.CORE_CODE_ADDRESS),
+                new Identifier(currencyCode), new Identifier(currencyCode), new ArrayList<>());
     }
 
     public static byte[] hashRawTransaction(RawTransaction txn) throws Exception {
@@ -208,4 +201,31 @@ public class Utils {
 
         return new LocalAccount(accountAddress, authKey, privateKey, publicKey);
     }
+
+    public static Integer[] byteToUInt8Array(Byte[] bytes) {
+        Integer[] uInt8 = new Integer[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            uInt8[i] = byteToUInt8(bytes[i]);
+        }
+
+        return uInt8;
+    }
+
+    public static int intToUInt8(int i) {
+        return i & 0xFF;
+    }
+
+    public static int byteToUInt8(Byte aByte) {
+        return aByte & 0xFF;
+    }
+
+    public static Integer[] mergeArrays(Integer[]... arrays) {
+        return Stream.of(arrays).flatMap(Stream::of).toArray(Integer[]::new);
+    }
+
+    public static int[] mergeArrays(int[]... arrays) {
+        return Stream.of(arrays).flatMapToInt(IntStream::of).toArray();
+
+    }
+
 }
