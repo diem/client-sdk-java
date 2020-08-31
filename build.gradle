@@ -95,7 +95,7 @@ publishing {
 }
 
 artifacts {
-    archives sourcesJar
+    archives sourceJar
 }
 
 signing {
