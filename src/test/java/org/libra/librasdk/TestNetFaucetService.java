@@ -39,7 +39,7 @@ public class TestNetFaucetService {
         RequestBody emptyBody = RequestBody.create(null, new byte[0]);
         Request request = new Request.Builder().url(url).post(emptyBody).build();
 
-        int retry = 3;
+        int retry = 5;
         for (int i = 0; i <= retry; i++) {
             try {
                 Response response = client.newCall(request).execute();
@@ -53,10 +53,10 @@ public class TestNetFaucetService {
                 String body = response.body().string();
                 return Long.parseLong(body);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                // ignore errors and retry
             }
         }
-        throw new RuntimeException();
+        throw new RuntimeException("mint coins failed");
     }
 
     private static void waitAWhile() {

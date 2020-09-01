@@ -3,7 +3,7 @@
 
 package org.libra.librasdk;
 
-import com.facebook.serde.Bytes;
+import com.novi.serde.Bytes;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

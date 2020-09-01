@@ -2,11 +2,12 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
-public abstract class WriteOp {
-    abstract public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception;
 
-    public static WriteOp deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
-        WriteOp obj;
+public abstract class WriteOp {
+
+    abstract public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception;
+
+    public static WriteOp deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         int index = deserializer.deserialize_variant_index();
         switch (index) {
             case 0: return Deletion.load(deserializer);
@@ -15,15 +16,30 @@ public abstract class WriteOp {
         }
     }
 
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static WriteOp lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        WriteOp value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
+    }
+
     public static final class Deletion extends WriteOp {
         public Deletion() {
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(0);
         }
 
-        static Deletion load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static Deletion load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             return builder.build();
         }
@@ -50,19 +66,19 @@ public abstract class WriteOp {
     }
 
     public static final class Value extends WriteOp {
-        public final com.facebook.serde.Bytes value;
+        public final com.novi.serde.Bytes value;
 
-        public Value(com.facebook.serde.Bytes value) {
+        public Value(com.novi.serde.Bytes value) {
             assert value != null;
             this.value = value;
         }
 
-        public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+        public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
             serializer.serialize_variant_index(1);
             serializer.serialize_bytes(value);
         }
 
-        static Value load(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+        static Value load(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
             Builder builder = new Builder();
             builder.value = deserializer.deserialize_bytes();
             return builder.build();
@@ -84,7 +100,7 @@ public abstract class WriteOp {
         }
 
         public static final class Builder {
-            public com.facebook.serde.Bytes value;
+            public com.novi.serde.Bytes value;
 
             public Value build() {
                 return new Value(

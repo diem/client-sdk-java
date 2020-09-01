@@ -8,9 +8,9 @@ import org.libra.types.AccountAddress;
 import org.libra.types.Script;
 import org.libra.types.TransactionArgument;
 import org.libra.types.TypeTag;
-import com.facebook.serde.Int128;
-import com.facebook.serde.Unsigned;
-import com.facebook.serde.Bytes;
+import com.novi.serde.Int128;
+import com.novi.serde.Unsigned;
+import com.novi.serde.Bytes;
 
 
 public final class Helpers {
@@ -63,6 +63,17 @@ public final class Helpers {
         builder.code = new Bytes(ADD_RECOVERY_ROTATION_CAPABILITY_CODE);
         builder.ty_args = java.util.Arrays.asList();
         builder.args = java.util.Arrays.asList(new TransactionArgument.Address(recovery_address));
+        return builder.build();
+    }
+
+    /**
+     * Append the `hash` to script hashes list allowed to be executed by the network.
+     */
+    public static Script encode_add_to_script_allow_list_script(Bytes hash, @Unsigned Long sliding_nonce) {
+        Script.Builder builder = new Script.Builder();
+        builder.code = new Bytes(ADD_TO_SCRIPT_ALLOW_LIST_CODE);
+        builder.ty_args = java.util.Arrays.asList();
+        builder.args = java.util.Arrays.asList(new TransactionArgument.U8Vector(hash), new TransactionArgument.U64(sliding_nonce));
         return builder.build();
     }
 
@@ -151,11 +162,11 @@ public final class Helpers {
      * 0 balances for all available currencies in the system will also be added. This can only be
      * invoked by an account with the TreasuryCompliance role.
      */
-    public static Script encode_create_designated_dealer_script(TypeTag currency, @Unsigned Long sliding_nonce, AccountAddress addr, Bytes auth_key_prefix, Bytes human_name, Bytes base_url, Bytes compliance_public_key, Boolean add_all_currencies) {
+    public static Script encode_create_designated_dealer_script(TypeTag currency, @Unsigned Long sliding_nonce, AccountAddress addr, Bytes auth_key_prefix, Bytes human_name, Boolean add_all_currencies) {
         Script.Builder builder = new Script.Builder();
         builder.code = new Bytes(CREATE_DESIGNATED_DEALER_CODE);
         builder.ty_args = java.util.Arrays.asList(currency);
-        builder.args = java.util.Arrays.asList(new TransactionArgument.U64(sliding_nonce), new TransactionArgument.Address(addr), new TransactionArgument.U8Vector(auth_key_prefix), new TransactionArgument.U8Vector(human_name), new TransactionArgument.U8Vector(base_url), new TransactionArgument.U8Vector(compliance_public_key), new TransactionArgument.Bool(add_all_currencies));
+        builder.args = java.util.Arrays.asList(new TransactionArgument.U64(sliding_nonce), new TransactionArgument.Address(addr), new TransactionArgument.U8Vector(auth_key_prefix), new TransactionArgument.U8Vector(human_name), new TransactionArgument.Bool(add_all_currencies));
         return builder.build();
     }
 
@@ -163,14 +174,14 @@ public final class Helpers {
      * Create an account with the ParentVASP role at `address` with authentication key
      * `auth_key_prefix` | `new_account_address` and a 0 balance of type `currency`. If
      * `add_all_currencies` is true, 0 balances for all available currencies in the system will
-     * also be added. This can only be invoked by an Association account.
+     * also be added. This can only be invoked by an TreasuryCompliance account.
      * `sliding_nonce` is a unique nonce for operation, see sliding_nonce.move for details.
      */
-    public static Script encode_create_parent_vasp_account_script(TypeTag coin_type, @Unsigned Long sliding_nonce, AccountAddress new_account_address, Bytes auth_key_prefix, Bytes human_name, Bytes base_url, Bytes compliance_public_key, Boolean add_all_currencies) {
+    public static Script encode_create_parent_vasp_account_script(TypeTag coin_type, @Unsigned Long sliding_nonce, AccountAddress new_account_address, Bytes auth_key_prefix, Bytes human_name, Boolean add_all_currencies) {
         Script.Builder builder = new Script.Builder();
         builder.code = new Bytes(CREATE_PARENT_VASP_ACCOUNT_CODE);
         builder.ty_args = java.util.Arrays.asList(coin_type);
-        builder.args = java.util.Arrays.asList(new TransactionArgument.U64(sliding_nonce), new TransactionArgument.Address(new_account_address), new TransactionArgument.U8Vector(auth_key_prefix), new TransactionArgument.U8Vector(human_name), new TransactionArgument.U8Vector(base_url), new TransactionArgument.U8Vector(compliance_public_key), new TransactionArgument.Bool(add_all_currencies));
+        builder.args = java.util.Arrays.asList(new TransactionArgument.U64(sliding_nonce), new TransactionArgument.Address(new_account_address), new TransactionArgument.U8Vector(auth_key_prefix), new TransactionArgument.U8Vector(human_name), new TransactionArgument.Bool(add_all_currencies));
         return builder.build();
     }
 
@@ -186,22 +197,6 @@ public final class Helpers {
         builder.code = new Bytes(CREATE_RECOVERY_ADDRESS_CODE);
         builder.ty_args = java.util.Arrays.asList();
         builder.args = java.util.Arrays.asList();
-        return builder.build();
-    }
-
-    /**
-     * Create an account with the ParentVASP role at `address` with authentication key
-     * `auth_key_prefix` | `new_account_address` and a 0 balance of type `currency`. If
-     * `add_all_currencies` is true, 0 balances for all available currencies in the system will
-     * also be added. This can only be invoked by an Association account.
-     * The `human_name`, `base_url`, and compliance_public_key` fields of the
-     * ParentVASP are filled in with dummy information.
-     */
-    public static Script encode_create_testing_account_script(TypeTag coin_type, AccountAddress new_account_address, Bytes auth_key_prefix, Boolean add_all_currencies) {
-        Script.Builder builder = new Script.Builder();
-        builder.code = new Bytes(CREATE_TESTING_ACCOUNT_CODE);
-        builder.ty_args = java.util.Arrays.asList(coin_type);
-        builder.args = java.util.Arrays.asList(new TransactionArgument.Address(new_account_address), new TransactionArgument.U8Vector(auth_key_prefix), new TransactionArgument.Bool(add_all_currencies));
         return builder.build();
     }
 
@@ -248,17 +243,6 @@ public final class Helpers {
         builder.code = new Bytes(MINT_LBR_CODE);
         builder.ty_args = java.util.Arrays.asList();
         builder.args = java.util.Arrays.asList(new TransactionArgument.U64(amount_lbr));
-        return builder.build();
-    }
-
-    /**
-     * Modify publishing options. Takes the LCS bytes of a `VMPublishingOption` object as input.
-     */
-    public static Script encode_modify_publishing_option_script(Bytes args) {
-        Script.Builder builder = new Script.Builder();
-        builder.code = new Bytes(MODIFY_PUBLISHING_OPTION_CODE);
-        builder.ty_args = java.util.Arrays.asList();
-        builder.args = java.util.Arrays.asList(new TransactionArgument.U8Vector(args));
         return builder.build();
     }
 
@@ -337,11 +321,11 @@ public final class Helpers {
      * Set validator's config locally.
      * Does not emit NewEpochEvent, the config is NOT changed in the validator set.
      */
-    public static Script encode_register_validator_config_script(AccountAddress validator_account, Bytes consensus_pubkey, Bytes validator_network_identity_pubkey, Bytes validator_network_address, Bytes fullnodes_network_identity_pubkey, Bytes fullnodes_network_address) {
+    public static Script encode_register_validator_config_script(AccountAddress validator_account, Bytes consensus_pubkey, Bytes validator_network_addresses, Bytes fullnode_network_addresses) {
         Script.Builder builder = new Script.Builder();
         builder.code = new Bytes(REGISTER_VALIDATOR_CONFIG_CODE);
         builder.ty_args = java.util.Arrays.asList();
-        builder.args = java.util.Arrays.asList(new TransactionArgument.Address(validator_account), new TransactionArgument.U8Vector(consensus_pubkey), new TransactionArgument.U8Vector(validator_network_identity_pubkey), new TransactionArgument.U8Vector(validator_network_address), new TransactionArgument.U8Vector(fullnodes_network_identity_pubkey), new TransactionArgument.U8Vector(fullnodes_network_address));
+        builder.args = java.util.Arrays.asList(new TransactionArgument.Address(validator_account), new TransactionArgument.U8Vector(consensus_pubkey), new TransactionArgument.U8Vector(validator_network_addresses), new TransactionArgument.U8Vector(fullnode_network_addresses));
         return builder.build();
     }
 
@@ -450,11 +434,11 @@ public final class Helpers {
      * Set validator's config and updates the config in the validator set.
      * NewEpochEvent is emitted.
      */
-    public static Script encode_set_validator_config_and_reconfigure_script(AccountAddress validator_account, Bytes consensus_pubkey, Bytes validator_network_identity_pubkey, Bytes validator_network_address, Bytes fullnodes_network_identity_pubkey, Bytes fullnodes_network_address) {
+    public static Script encode_set_validator_config_and_reconfigure_script(AccountAddress validator_account, Bytes consensus_pubkey, Bytes validator_network_addresses, Bytes fullnode_network_addresses) {
         Script.Builder builder = new Script.Builder();
         builder.code = new Bytes(SET_VALIDATOR_CONFIG_AND_RECONFIGURE_CODE);
         builder.ty_args = java.util.Arrays.asList();
-        builder.args = java.util.Arrays.asList(new TransactionArgument.Address(validator_account), new TransactionArgument.U8Vector(consensus_pubkey), new TransactionArgument.U8Vector(validator_network_identity_pubkey), new TransactionArgument.U8Vector(validator_network_address), new TransactionArgument.U8Vector(fullnodes_network_identity_pubkey), new TransactionArgument.U8Vector(fullnodes_network_address));
+        builder.args = java.util.Arrays.asList(new TransactionArgument.Address(validator_account), new TransactionArgument.U8Vector(consensus_pubkey), new TransactionArgument.U8Vector(validator_network_addresses), new TransactionArgument.U8Vector(fullnode_network_addresses));
         return builder.build();
     }
 
@@ -466,6 +450,19 @@ public final class Helpers {
         builder.code = new Bytes(SET_VALIDATOR_OPERATOR_CODE);
         builder.ty_args = java.util.Arrays.asList();
         builder.args = java.util.Arrays.asList(new TransactionArgument.U8Vector(operator_name), new TransactionArgument.Address(operator_account));
+        return builder.build();
+    }
+
+    /**
+     * Set validator operator as 'operator_account' of validator owner 'account' (via Admin Script).
+     * `operator_name` should match expected from operator account. This script also
+     * takes `sliding_nonce`, as a unique nonce for this operation. See `Sliding_nonce.move` for details.
+     */
+    public static Script encode_set_validator_operator_with_nonce_admin_script(@Unsigned Long sliding_nonce, Bytes operator_name, AccountAddress operator_account) {
+        Script.Builder builder = new Script.Builder();
+        builder.code = new Bytes(SET_VALIDATOR_OPERATOR_WITH_NONCE_ADMIN_CODE);
+        builder.ty_args = java.util.Arrays.asList();
+        builder.args = java.util.Arrays.asList(new TransactionArgument.U64(sliding_nonce), new TransactionArgument.U8Vector(operator_name), new TransactionArgument.Address(operator_account));
         return builder.build();
     }
 
@@ -497,7 +494,7 @@ public final class Helpers {
 
     /**
      * Unmints `amount_lbr` LBR from the sending account into the constituent coins and deposits
-     * the resulting coins into the sending account."
+     * the resulting coins into the sending account.
      */
     public static Script encode_unmint_lbr_script(@Unsigned Long amount_lbr) {
         Script.Builder builder = new Script.Builder();
@@ -565,6 +562,13 @@ public final class Helpers {
         return builder.build();
     }
 
+    private static ScriptCall decode_add_to_script_allow_list_script(Script script) throws IllegalArgumentException, IndexOutOfBoundsException {
+        ScriptCall.AddToScriptAllowList.Builder builder = new ScriptCall.AddToScriptAllowList.Builder();
+        builder.hash = Helpers.decode_u8vector_argument(script.args.get(0));
+        builder.sliding_nonce = Helpers.decode_u64_argument(script.args.get(1));
+        return builder.build();
+    }
+
     private static ScriptCall decode_add_validator_and_reconfigure_script(Script script) throws IllegalArgumentException, IndexOutOfBoundsException {
         ScriptCall.AddValidatorAndReconfigure.Builder builder = new ScriptCall.AddValidatorAndReconfigure.Builder();
         builder.sliding_nonce = Helpers.decode_u64_argument(script.args.get(0));
@@ -611,9 +615,7 @@ public final class Helpers {
         builder.addr = Helpers.decode_address_argument(script.args.get(1));
         builder.auth_key_prefix = Helpers.decode_u8vector_argument(script.args.get(2));
         builder.human_name = Helpers.decode_u8vector_argument(script.args.get(3));
-        builder.base_url = Helpers.decode_u8vector_argument(script.args.get(4));
-        builder.compliance_public_key = Helpers.decode_u8vector_argument(script.args.get(5));
-        builder.add_all_currencies = Helpers.decode_bool_argument(script.args.get(6));
+        builder.add_all_currencies = Helpers.decode_bool_argument(script.args.get(4));
         return builder.build();
     }
 
@@ -624,23 +626,12 @@ public final class Helpers {
         builder.new_account_address = Helpers.decode_address_argument(script.args.get(1));
         builder.auth_key_prefix = Helpers.decode_u8vector_argument(script.args.get(2));
         builder.human_name = Helpers.decode_u8vector_argument(script.args.get(3));
-        builder.base_url = Helpers.decode_u8vector_argument(script.args.get(4));
-        builder.compliance_public_key = Helpers.decode_u8vector_argument(script.args.get(5));
-        builder.add_all_currencies = Helpers.decode_bool_argument(script.args.get(6));
+        builder.add_all_currencies = Helpers.decode_bool_argument(script.args.get(4));
         return builder.build();
     }
 
     private static ScriptCall decode_create_recovery_address_script(Script _script) throws IllegalArgumentException, IndexOutOfBoundsException {
         ScriptCall.CreateRecoveryAddress.Builder builder = new ScriptCall.CreateRecoveryAddress.Builder();
-        return builder.build();
-    }
-
-    private static ScriptCall decode_create_testing_account_script(Script script) throws IllegalArgumentException, IndexOutOfBoundsException {
-        ScriptCall.CreateTestingAccount.Builder builder = new ScriptCall.CreateTestingAccount.Builder();
-        builder.coin_type = script.ty_args.get(0);
-        builder.new_account_address = Helpers.decode_address_argument(script.args.get(0));
-        builder.auth_key_prefix = Helpers.decode_u8vector_argument(script.args.get(1));
-        builder.add_all_currencies = Helpers.decode_bool_argument(script.args.get(2));
         return builder.build();
     }
 
@@ -675,12 +666,6 @@ public final class Helpers {
         return builder.build();
     }
 
-    private static ScriptCall decode_modify_publishing_option_script(Script script) throws IllegalArgumentException, IndexOutOfBoundsException {
-        ScriptCall.ModifyPublishingOption.Builder builder = new ScriptCall.ModifyPublishingOption.Builder();
-        builder.args = Helpers.decode_u8vector_argument(script.args.get(0));
-        return builder.build();
-    }
-
     private static ScriptCall decode_peer_to_peer_with_metadata_script(Script script) throws IllegalArgumentException, IndexOutOfBoundsException {
         ScriptCall.PeerToPeerWithMetadata.Builder builder = new ScriptCall.PeerToPeerWithMetadata.Builder();
         builder.currency = script.ty_args.get(0);
@@ -708,10 +693,8 @@ public final class Helpers {
         ScriptCall.RegisterValidatorConfig.Builder builder = new ScriptCall.RegisterValidatorConfig.Builder();
         builder.validator_account = Helpers.decode_address_argument(script.args.get(0));
         builder.consensus_pubkey = Helpers.decode_u8vector_argument(script.args.get(1));
-        builder.validator_network_identity_pubkey = Helpers.decode_u8vector_argument(script.args.get(2));
-        builder.validator_network_address = Helpers.decode_u8vector_argument(script.args.get(3));
-        builder.fullnodes_network_identity_pubkey = Helpers.decode_u8vector_argument(script.args.get(4));
-        builder.fullnodes_network_address = Helpers.decode_u8vector_argument(script.args.get(5));
+        builder.validator_network_addresses = Helpers.decode_u8vector_argument(script.args.get(2));
+        builder.fullnode_network_addresses = Helpers.decode_u8vector_argument(script.args.get(3));
         return builder.build();
     }
 
@@ -768,10 +751,8 @@ public final class Helpers {
         ScriptCall.SetValidatorConfigAndReconfigure.Builder builder = new ScriptCall.SetValidatorConfigAndReconfigure.Builder();
         builder.validator_account = Helpers.decode_address_argument(script.args.get(0));
         builder.consensus_pubkey = Helpers.decode_u8vector_argument(script.args.get(1));
-        builder.validator_network_identity_pubkey = Helpers.decode_u8vector_argument(script.args.get(2));
-        builder.validator_network_address = Helpers.decode_u8vector_argument(script.args.get(3));
-        builder.fullnodes_network_identity_pubkey = Helpers.decode_u8vector_argument(script.args.get(4));
-        builder.fullnodes_network_address = Helpers.decode_u8vector_argument(script.args.get(5));
+        builder.validator_network_addresses = Helpers.decode_u8vector_argument(script.args.get(2));
+        builder.fullnode_network_addresses = Helpers.decode_u8vector_argument(script.args.get(3));
         return builder.build();
     }
 
@@ -779,6 +760,14 @@ public final class Helpers {
         ScriptCall.SetValidatorOperator.Builder builder = new ScriptCall.SetValidatorOperator.Builder();
         builder.operator_name = Helpers.decode_u8vector_argument(script.args.get(0));
         builder.operator_account = Helpers.decode_address_argument(script.args.get(1));
+        return builder.build();
+    }
+
+    private static ScriptCall decode_set_validator_operator_with_nonce_admin_script(Script script) throws IllegalArgumentException, IndexOutOfBoundsException {
+        ScriptCall.SetValidatorOperatorWithNonceAdmin.Builder builder = new ScriptCall.SetValidatorOperatorWithNonceAdmin.Builder();
+        builder.sliding_nonce = Helpers.decode_u64_argument(script.args.get(0));
+        builder.operator_name = Helpers.decode_u8vector_argument(script.args.get(1));
+        builder.operator_account = Helpers.decode_address_argument(script.args.get(2));
         return builder.build();
     }
 
@@ -851,6 +840,10 @@ public final class Helpers {
             ScriptCall.AddRecoveryRotationCapability obj = (ScriptCall.AddRecoveryRotationCapability)call;
             return Helpers.encode_add_recovery_rotation_capability_script(obj.recovery_address);
         }));
+        map.put(ScriptCall.AddToScriptAllowList.class, (EncodingHelper)((call) -> {
+            ScriptCall.AddToScriptAllowList obj = (ScriptCall.AddToScriptAllowList)call;
+            return Helpers.encode_add_to_script_allow_list_script(obj.hash, obj.sliding_nonce);
+        }));
         map.put(ScriptCall.AddValidatorAndReconfigure.class, (EncodingHelper)((call) -> {
             ScriptCall.AddValidatorAndReconfigure obj = (ScriptCall.AddValidatorAndReconfigure)call;
             return Helpers.encode_add_validator_and_reconfigure_script(obj.sliding_nonce, obj.validator_name, obj.validator_address);
@@ -873,19 +866,15 @@ public final class Helpers {
         }));
         map.put(ScriptCall.CreateDesignatedDealer.class, (EncodingHelper)((call) -> {
             ScriptCall.CreateDesignatedDealer obj = (ScriptCall.CreateDesignatedDealer)call;
-            return Helpers.encode_create_designated_dealer_script(obj.currency, obj.sliding_nonce, obj.addr, obj.auth_key_prefix, obj.human_name, obj.base_url, obj.compliance_public_key, obj.add_all_currencies);
+            return Helpers.encode_create_designated_dealer_script(obj.currency, obj.sliding_nonce, obj.addr, obj.auth_key_prefix, obj.human_name, obj.add_all_currencies);
         }));
         map.put(ScriptCall.CreateParentVaspAccount.class, (EncodingHelper)((call) -> {
             ScriptCall.CreateParentVaspAccount obj = (ScriptCall.CreateParentVaspAccount)call;
-            return Helpers.encode_create_parent_vasp_account_script(obj.coin_type, obj.sliding_nonce, obj.new_account_address, obj.auth_key_prefix, obj.human_name, obj.base_url, obj.compliance_public_key, obj.add_all_currencies);
+            return Helpers.encode_create_parent_vasp_account_script(obj.coin_type, obj.sliding_nonce, obj.new_account_address, obj.auth_key_prefix, obj.human_name, obj.add_all_currencies);
         }));
         map.put(ScriptCall.CreateRecoveryAddress.class, (EncodingHelper)((call) -> {
             ScriptCall.CreateRecoveryAddress obj = (ScriptCall.CreateRecoveryAddress)call;
             return Helpers.encode_create_recovery_address_script();
-        }));
-        map.put(ScriptCall.CreateTestingAccount.class, (EncodingHelper)((call) -> {
-            ScriptCall.CreateTestingAccount obj = (ScriptCall.CreateTestingAccount)call;
-            return Helpers.encode_create_testing_account_script(obj.coin_type, obj.new_account_address, obj.auth_key_prefix, obj.add_all_currencies);
         }));
         map.put(ScriptCall.CreateValidatorAccount.class, (EncodingHelper)((call) -> {
             ScriptCall.CreateValidatorAccount obj = (ScriptCall.CreateValidatorAccount)call;
@@ -903,10 +892,6 @@ public final class Helpers {
             ScriptCall.MintLbr obj = (ScriptCall.MintLbr)call;
             return Helpers.encode_mint_lbr_script(obj.amount_lbr);
         }));
-        map.put(ScriptCall.ModifyPublishingOption.class, (EncodingHelper)((call) -> {
-            ScriptCall.ModifyPublishingOption obj = (ScriptCall.ModifyPublishingOption)call;
-            return Helpers.encode_modify_publishing_option_script(obj.args);
-        }));
         map.put(ScriptCall.PeerToPeerWithMetadata.class, (EncodingHelper)((call) -> {
             ScriptCall.PeerToPeerWithMetadata obj = (ScriptCall.PeerToPeerWithMetadata)call;
             return Helpers.encode_peer_to_peer_with_metadata_script(obj.currency, obj.payee, obj.amount, obj.metadata, obj.metadata_signature);
@@ -921,7 +906,7 @@ public final class Helpers {
         }));
         map.put(ScriptCall.RegisterValidatorConfig.class, (EncodingHelper)((call) -> {
             ScriptCall.RegisterValidatorConfig obj = (ScriptCall.RegisterValidatorConfig)call;
-            return Helpers.encode_register_validator_config_script(obj.validator_account, obj.consensus_pubkey, obj.validator_network_identity_pubkey, obj.validator_network_address, obj.fullnodes_network_identity_pubkey, obj.fullnodes_network_address);
+            return Helpers.encode_register_validator_config_script(obj.validator_account, obj.consensus_pubkey, obj.validator_network_addresses, obj.fullnode_network_addresses);
         }));
         map.put(ScriptCall.RemoveValidatorAndReconfigure.class, (EncodingHelper)((call) -> {
             ScriptCall.RemoveValidatorAndReconfigure obj = (ScriptCall.RemoveValidatorAndReconfigure)call;
@@ -953,11 +938,15 @@ public final class Helpers {
         }));
         map.put(ScriptCall.SetValidatorConfigAndReconfigure.class, (EncodingHelper)((call) -> {
             ScriptCall.SetValidatorConfigAndReconfigure obj = (ScriptCall.SetValidatorConfigAndReconfigure)call;
-            return Helpers.encode_set_validator_config_and_reconfigure_script(obj.validator_account, obj.consensus_pubkey, obj.validator_network_identity_pubkey, obj.validator_network_address, obj.fullnodes_network_identity_pubkey, obj.fullnodes_network_address);
+            return Helpers.encode_set_validator_config_and_reconfigure_script(obj.validator_account, obj.consensus_pubkey, obj.validator_network_addresses, obj.fullnode_network_addresses);
         }));
         map.put(ScriptCall.SetValidatorOperator.class, (EncodingHelper)((call) -> {
             ScriptCall.SetValidatorOperator obj = (ScriptCall.SetValidatorOperator)call;
             return Helpers.encode_set_validator_operator_script(obj.operator_name, obj.operator_account);
+        }));
+        map.put(ScriptCall.SetValidatorOperatorWithNonceAdmin.class, (EncodingHelper)((call) -> {
+            ScriptCall.SetValidatorOperatorWithNonceAdmin obj = (ScriptCall.SetValidatorOperatorWithNonceAdmin)call;
+            return Helpers.encode_set_validator_operator_with_nonce_admin_script(obj.sliding_nonce, obj.operator_name, obj.operator_account);
         }));
         map.put(ScriptCall.TieredMint.class, (EncodingHelper)((call) -> {
             ScriptCall.TieredMint obj = (ScriptCall.TieredMint)call;
@@ -994,6 +983,8 @@ public final class Helpers {
 
     public static byte[] ADD_RECOVERY_ROTATION_CAPABILITY_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 6, 1, 0, 4, 2, 4, 4, 3, 8, 10, 5, 18, 15, 7, 33, 107, 8, -116, 1, 16, 0, 0, 0, 1, 0, 2, 1, 0, 0, 3, 0, 1, 0, 1, 4, 2, 3, 0, 1, 6, 12, 1, 8, 0, 2, 8, 0, 5, 0, 2, 6, 12, 5, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 15, 82, 101, 99, 111, 118, 101, 114, 121, 65, 100, 100, 114, 101, 115, 115, 21, 75, 101, 121, 82, 111, 116, 97, 116, 105, 111, 110, 67, 97, 112, 97, 98, 105, 108, 105, 116, 121, 31, 101, 120, 116, 114, 97, 99, 116, 95, 107, 101, 121, 95, 114, 111, 116, 97, 116, 105, 111, 110, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 23, 97, 100, 100, 95, 114, 111, 116, 97, 116, 105, 111, 110, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 4, 3, 5, 11, 0, 17, 0, 10, 1, 17, 1, 2};
 
+    public static byte[] ADD_TO_SCRIPT_ALLOW_LIST_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 16, 7, 30, 93, 8, 123, 16, 0, 0, 0, 1, 0, 2, 0, 1, 0, 1, 3, 2, 1, 0, 2, 6, 12, 10, 2, 0, 2, 6, 12, 3, 3, 6, 12, 10, 2, 3, 32, 76, 105, 98, 114, 97, 84, 114, 97, 110, 115, 97, 99, 116, 105, 111, 110, 80, 117, 98, 108, 105, 115, 104, 105, 110, 103, 79, 112, 116, 105, 111, 110, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 24, 97, 100, 100, 95, 116, 111, 95, 115, 99, 114, 105, 112, 116, 95, 97, 108, 108, 111, 119, 95, 108, 105, 115, 116, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3, 1, 7, 10, 0, 10, 2, 17, 1, 11, 0, 11, 1, 17, 0, 2};
+
     public static byte[] ADD_VALIDATOR_AND_RECONFIGURE_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 6, 3, 6, 15, 5, 21, 24, 7, 45, 92, 8, -119, 1, 16, 0, 0, 0, 1, 0, 2, 1, 3, 0, 1, 0, 2, 4, 2, 3, 0, 0, 5, 4, 1, 0, 2, 6, 12, 3, 0, 1, 5, 1, 10, 2, 2, 6, 12, 5, 4, 6, 12, 3, 10, 2, 5, 2, 1, 3, 11, 76, 105, 98, 114, 97, 83, 121, 115, 116, 101, 109, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 15, 86, 97, 108, 105, 100, 97, 116, 111, 114, 67, 111, 110, 102, 105, 103, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 14, 103, 101, 116, 95, 104, 117, 109, 97, 110, 95, 110, 97, 109, 101, 13, 97, 100, 100, 95, 118, 97, 108, 105, 100, 97, 116, 111, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5, 6, 18, 10, 0, 10, 1, 17, 0, 10, 3, 17, 1, 11, 2, 33, 12, 4, 11, 4, 3, 14, 11, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 39, 11, 0, 10, 3, 17, 2, 2};
 
     public static byte[] BURN_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 11, 4, 15, 2, 5, 17, 17, 7, 34, 46, 8, 80, 16, 0, 0, 0, 1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 1, 1, 1, 4, 2, 6, 12, 3, 0, 2, 6, 12, 5, 3, 6, 12, 3, 5, 1, 9, 0, 5, 76, 105, 98, 114, 97, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 4, 98, 117, 114, 110, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 7, 10, 0, 10, 1, 17, 0, 11, 0, 10, 2, 56, 0, 2};
@@ -1004,13 +995,11 @@ public final class Helpers {
 
     public static byte[] CREATE_CHILD_VASP_ACCOUNT_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 8, 1, 0, 2, 2, 2, 4, 3, 6, 22, 4, 28, 4, 5, 32, 35, 7, 67, 123, 8, -66, 1, 16, 6, -50, 1, 4, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 1, 1, 0, 3, 2, 3, 0, 0, 4, 4, 1, 1, 1, 0, 5, 3, 1, 0, 0, 6, 2, 6, 4, 6, 12, 5, 10, 2, 1, 0, 1, 6, 12, 1, 8, 0, 5, 6, 8, 0, 5, 3, 10, 2, 10, 2, 5, 6, 12, 5, 10, 2, 1, 3, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 18, 87, 105, 116, 104, 100, 114, 97, 119, 67, 97, 112, 97, 98, 105, 108, 105, 116, 121, 25, 99, 114, 101, 97, 116, 101, 95, 99, 104, 105, 108, 100, 95, 118, 97, 115, 112, 95, 97, 99, 99, 111, 117, 110, 116, 27, 101, 120, 116, 114, 97, 99, 116, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 8, 112, 97, 121, 95, 102, 114, 111, 109, 27, 114, 101, 115, 116, 111, 114, 101, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 10, 2, 1, 0, 1, 1, 5, 3, 25, 10, 0, 10, 1, 11, 2, 10, 3, 56, 0, 10, 4, 6, 0, 0, 0, 0, 0, 0, 0, 0, 36, 3, 10, 5, 22, 11, 0, 17, 1, 12, 5, 14, 5, 10, 1, 10, 4, 7, 0, 7, 0, 56, 1, 11, 5, 17, 3, 5, 24, 11, 0, 1, 2};
 
-    public static byte[] CREATE_DESIGNATED_DEALER_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 11, 4, 15, 2, 5, 17, 35, 7, 52, 73, 8, 125, 16, 0, 0, 0, 1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 1, 1, 1, 4, 2, 6, 12, 3, 0, 7, 6, 12, 5, 10, 2, 10, 2, 10, 2, 10, 2, 1, 8, 6, 12, 3, 5, 10, 2, 10, 2, 10, 2, 10, 2, 1, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 24, 99, 114, 101, 97, 116, 101, 95, 100, 101, 115, 105, 103, 110, 97, 116, 101, 100, 95, 100, 101, 97, 108, 101, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 12, 10, 0, 10, 1, 17, 0, 11, 0, 10, 2, 11, 3, 11, 4, 11, 5, 11, 6, 10, 7, 56, 0, 2};
+    public static byte[] CREATE_DESIGNATED_DEALER_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 11, 4, 15, 2, 5, 17, 27, 7, 44, 73, 8, 117, 16, 0, 0, 0, 1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 1, 1, 1, 4, 2, 6, 12, 3, 0, 5, 6, 12, 5, 10, 2, 10, 2, 1, 6, 6, 12, 3, 5, 10, 2, 10, 2, 1, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 24, 99, 114, 101, 97, 116, 101, 95, 100, 101, 115, 105, 103, 110, 97, 116, 101, 100, 95, 100, 101, 97, 108, 101, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 10, 10, 0, 10, 1, 17, 0, 11, 0, 10, 2, 11, 3, 11, 4, 10, 5, 56, 0, 2};
 
-    public static byte[] CREATE_PARENT_VASP_ACCOUNT_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 11, 4, 15, 2, 5, 17, 35, 7, 52, 75, 8, 127, 16, 0, 0, 0, 1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 1, 1, 1, 4, 2, 6, 12, 3, 0, 7, 6, 12, 5, 10, 2, 10, 2, 10, 2, 10, 2, 1, 8, 6, 12, 3, 5, 10, 2, 10, 2, 10, 2, 10, 2, 1, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 26, 99, 114, 101, 97, 116, 101, 95, 112, 97, 114, 101, 110, 116, 95, 118, 97, 115, 112, 95, 97, 99, 99, 111, 117, 110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 12, 10, 0, 10, 1, 17, 0, 11, 0, 10, 2, 11, 3, 11, 4, 11, 5, 11, 6, 10, 7, 56, 0, 2};
+    public static byte[] CREATE_PARENT_VASP_ACCOUNT_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 11, 4, 15, 2, 5, 17, 27, 7, 44, 75, 8, 119, 16, 0, 0, 0, 1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 1, 1, 1, 4, 2, 6, 12, 3, 0, 5, 6, 12, 5, 10, 2, 10, 2, 1, 6, 6, 12, 3, 5, 10, 2, 10, 2, 1, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 26, 99, 114, 101, 97, 116, 101, 95, 112, 97, 114, 101, 110, 116, 95, 118, 97, 115, 112, 95, 97, 99, 99, 111, 117, 110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 10, 10, 0, 10, 1, 17, 0, 11, 0, 10, 2, 11, 3, 11, 4, 10, 5, 56, 0, 2};
 
     public static byte[] CREATE_RECOVERY_ADDRESS_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 6, 1, 0, 4, 2, 4, 4, 3, 8, 10, 5, 18, 12, 7, 30, 91, 8, 121, 16, 0, 0, 0, 1, 0, 2, 1, 0, 0, 3, 0, 1, 0, 1, 4, 2, 3, 0, 1, 6, 12, 1, 8, 0, 2, 6, 12, 8, 0, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 15, 82, 101, 99, 111, 118, 101, 114, 121, 65, 100, 100, 114, 101, 115, 115, 21, 75, 101, 121, 82, 111, 116, 97, 116, 105, 111, 110, 67, 97, 112, 97, 98, 105, 108, 105, 116, 121, 31, 101, 120, 116, 114, 97, 99, 116, 95, 107, 101, 121, 95, 114, 111, 116, 97, 116, 105, 111, 110, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 7, 112, 117, 98, 108, 105, 115, 104, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 3, 5, 10, 0, 11, 0, 17, 0, 17, 1, 2};
-
-    public static byte[] CREATE_TESTING_ACCOUNT_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 7, 1, 0, 2, 3, 2, 6, 4, 8, 2, 5, 10, 24, 7, 34, 40, 8, 74, 16, 6, 90, 68, 0, 0, 0, 1, 0, 1, 1, 1, 0, 3, 7, 6, 12, 5, 10, 2, 10, 2, 10, 2, 10, 2, 1, 0, 4, 6, 12, 5, 10, 2, 1, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 26, 99, 114, 101, 97, 116, 101, 95, 112, 97, 114, 101, 110, 116, 95, 118, 97, 115, 112, 95, 97, 99, 99, 111, 117, 110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 10, 2, 8, 7, 116, 101, 115, 116, 110, 101, 116, 10, 2, 18, 17, 104, 116, 116, 112, 115, 58, 47, 47, 108, 105, 98, 114, 97, 46, 111, 114, 103, 10, 2, 33, 32, -73, -93, -63, 45, -64, -56, -57, 72, -85, 7, 82, 91, 112, 17, 34, -72, -117, -41, -113, 96, 12, 118, 52, 45, 39, -14, 94, 95, -110, 68, 76, -34, 1, 1, 2, 1, 9, 11, 0, 10, 1, 11, 2, 7, 0, 7, 1, 7, 2, 10, 3, 56, 0, 2};
 
     public static byte[] CREATE_VALIDATOR_ACCOUNT_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 22, 7, 36, 73, 8, 109, 16, 0, 0, 0, 1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 0, 2, 6, 12, 3, 0, 4, 6, 12, 5, 10, 2, 10, 2, 5, 6, 12, 3, 5, 10, 2, 10, 2, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 24, 99, 114, 101, 97, 116, 101, 95, 118, 97, 108, 105, 100, 97, 116, 111, 114, 95, 97, 99, 99, 111, 117, 110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3, 1, 9, 10, 0, 10, 1, 17, 0, 11, 0, 10, 2, 11, 3, 11, 4, 17, 1, 2};
 
@@ -1020,15 +1009,13 @@ public final class Helpers {
 
     public static byte[] MINT_LBR_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 6, 1, 0, 2, 2, 2, 4, 3, 6, 15, 5, 21, 16, 7, 37, 99, 8, -120, 1, 16, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 0, 0, 3, 1, 2, 0, 0, 4, 3, 2, 0, 1, 6, 12, 1, 8, 0, 0, 2, 6, 8, 0, 3, 2, 6, 12, 3, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 18, 87, 105, 116, 104, 100, 114, 97, 119, 67, 97, 112, 97, 98, 105, 108, 105, 116, 121, 27, 101, 120, 116, 114, 97, 99, 116, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 27, 114, 101, 115, 116, 111, 114, 101, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 10, 115, 116, 97, 112, 108, 101, 95, 108, 98, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 4, 1, 9, 11, 0, 17, 0, 12, 2, 14, 2, 10, 1, 17, 2, 11, 2, 17, 1, 2};
 
-    public static byte[] MODIFY_PUBLISHING_OPTION_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 2, 3, 2, 5, 5, 7, 6, 7, 13, 36, 8, 49, 16, 0, 0, 0, 1, 0, 1, 0, 2, 6, 12, 10, 2, 0, 13, 76, 105, 98, 114, 97, 86, 77, 67, 111, 110, 102, 105, 103, 21, 115, 101, 116, 95, 112, 117, 98, 108, 105, 115, 104, 105, 110, 103, 95, 111, 112, 116, 105, 111, 110, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 4, 11, 0, 11, 1, 17, 0, 2};
-
     public static byte[] PEER_TO_PEER_WITH_METADATA_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 7, 1, 0, 2, 2, 2, 4, 3, 6, 16, 4, 22, 2, 5, 24, 29, 7, 53, 97, 8, -106, 1, 16, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 0, 0, 3, 2, 3, 1, 1, 0, 4, 1, 3, 0, 1, 5, 1, 6, 12, 1, 8, 0, 5, 6, 8, 0, 5, 3, 10, 2, 10, 2, 0, 5, 6, 12, 5, 3, 10, 2, 10, 2, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 18, 87, 105, 116, 104, 100, 114, 97, 119, 67, 97, 112, 97, 98, 105, 108, 105, 116, 121, 27, 101, 120, 116, 114, 97, 99, 116, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 8, 112, 97, 121, 95, 102, 114, 111, 109, 27, 114, 101, 115, 116, 111, 114, 101, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 4, 1, 12, 11, 0, 17, 0, 12, 5, 14, 5, 10, 1, 10, 2, 11, 3, 11, 4, 56, 0, 11, 5, 17, 2, 2};
 
     public static byte[] PREBURN_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 7, 1, 0, 2, 2, 2, 4, 3, 6, 16, 4, 22, 2, 5, 24, 21, 7, 45, 96, 8, -115, 1, 16, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 0, 0, 3, 2, 3, 1, 1, 0, 4, 1, 3, 0, 1, 5, 1, 6, 12, 1, 8, 0, 3, 6, 12, 6, 8, 0, 3, 0, 2, 6, 12, 3, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 18, 87, 105, 116, 104, 100, 114, 97, 119, 67, 97, 112, 97, 98, 105, 108, 105, 116, 121, 27, 101, 120, 116, 114, 97, 99, 116, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 7, 112, 114, 101, 98, 117, 114, 110, 27, 114, 101, 115, 116, 111, 114, 101, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 4, 1, 10, 10, 0, 17, 0, 12, 2, 11, 0, 14, 2, 10, 1, 56, 0, 11, 2, 17, 2, 2};
 
     public static byte[] PUBLISH_SHARED_ED25519_PUBLIC_KEY_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 2, 3, 2, 5, 5, 7, 6, 7, 13, 31, 8, 44, 16, 0, 0, 0, 1, 0, 1, 0, 2, 6, 12, 10, 2, 0, 22, 83, 104, 97, 114, 101, 100, 69, 100, 50, 53, 53, 49, 57, 80, 117, 98, 108, 105, 99, 75, 101, 121, 7, 112, 117, 98, 108, 105, 115, 104, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 4, 11, 0, 11, 1, 17, 0, 2};
 
-    public static byte[] REGISTER_VALIDATOR_CONFIG_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 2, 3, 2, 5, 5, 7, 15, 7, 22, 27, 8, 49, 16, 0, 0, 0, 1, 0, 1, 0, 7, 6, 12, 5, 10, 2, 10, 2, 10, 2, 10, 2, 10, 2, 0, 15, 86, 97, 108, 105, 100, 97, 116, 111, 114, 67, 111, 110, 102, 105, 103, 10, 115, 101, 116, 95, 99, 111, 110, 102, 105, 103, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 9, 11, 0, 10, 1, 11, 2, 11, 3, 11, 4, 11, 5, 11, 6, 17, 0, 2};
+    public static byte[] REGISTER_VALIDATOR_CONFIG_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 2, 3, 2, 5, 5, 7, 11, 7, 18, 27, 8, 45, 16, 0, 0, 0, 1, 0, 1, 0, 5, 6, 12, 5, 10, 2, 10, 2, 10, 2, 0, 15, 86, 97, 108, 105, 100, 97, 116, 111, 114, 67, 111, 110, 102, 105, 103, 10, 115, 101, 116, 95, 99, 111, 110, 102, 105, 103, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 7, 11, 0, 10, 1, 11, 2, 11, 3, 11, 4, 17, 0, 2};
 
     public static byte[] REMOVE_VALIDATOR_AND_RECONFIGURE_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 6, 3, 6, 15, 5, 21, 24, 7, 45, 95, 8, -116, 1, 16, 0, 0, 0, 1, 0, 2, 1, 3, 0, 1, 0, 2, 4, 2, 3, 0, 0, 5, 4, 1, 0, 2, 6, 12, 3, 0, 1, 5, 1, 10, 2, 2, 6, 12, 5, 4, 6, 12, 3, 10, 2, 5, 2, 1, 3, 11, 76, 105, 98, 114, 97, 83, 121, 115, 116, 101, 109, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 15, 86, 97, 108, 105, 100, 97, 116, 111, 114, 67, 111, 110, 102, 105, 103, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 14, 103, 101, 116, 95, 104, 117, 109, 97, 110, 95, 110, 97, 109, 101, 16, 114, 101, 109, 111, 118, 101, 95, 118, 97, 108, 105, 100, 97, 116, 111, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5, 6, 18, 10, 0, 10, 1, 17, 0, 10, 3, 17, 1, 11, 2, 33, 12, 4, 11, 4, 3, 14, 11, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 39, 11, 0, 10, 3, 17, 2, 2};
 
@@ -1044,9 +1031,11 @@ public final class Helpers {
 
     public static byte[] ROTATE_SHARED_ED25519_PUBLIC_KEY_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 2, 3, 2, 5, 5, 7, 6, 7, 13, 34, 8, 47, 16, 0, 0, 0, 1, 0, 1, 0, 2, 6, 12, 10, 2, 0, 22, 83, 104, 97, 114, 101, 100, 69, 100, 50, 53, 53, 49, 57, 80, 117, 98, 108, 105, 99, 75, 101, 121, 10, 114, 111, 116, 97, 116, 101, 95, 107, 101, 121, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 4, 11, 0, 11, 1, 17, 0, 2};
 
-    public static byte[] SET_VALIDATOR_CONFIG_AND_RECONFIGURE_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 19, 7, 33, 69, 8, 102, 16, 0, 0, 0, 1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 0, 7, 6, 12, 5, 10, 2, 10, 2, 10, 2, 10, 2, 10, 2, 0, 2, 6, 12, 5, 11, 76, 105, 98, 114, 97, 83, 121, 115, 116, 101, 109, 15, 86, 97, 108, 105, 100, 97, 116, 111, 114, 67, 111, 110, 102, 105, 103, 10, 115, 101, 116, 95, 99, 111, 110, 102, 105, 103, 29, 117, 112, 100, 97, 116, 101, 95, 99, 111, 110, 102, 105, 103, 95, 97, 110, 100, 95, 114, 101, 99, 111, 110, 102, 105, 103, 117, 114, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 12, 10, 0, 10, 1, 11, 2, 11, 3, 11, 4, 11, 5, 11, 6, 17, 0, 11, 0, 10, 1, 17, 1, 2};
+    public static byte[] SET_VALIDATOR_CONFIG_AND_RECONFIGURE_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 15, 7, 29, 69, 8, 98, 16, 0, 0, 0, 1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 0, 5, 6, 12, 5, 10, 2, 10, 2, 10, 2, 0, 2, 6, 12, 5, 11, 76, 105, 98, 114, 97, 83, 121, 115, 116, 101, 109, 15, 86, 97, 108, 105, 100, 97, 116, 111, 114, 67, 111, 110, 102, 105, 103, 10, 115, 101, 116, 95, 99, 111, 110, 102, 105, 103, 29, 117, 112, 100, 97, 116, 101, 95, 99, 111, 110, 102, 105, 103, 95, 97, 110, 100, 95, 114, 101, 99, 111, 110, 102, 105, 103, 117, 114, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 10, 10, 0, 10, 1, 11, 2, 11, 3, 11, 4, 17, 0, 11, 0, 10, 1, 17, 1, 2};
 
     public static byte[] SET_VALIDATOR_OPERATOR_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 19, 7, 33, 68, 8, 101, 16, 0, 0, 0, 1, 1, 2, 0, 1, 0, 0, 3, 2, 3, 0, 1, 5, 1, 10, 2, 2, 6, 12, 5, 0, 3, 6, 12, 10, 2, 5, 2, 1, 3, 15, 86, 97, 108, 105, 100, 97, 116, 111, 114, 67, 111, 110, 102, 105, 103, 23, 86, 97, 108, 105, 100, 97, 116, 111, 114, 79, 112, 101, 114, 97, 116, 111, 114, 67, 111, 110, 102, 105, 103, 14, 103, 101, 116, 95, 104, 117, 109, 97, 110, 95, 110, 97, 109, 101, 12, 115, 101, 116, 95, 111, 112, 101, 114, 97, 116, 111, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 4, 5, 15, 10, 2, 17, 0, 11, 1, 33, 12, 3, 11, 3, 3, 11, 11, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 39, 11, 0, 10, 2, 17, 1, 2};
+
+    public static byte[] SET_VALIDATOR_OPERATOR_WITH_NONCE_ADMIN_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 6, 3, 6, 15, 5, 21, 26, 7, 47, 103, 8, -106, 1, 16, 0, 0, 0, 1, 0, 2, 0, 3, 0, 1, 0, 2, 4, 2, 3, 0, 1, 5, 4, 1, 0, 2, 6, 12, 3, 0, 1, 5, 1, 10, 2, 2, 6, 12, 5, 5, 6, 12, 6, 12, 3, 10, 2, 5, 2, 1, 3, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 15, 86, 97, 108, 105, 100, 97, 116, 111, 114, 67, 111, 110, 102, 105, 103, 23, 86, 97, 108, 105, 100, 97, 116, 111, 114, 79, 112, 101, 114, 97, 116, 111, 114, 67, 111, 110, 102, 105, 103, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 14, 103, 101, 116, 95, 104, 117, 109, 97, 110, 95, 110, 97, 109, 101, 12, 115, 101, 116, 95, 111, 112, 101, 114, 97, 116, 111, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5, 6, 18, 11, 0, 10, 2, 17, 0, 10, 4, 17, 1, 11, 3, 33, 12, 5, 11, 5, 3, 14, 11, 1, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 39, 11, 1, 10, 4, 17, 2, 2};
 
     public static byte[] TIERED_MINT_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 6, 1, 0, 4, 3, 4, 11, 4, 15, 2, 5, 17, 21, 7, 38, 60, 8, 98, 16, 0, 0, 0, 1, 1, 2, 0, 1, 0, 0, 3, 2, 1, 1, 1, 1, 4, 2, 6, 12, 3, 0, 4, 6, 12, 5, 3, 3, 5, 6, 12, 3, 5, 3, 3, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 11, 116, 105, 101, 114, 101, 100, 95, 109, 105, 110, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 1, 9, 10, 0, 10, 1, 17, 0, 11, 0, 10, 2, 10, 3, 10, 4, 56, 0, 2};
 
@@ -1072,6 +1061,7 @@ public final class Helpers {
         java.util.HashMap<Bytes, DecodingHelper> map = new java.util.HashMap<>();
         map.put(new Bytes(ADD_CURRENCY_TO_ACCOUNT_CODE), (DecodingHelper)((script) -> Helpers.decode_add_currency_to_account_script(script)));
         map.put(new Bytes(ADD_RECOVERY_ROTATION_CAPABILITY_CODE), (DecodingHelper)((script) -> Helpers.decode_add_recovery_rotation_capability_script(script)));
+        map.put(new Bytes(ADD_TO_SCRIPT_ALLOW_LIST_CODE), (DecodingHelper)((script) -> Helpers.decode_add_to_script_allow_list_script(script)));
         map.put(new Bytes(ADD_VALIDATOR_AND_RECONFIGURE_CODE), (DecodingHelper)((script) -> Helpers.decode_add_validator_and_reconfigure_script(script)));
         map.put(new Bytes(BURN_CODE), (DecodingHelper)((script) -> Helpers.decode_burn_script(script)));
         map.put(new Bytes(BURN_TXN_FEES_CODE), (DecodingHelper)((script) -> Helpers.decode_burn_txn_fees_script(script)));
@@ -1080,12 +1070,10 @@ public final class Helpers {
         map.put(new Bytes(CREATE_DESIGNATED_DEALER_CODE), (DecodingHelper)((script) -> Helpers.decode_create_designated_dealer_script(script)));
         map.put(new Bytes(CREATE_PARENT_VASP_ACCOUNT_CODE), (DecodingHelper)((script) -> Helpers.decode_create_parent_vasp_account_script(script)));
         map.put(new Bytes(CREATE_RECOVERY_ADDRESS_CODE), (DecodingHelper)((script) -> Helpers.decode_create_recovery_address_script(script)));
-        map.put(new Bytes(CREATE_TESTING_ACCOUNT_CODE), (DecodingHelper)((script) -> Helpers.decode_create_testing_account_script(script)));
         map.put(new Bytes(CREATE_VALIDATOR_ACCOUNT_CODE), (DecodingHelper)((script) -> Helpers.decode_create_validator_account_script(script)));
         map.put(new Bytes(CREATE_VALIDATOR_OPERATOR_ACCOUNT_CODE), (DecodingHelper)((script) -> Helpers.decode_create_validator_operator_account_script(script)));
         map.put(new Bytes(FREEZE_ACCOUNT_CODE), (DecodingHelper)((script) -> Helpers.decode_freeze_account_script(script)));
         map.put(new Bytes(MINT_LBR_CODE), (DecodingHelper)((script) -> Helpers.decode_mint_lbr_script(script)));
-        map.put(new Bytes(MODIFY_PUBLISHING_OPTION_CODE), (DecodingHelper)((script) -> Helpers.decode_modify_publishing_option_script(script)));
         map.put(new Bytes(PEER_TO_PEER_WITH_METADATA_CODE), (DecodingHelper)((script) -> Helpers.decode_peer_to_peer_with_metadata_script(script)));
         map.put(new Bytes(PREBURN_CODE), (DecodingHelper)((script) -> Helpers.decode_preburn_script(script)));
         map.put(new Bytes(PUBLISH_SHARED_ED25519_PUBLIC_KEY_CODE), (DecodingHelper)((script) -> Helpers.decode_publish_shared_ed25519_public_key_script(script)));
@@ -1099,6 +1087,7 @@ public final class Helpers {
         map.put(new Bytes(ROTATE_SHARED_ED25519_PUBLIC_KEY_CODE), (DecodingHelper)((script) -> Helpers.decode_rotate_shared_ed25519_public_key_script(script)));
         map.put(new Bytes(SET_VALIDATOR_CONFIG_AND_RECONFIGURE_CODE), (DecodingHelper)((script) -> Helpers.decode_set_validator_config_and_reconfigure_script(script)));
         map.put(new Bytes(SET_VALIDATOR_OPERATOR_CODE), (DecodingHelper)((script) -> Helpers.decode_set_validator_operator_script(script)));
+        map.put(new Bytes(SET_VALIDATOR_OPERATOR_WITH_NONCE_ADMIN_CODE), (DecodingHelper)((script) -> Helpers.decode_set_validator_operator_with_nonce_admin_script(script)));
         map.put(new Bytes(TIERED_MINT_CODE), (DecodingHelper)((script) -> Helpers.decode_tiered_mint_script(script)));
         map.put(new Bytes(UNFREEZE_ACCOUNT_CODE), (DecodingHelper)((script) -> Helpers.decode_unfreeze_account_script(script)));
         map.put(new Bytes(UNMINT_LBR_CODE), (DecodingHelper)((script) -> Helpers.decode_unmint_lbr_script(script)));
@@ -1116,33 +1105,22 @@ public final class Helpers {
         return ((TransactionArgument.Bool) arg).value;
     }
 
-    private static @com.facebook.serde.Unsigned Byte decode_u8_argument(TransactionArgument arg) {
-        if (!(arg instanceof TransactionArgument.U8)) {
-            throw new IllegalArgumentException("Was expecting a U8 argument");
-        }
-        return ((TransactionArgument.U8) arg).value;
-    }
 
-    private static @com.facebook.serde.Unsigned Long decode_u64_argument(TransactionArgument arg) {
+    private static @Unsigned Long decode_u64_argument(TransactionArgument arg) {
         if (!(arg instanceof TransactionArgument.U64)) {
             throw new IllegalArgumentException("Was expecting a U64 argument");
         }
         return ((TransactionArgument.U64) arg).value;
     }
 
-    private static @com.facebook.serde.Unsigned @com.facebook.serde.Int128 BigInteger decode_u128_argument(TransactionArgument arg) {
-        if (!(arg instanceof TransactionArgument.U128)) {
-            throw new IllegalArgumentException("Was expecting a U128 argument");
-        }
-        return ((TransactionArgument.U128) arg).value;
-    }
 
     private static AccountAddress decode_address_argument(TransactionArgument arg) {
         if (!(arg instanceof TransactionArgument.Address)) {
-            throw new IllegalArgumentException("Was expecting an Address argument");
+            throw new IllegalArgumentException("Was expecting a Address argument");
         }
         return ((TransactionArgument.Address) arg).value;
     }
+
 
     private static Bytes decode_u8vector_argument(TransactionArgument arg) {
         if (!(arg instanceof TransactionArgument.U8Vector)) {
