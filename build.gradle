@@ -40,7 +40,7 @@ publishing {
                 }
                 developers {
                     developer {
-                        name = 'Libra'
+                        name = 'Libra Open Source'
                         url = 'https://developers.libra.org'
                     }
                 }
