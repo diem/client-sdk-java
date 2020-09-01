@@ -11,7 +11,7 @@ repositories {
 }
 
 group 'org.libra'
-version '1.0.0'
+version '0.0.1-SNAPSHOT'
 
 apply plugin: 'java-library'
 apply plugin: 'java'
@@ -28,34 +28,27 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-
-            pom.withXml {
-                asNode().with {
-                    appendNode('packaging', 'jar')
-                    appendNode('name', 'Libra Client SDK')
-                    appendNode('description', 'The official Libra Client SDK for the Java programming language.')
-                    appendNode('url', 'https://github.com/libra/libra-client-sdk-java')
-                    appendNode('scm').with {
-                        appendNode('url', 'https://github.com/libra/libra-client-sdk-java')
-                        appendNode('connection', 'git@github.com:libra/libra-client-sdk-java.git')
-                    }
-                    appendNode('issueManagement').with {
-                        appendNode('url', 'https://github.com/libra/libra-client-sdk-java/issues')
-                        appendNode('system', 'github issues')
-                    }
-                    appendNode('licenses').with {
-                        appendNode('license').with {
-                            appendNode('name', 'Apache License')
-                            appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0')
-                        }
-                    }
-                    appendNode('organization').with {
-                        appendNode('name', 'Libra')
-                        appendNode('url', 'https://developers.libra.org')
+            pom {
+                name = 'Libra Client SDK'
+                description = 'The official Libra Client SDK for the Java programming language.'
+                url = 'https://github.com/libra/libra-client-sdk-java'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
                 }
+                developers {
+                    developer {
+                        name = 'Libra Open Source'
+                        url = 'https://developers.libra.org'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git@github.com:libra/libra-client-sdk-java.git'
+                    url = 'https://github.com/libra/libra-client-sdk-java'
+                }
             }
-
             tasks.withType(Jar) {
                 from(project.projectDir) {
                     include 'LICENSE'
