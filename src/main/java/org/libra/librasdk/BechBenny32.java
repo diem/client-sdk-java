@@ -1,5 +1,8 @@
 package org.libra.librasdk;
 
+import org.bitcoinj.core.AddressFormatException;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,7 +10,7 @@ import java.util.List;
 import static org.libra.librasdk.Utils.intToUInt8;
 import static org.libra.librasdk.Utils.mergeArrays;
 
-public class Bech32 {
+public class BechBenny32 {
     private final String CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
 
     int[] generator = new int[]{0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3};
@@ -122,16 +125,16 @@ public class Bech32 {
 
         int pos = bechLowerCase.lastIndexOf("1");
         if (pos < 1 || pos + 7 > bechString.length()) {
-            throw new LibraSDKException(String.format("separator '1' at invalid position : pos=%d" +
-                    " , len=%d", pos, bechString.length()));
+            throw new LibraSDKException(String.format("separator '1' at invalid position : " +
+                    "pos=%d" + " , len=%d", pos, bechString.length()));
         }
 
         String hrp = bechString.substring(0, pos);
         char[] chars = hrp.toCharArray();
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] < 33 || chars[i] > 126) {
-                throw new LibraSDKException(String.format("invalid character human-readable part " +
-                        ": bechString[%d]=%s", i, chars[i]));
+                throw new LibraSDKException(String.format("invalid character human-readable part "
+                        + ": bechString[%d]=%s", i, chars[i]));
             }
         }
         List<Integer> data = new ArrayList<>();
@@ -162,5 +165,33 @@ public class Bech32 {
             this.hrp = hrp;
             this.data = data;
         }
+    }
+
+    public static byte[] convertBits(final Integer[] in, final int inStart, final int inLen,
+                                     final int fromBits, final int toBits, final boolean pad) throws AddressFormatException {
+        int acc = 0;
+        int bits = 0;
+        ByteArrayOutputStream out = new ByteArrayOutputStream(64);
+        final int maxv = (1 << toBits) - 1;
+        final int max_acc = (1 << (fromBits + toBits - 1)) - 1;
+        for (int i = 0; i < inLen; i++) {
+            int value = in[i + inStart] & 0xff;
+            if ((value >>> fromBits) != 0) {
+                throw new AddressFormatException(String.format("Input value '%X' exceeds '%d' bit" +
+                        " size", value, fromBits));
+            }
+            acc = ((acc << fromBits) | value) & max_acc;
+            bits += fromBits;
+            while (bits >= toBits) {
+                bits -= toBits;
+                out.write((acc >>> bits) & maxv);
+            }
+        }
+        if (pad) {
+            if (bits > 0) out.write((acc << (toBits - bits)) & maxv);
+        } else if (bits >= fromBits || ((acc << (toBits - bits)) & maxv) != 0) {
+            throw new AddressFormatException("Could not convert bits, invalid padding");
+        }
+        return out.toByteArray();
     }
 }

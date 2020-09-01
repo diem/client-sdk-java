@@ -7,8 +7,8 @@ import com.facebook.lcs.LcsSerializer;
 import com.facebook.serde.Bytes;
 import com.facebook.serde.Serializer;
 import com.google.common.io.BaseEncoding;
-import design.contract.bech32.Bech32;
-import design.contract.bech32.HrpAndDp;
+import org.apache.commons.lang3.ArrayUtils;
+import org.bitcoinj.core.Bech32;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
 import org.bouncycastle.crypto.signers.Ed25519Signer;
@@ -161,12 +161,16 @@ public class Utils {
         return concat(sha3Hash("LIBRA::RawTransaction".getBytes()), toLCS(txn));
     }
 
-    public static String Bech32Encode(String humanReadablePart, char[] data) {
+    public static String Bech32Encode(String humanReadablePart, Byte[] data) {
+        return Bech32.encode(humanReadablePart, ArrayUtils.toPrimitive(data));
+    }
+
+    public static String Bech32Encode(String humanReadablePart, byte[] data) {
         return Bech32.encode(humanReadablePart, data);
     }
 
-    public static HrpAndDp Bech32Decode(String data) {
-        HrpAndDp decode = Bech32.decode(data);
+    public static Bech32.Bech32Data Bech32Decode(String data) {
+        Bech32.Bech32Data decode = Bech32.decode(data);
         return decode;
     }
 
@@ -211,6 +215,24 @@ public class Utils {
         return uInt8;
     }
 
+    public static Byte[] byteToUInt8ByteArray(Byte[] bytes) {
+        Byte[] uInt8 = new Byte[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            uInt8[i] = byteToUInt8Byte(bytes[i]);
+        }
+
+        return uInt8;
+    }
+
+    public static Byte[] byteToUInt8ByteArray(byte[] bytes) {
+        Byte[] uInt8 = new Byte[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            uInt8[i] = byteToUInt8Byte(bytes[i]);
+        }
+
+        return uInt8;
+    }
+
     public static int intToUInt8(int i) {
         return i & 0xFF;
     }
@@ -219,13 +241,20 @@ public class Utils {
         return aByte & 0xFF;
     }
 
+    public static byte byteToUInt8Byte(Byte aByte) {
+        return (byte) (aByte & 0xFF);
+    }
+
     public static Integer[] mergeArrays(Integer[]... arrays) {
         return Stream.of(arrays).flatMap(Stream::of).toArray(Integer[]::new);
+    }
+
+    public static Byte[] mergeArrays(Byte[]... arrays) {
+        return Stream.of(arrays).flatMap(Stream::of).toArray(Byte[]::new);
     }
 
     public static int[] mergeArrays(int[]... arrays) {
         return Stream.of(arrays).flatMapToInt(IntStream::of).toArray();
 
     }
-
 }

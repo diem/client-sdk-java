@@ -1,7 +1,8 @@
 package org.libra.librasdk.libraid;
 
-import design.contract.bech32.HrpAndDp;
 import org.apache.commons.lang3.ArrayUtils;
+import org.bitcoinj.core.Bech32;
+import org.libra.librasdk.BechBenny32;
 import org.libra.librasdk.LibraSDKException;
 import org.libra.librasdk.Utils;
 import org.libra.types.AccountAddress;
@@ -43,27 +44,27 @@ public class Account {
     }
 
     public static Account decodeToAccount(NetworkPrefix prefix, String uri) throws LibraSDKException {
-        HrpAndDp hrpAndDp = Utils.Bech32Decode(uri);
-        String hrp = hrpAndDp.getHrp();
+        Bech32.Bech32Data hrpAndDp = Utils.Bech32Decode(uri);
+        String hrp = hrpAndDp.hrp;
 
-        if (!hrp.equals(prefix.name())) {
+        if (!hrp.equals(prefix.value)) {
             throw new LibraSDKException("FIXME");
         }
 
-        char[] dp = hrpAndDp.getDp();
+        byte[] dp = hrpAndDp.data;
 
         if (dp.length != ACCOUNT_ADDRESS_LENGTH + SUB_ADDRESS_LENGTH) {
-            throw new LibraSDKException("invalid account identifier, account address and " + "sub" +
-                    "-address length does not match");
+            throw new LibraSDKException("invalid account identifier, account address and " + "sub"
+                    + "-address length does not match");
         }
 
-        char[] addressChars = Arrays.copyOfRange(dp, 0, ACCOUNT_ADDRESS_LENGTH);
-        char[] subAddressChars = Arrays.copyOfRange(dp, ACCOUNT_ADDRESS_LENGTH,
+        byte[] addressChars = Arrays.copyOfRange(dp, 0, ACCOUNT_ADDRESS_LENGTH);
+        byte[] subAddressChars = Arrays.copyOfRange(dp, ACCOUNT_ADDRESS_LENGTH,
                 ACCOUNT_ADDRESS_LENGTH + SUB_ADDRESS_LENGTH);
 
-        Byte[] addressBytes = ArrayUtils.toObject(new String(addressChars).getBytes());
+        Byte[] addressBytes = ArrayUtils.toObject(addressChars);
         AccountAddress accountAddress = new AccountAddress(addressBytes);
-        SubAddress subAddress = new SubAddress(new String(subAddressChars).getBytes());
+        SubAddress subAddress = new SubAddress(subAddressChars);
 
         return new Account(prefix, accountAddress, subAddress);
     }
@@ -72,23 +73,27 @@ public class Account {
         Byte[] accountAddressBytes = this.accountAddress.value;
         byte[] subAddressBytes = this.subAddress.getSubAddress();
 
-        Integer[] acountAddressUInt8 = byteToUInt8Array(accountAddressBytes);
+        Integer[] accountAddressUInt8 = byteToUInt8Array(accountAddressBytes);
         Integer[] subAddressUInt8 = byteToUInt8Array(ArrayUtils.toObject(subAddressBytes));
-        Integer[] version = new Integer[]{(int) this.version};
+        Integer[] program = mergeArrays(accountAddressUInt8, subAddressUInt8);
 
-        Integer[] merge = mergeArrays(acountAddressUInt8, subAddressUInt8, version);
+        // convert to bytes with max size 32
+        byte[] data = BechBenny32.convertBits(program, 0, program.length, 8, 5, true);
 
-        return Utils.Bech32Encode(this.prefix.name(), null);
+        Byte[] versionByte = new Byte[]{this.version};
+        Byte[] dataAndVersion = mergeArrays(versionByte, ArrayUtils.toObject(data));
+
+        return Utils.Bech32Encode(this.prefix.value, dataAndVersion);
     }
 
 
     enum NetworkPrefix {
         MainnetPrefix("lbr"), TestnetPrefix("tlb");
 
-        private final String prefix;
+        private final String value;
 
-        NetworkPrefix(String prefix) {
-            this.prefix = prefix;
+        NetworkPrefix(String value) {
+            this.value = value;
         }
     }
 

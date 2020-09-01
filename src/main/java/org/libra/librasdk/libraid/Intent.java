@@ -1,7 +1,6 @@
 package org.libra.librasdk.libraid;
 
 
-import okhttp3.HttpUrl;
 import org.apache.http.client.utils.URIBuilder;
 import org.libra.librasdk.LibraSDKException;
 
@@ -29,21 +28,25 @@ public class Intent {
         this.account = account;
     }
 
-    public Intent decodeToIntent(Account.NetworkPrefix prefix, String uriString) throws LibraSDKException {
+    public static Intent decodeToIntent(Account.NetworkPrefix prefix, String uriString) throws LibraSDKException {
 
-
-        final HttpUrl url = HttpUrl.parse(uriString);
-
-//        libra://lbr1p7ujcndcl7nudzwt8fglhx6wxn08kgs5tm6mz4usw5p72t?c=LBR&am=1000000
         String scheme;
         URI uri;
+        String currency;
+        Integer amount;
+
+
+
+
         try {
             uri = new URI(uriString);
             scheme = uri.getScheme();
-            final String currency = url.queryParameter(CURRENCY_PARAM_NAME);
+//            currency = url.queryParameter(CURRENCY_PARAM_NAME);
+            currency = uri.getQuery();
 
-            // FIXME: check in test amount = 0
-            final Integer amount = Integer.parseInt(url.queryParameter(AMOUNT_PARAM_NAME));
+
+//            amount = Integer.parseInt(url.queryParameter(AMOUNT_PARAM_NAME));
+            amount = Integer.parseInt(uri.getQuery());
 
             if (currency == null || amount == null || !LIBRA_SCHEME.equals(scheme)) {
                 throw new LibraSDKException("");
@@ -52,11 +55,8 @@ public class Intent {
             throw new LibraSDKException(e);
         }
 
-        // lbr1p7ujcndcl7nudzwt8fglhx6wxn08kgs5tm6mz4usw5p72t
-        Account account =
-                Account.decodeToAccount(prefix,
-                        uri.getScheme() + uri.getAuthority() + uri.getPath());
-
+        Account account = Account.decodeToAccount(prefix,
+                uri.getScheme() + uri.getAuthority() + uri.getPath());
 
         return new Intent(account, currency, amount);
     }

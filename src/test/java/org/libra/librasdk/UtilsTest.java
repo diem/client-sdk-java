@@ -6,7 +6,7 @@ package org.libra.librasdk;
 import com.facebook.lcs.LcsDeserializer;
 import com.facebook.serde.Bytes;
 import com.facebook.serde.Deserializer;
-import design.contract.bech32.HrpAndDp;
+import org.bitcoinj.core.Bech32;
 import org.junit.Test;
 import org.libra.librasdk.dto.LocalAccount;
 import org.libra.stdlib.Helpers;
@@ -78,19 +78,19 @@ public class UtilsTest {
 
     @Test
     public void testBech32Encode() {
-        char[] data = {14, 15, 3, 31, 13};
+        byte[] data = {14, 15, 3, 31, 13};
         String humanReadablePart = "hello";
         String encoded = Utils.Bech32Encode(humanReadablePart, data);
-        assertEquals(encoded, "hello1w0rldcs7fw6");
+        assertEquals(encoded, "hello1w0rld80pk3y");
     }
 
     @Test
     public void testBech32Decode() {
-        char[] data = {14, 15, 3, 31, 13};
+        byte[] data = {14, 15, 3, 31, 13};
         String humanReadablePart = "hello";
-        HrpAndDp bech32Decode = Utils.Bech32Decode("hello1w0rldcs7fw6");
-        assertEquals(bech32Decode.getHrp(), humanReadablePart);
-        assertArrayEquals(data, bech32Decode.getDp());
+        Bech32.Bech32Data bech32Decode = Utils.Bech32Decode("hello1w0rld80pk3y");
+        assertEquals(bech32Decode.hrp, humanReadablePart);
+        assertArrayEquals(data, bech32Decode.data);
     }
 
     @Test
