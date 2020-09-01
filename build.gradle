@@ -38,6 +38,16 @@ publishing {
                         url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
                 }
+                developers {
+                    developer {
+                        name = 'Libra'
+                        url = 'https://developers.libra.org'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git@github.com:libra/libra-client-sdk-java.git'
+                    url = 'https://github.com/libra/libra-client-sdk-java'
+                }
             }
             tasks.withType(Jar) {
                 from(project.projectDir) {
