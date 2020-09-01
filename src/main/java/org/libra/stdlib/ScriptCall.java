@@ -7,7 +7,7 @@ public abstract class ScriptCall {
 
     /**
      * Add a `Currency` balance to `account`, which will enable `account` to send and receive
-     * `Libra<Currency>`.
+     * `Libra Currency `.
      * Aborts with NOT_A_CURRENCY if `Currency` is not an accepted currency type in the Libra system
      * Aborts with `LibraAccount::ADD_EXISTING_CURRENCY` if the account already holds a balance in
      * `Currency`.
@@ -187,8 +187,8 @@ public abstract class ScriptCall {
     }
 
     /**
-     * Permanently destroy the `Token`s stored in the oldest burn request under the `Preburn` resource.
-     * This will only succeed if `account` has a `MintCapability<Token>`, a `Preburn<Token>` resource
+     * Permanently destroy the `TypeTag`s stored in the oldest burn request under the `Preburn` resource.
+     * This will only succeed if `account` has a `MintCapability TypeTag `, a `Preburn TypeTag ` resource
      * exists under `preburn_address`, and there is a pending burn request.
      * sliding_nonce is a unique nonce for operation, see sliding_nonce.move for details
      */
@@ -280,7 +280,7 @@ public abstract class ScriptCall {
 
     /**
      * Cancel the oldest burn request from `preburn_address` and return the funds.
-     * Fails if the sender does not have a published `BurnCapability<Token>`.
+     * Fails if the sender does not have a published `BurnCapability Token `.
      */
     public static final class CancelBurn extends ScriptCall {
         public final org.libra.types.TypeTag token;
@@ -339,8 +339,8 @@ public abstract class ScriptCall {
      * * If `parent_vasp` already has 256 child accounts with error: `VASP::ETOO_MANY_CHILDREN`
      * * If `CoinType` is not a registered currency with error: `LibraAccount::ENOT_A_CURRENCY`
      * * If `parent_vasp`'s withdrawal capability has been extracted with error:  `LibraAccount::EWITHDRAWAL_CAPABILITY_ALREADY_EXTRACTED`
-     * * If `parent_vasp` doesn't hold `CoinType` and `child_initial_balance > 0` with error: `LibraAccount::EPAYER_DOESNT_HOLD_CURRENCY`
-     * * If `parent_vasp` doesn't at least `child_initial_balance` of `CoinType` in its account balance with error: `LibraAccount::EINSUFFICIENT_BALANCE`
+     * * If `parent_vasp` doesn't hold CoinType and child_initial_balance  0 with error: `LibraAccount::EPAYER_DOESNT_HOLD_CURRENCY`
+     * * If `parent_vasp` doesn't at least child_initial_balance of CoinType in its account balance with error: `LibraAccount::EINSUFFICIENT_BALANCE`
      */
     public static final class CreateChildVaspAccount extends ScriptCall {
         public final org.libra.types.TypeTag coin_type;
@@ -790,9 +790,9 @@ public abstract class ScriptCall {
      * Transfer `amount` coins of type `Currency` from `payer` to `payee` with (optional) associated
      * `metadata` and an (optional) `metadata_signature` on the message
      * `metadata` | `Signer::address_of(payer)` | `amount` | `DualAttestation::DOMAIN_SEPARATOR`.
-     * The `metadata` and `metadata_signature` parameters are only required if `amount` >=
+     * The `metadata` and `metadata_signature` parameters are only required if `amount`
      * `DualAttestation::get_cur_microlibra_limit` LBR and `payer` and `payee` are distinct VASPs.
-     * However, a transaction sender can opt in to dual attestation even when it is not required (e.g., a DesignatedDealer -> VASP payment) by providing a non-empty `metadata_signature`.
+     * However, a transaction sender can opt in to dual attestation even when it is not required (e.g., a DesignatedDealer to VASP payment) by providing a non-empty `metadata_signature`.
      * Standardized `metadata` LCS format can be found in `libra_types::transaction::metadata::Metadata`.
      *
      * ## Events
@@ -886,7 +886,7 @@ public abstract class ScriptCall {
 
     /**
      * Preburn `amount` `Token`s from `account`.
-     * This will only succeed if `account` already has a published `Preburn<Token>` resource.
+     * This will only succeed if `account` already has a published Preburn Token resource.
      */
     public static final class Preburn extends ScriptCall {
         public final org.libra.types.TypeTag token;
