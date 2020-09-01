@@ -29,49 +29,36 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
 
-//            artifact sourceJar
-//            artifact javadocJar
-
             pom.withXml {
                 asNode().with {
                     appendNode('packaging', 'jar')
-                    appendNode('name', 'Libra SDK')
-                    appendNode('description', 'PROJECT_DESCRIPTION')
-                    appendNode('url', 'PROJECT_URL')
+                    appendNode('name', 'Libra Client SDK')
+                    appendNode('description', 'The official Libra Client SDK for the Java programming language.')
+                    appendNode('url', 'https://github.com/libra/libra-client-sdk-java')
                     appendNode('scm').with {
-                        appendNode('url', 'SCM_URL_FOR_PEOPLE')
-                        appendNode('connection', 'SCM_URL_FOR_SCM')
+                        appendNode('url', 'https://github.com/libra/libra-client-sdk-java')
+                        appendNode('connection', 'git@github.com:libra/libra-client-sdk-java.git')
                     }
                     appendNode('issueManagement').with {
-                        appendNode('url', 'ISSUE_TRACKER_URL')
-                        appendNode('system', 'ISSUE_TRACKER_NAME')
+                        appendNode('url', 'https://github.com/libra/libra-client-sdk-java/issues')
+                        appendNode('system', 'github issues')
                     }
                     appendNode('licenses').with {
                         appendNode('license').with {
-                            appendNode('name', 'LICENSE_NAME')
-                            appendNode('url', 'LICENSE_URL')
+                            appendNode('name', 'Apache License')
+                            appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0')
                         }
                     }
                     appendNode('organization').with {
-                        appendNode('name', 'ORG_NAME')
-                        appendNode('url', 'ORG_URL')
-                    }
-                    appendNode('developers').with {
-                        appendNode('developer').with {
-                            appendNode('id', 'DEV_HANDLE')
-                            appendNode('name', 'DEV_NAME')
-                            appendNode('email', 'DEV_MAIL')
-                            appendNode('organization', 'ORG_NAME_AGAIN')
-                            appendNode('organizationUrl', 'ORG_URL_AGAIN')
-                            appendNode('timezone', 'UTC_OFFSET')
-                        }
+                        appendNode('name', 'Libra')
+                        appendNode('url', 'https://developers.libra.org')
                     }
                 }
             }
 
             tasks.withType(Jar) {
                 from(project.projectDir) {
-                    include 'LICENSE.md'
+                    include 'LICENSE'
                     into 'META-INF'
                 }
             }
@@ -80,7 +67,6 @@ publishing {
     repositories {
         maven {
             url 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
-//            url 'https://oss.sonatype.org/content/repositories/snapshots/'
             credentials {
                 username System.getenv('ossrhUsername')
                 password System.getenv('ossrhPassword')
@@ -92,7 +78,6 @@ publishing {
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.66'
-    implementation 'com.thetransactioncompany:jsonrpc2-client:1.15'
     implementation 'com.squareup.okhttp3:okhttp:3.4.2'
     implementation 'design.contract:libbech32:1.0.0'
     implementation 'org.apache.httpcomponents:httpclient:4.5.10'
@@ -110,9 +95,7 @@ java {
 }
 
 javadoc {
-    if(JavaVersion.current().isJava9Compatible()) {
-        options.addBooleanOption('html5', true)
-    }
+    options.addBooleanOption('Xdoclint:none', true)
 }
 
 signing {
