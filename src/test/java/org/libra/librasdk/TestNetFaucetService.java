@@ -39,7 +39,7 @@ public class TestNetFaucetService {
         RequestBody emptyBody = RequestBody.create(null, new byte[0]);
         Request request = new Request.Builder().url(url).post(emptyBody).build();
 
-        int retry = 5;
+        int retry = 10;
         for (int i = 0; i <= retry; i++) {
             try {
                 Response response = client.newCall(request).execute();
@@ -61,7 +61,7 @@ public class TestNetFaucetService {
 
     private static void waitAWhile() {
         try {
-            Thread.sleep(500);
+            Thread.sleep(1100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
