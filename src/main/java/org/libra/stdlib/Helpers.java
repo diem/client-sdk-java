@@ -37,7 +37,7 @@ public final class Helpers {
 
     /**
      * Add a `Currency` balance to `account`, which will enable `account` to send and receive
-     * `Libra<Currency>`.
+     * `Libra Currency`.
      * Aborts with NOT_A_CURRENCY if `Currency` is not an accepted currency type in the Libra system
      * Aborts with `LibraAccount::ADD_EXISTING_CURRENCY` if the account already holds a balance in
      * `Currency`.
@@ -93,7 +93,7 @@ public final class Helpers {
 
     /**
      * Permanently destroy the `Token`s stored in the oldest burn request under the `Preburn` resource.
-     * This will only succeed if `account` has a `MintCapability<Token>`, a `Preburn<Token>` resource
+     * This will only succeed if `account` has a `MintCapability`, a `Preburn` resource
      * exists under `preburn_address`, and there is a pending burn request.
      * sliding_nonce is a unique nonce for operation, see sliding_nonce.move for details
      */
@@ -119,7 +119,7 @@ public final class Helpers {
 
     /**
      * Cancel the oldest burn request from `preburn_address` and return the funds.
-     * Fails if the sender does not have a published `BurnCapability<Token>`.
+     * Fails if the sender does not have a published `BurnCapability`.
      */
     public static Script encode_cancel_burn_script(TypeTag token, AccountAddress preburn_address) {
         Script.Builder builder = new Script.Builder();
@@ -145,7 +145,7 @@ public final class Helpers {
      * * If `parent_vasp` already has 256 child accounts with error: `VASP::ETOO_MANY_CHILDREN`
      * * If `CoinType` is not a registered currency with error: `LibraAccount::ENOT_A_CURRENCY`
      * * If `parent_vasp`'s withdrawal capability has been extracted with error:  `LibraAccount::EWITHDRAWAL_CAPABILITY_ALREADY_EXTRACTED`
-     * * If `parent_vasp` doesn't hold `CoinType` and `child_initial_balance > 0` with error: `LibraAccount::EPAYER_DOESNT_HOLD_CURRENCY`
+     * * If `parent_vasp` doesn't hold `CoinType` and `child_initial_balance  0` with error: `LibraAccount::EPAYER_DOESNT_HOLD_CURRENCY`
      * * If `parent_vasp` doesn't at least `child_initial_balance` of `CoinType` in its account balance with error: `LibraAccount::EINSUFFICIENT_BALANCE`
      */
     public static Script encode_create_child_vasp_account_script(TypeTag coin_type, AccountAddress child_address, Bytes auth_key_prefix, Boolean add_all_currencies, @Unsigned Long child_initial_balance) {
@@ -250,9 +250,9 @@ public final class Helpers {
      * Transfer `amount` coins of type `Currency` from `payer` to `payee` with (optional) associated
      * `metadata` and an (optional) `metadata_signature` on the message
      * `metadata` | `Signer::address_of(payer)` | `amount` | `DualAttestation::DOMAIN_SEPARATOR`.
-     * The `metadata` and `metadata_signature` parameters are only required if `amount` >=
+     * The `metadata` and `metadata_signature` parameters are only required if `amount`
      * `DualAttestation::get_cur_microlibra_limit` LBR and `payer` and `payee` are distinct VASPs.
-     * However, a transaction sender can opt in to dual attestation even when it is not required (e.g., a DesignatedDealer -> VASP payment) by providing a non-empty `metadata_signature`.
+     * However, a transaction sender can opt in to dual attestation even when it is not required (e.g., a DesignatedDealer VASP payment) by providing a non-empty `metadata_signature`.
      * Standardized `metadata` LCS format can be found in `libra_types::transaction::metadata::Metadata`.
      *
      * ## Events
@@ -292,7 +292,7 @@ public final class Helpers {
 
     /**
      * Preburn `amount` `Token`s from `account`.
-     * This will only succeed if `account` already has a published `Preburn<Token>` resource.
+     * This will only succeed if `account` already has a published `Preburn` resource.
      */
     public static Script encode_preburn_script(TypeTag token, @Unsigned Long amount) {
         Script.Builder builder = new Script.Builder();
