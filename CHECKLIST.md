@@ -90,6 +90,8 @@ See [doc][5] for above concepts.
 - [ ] Async client
 - [ ] CLI connects to testnet for trying out features.
 - [ ] Client connection pool.
+- [ ] Use okhttp
+- [ ] Work under Android environment
 
 [1]: https://github.com/libra/libra/blob/master/json-rpc/json-rpc-spec.md "Libra JSON-RPC SPEC"
 [2]: https://github.com/libra/lip/blob/master/lips/lip-5.md "LIP-5"
