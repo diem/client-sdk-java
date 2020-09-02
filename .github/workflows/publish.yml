@@ -1,7 +1,9 @@
 
 name: Publish Maven Package
 
-on: [workflow_dispatch]
+on:
+  pull_request:
+    branches: [ master ]
 
 jobs:
   publish:
