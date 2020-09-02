@@ -2,17 +2,18 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
+
 public final class RawTransaction {
     public final AccountAddress sender;
-    public final @com.facebook.serde.Unsigned Long sequence_number;
+    public final @com.novi.serde.Unsigned Long sequence_number;
     public final TransactionPayload payload;
-    public final @com.facebook.serde.Unsigned Long max_gas_amount;
-    public final @com.facebook.serde.Unsigned Long gas_unit_price;
+    public final @com.novi.serde.Unsigned Long max_gas_amount;
+    public final @com.novi.serde.Unsigned Long gas_unit_price;
     public final String gas_currency_code;
-    public final @com.facebook.serde.Unsigned Long expiration_timestamp_secs;
+    public final @com.novi.serde.Unsigned Long expiration_timestamp_secs;
     public final ChainId chain_id;
 
-    public RawTransaction(AccountAddress sender, @com.facebook.serde.Unsigned Long sequence_number, TransactionPayload payload, @com.facebook.serde.Unsigned Long max_gas_amount, @com.facebook.serde.Unsigned Long gas_unit_price, String gas_currency_code, @com.facebook.serde.Unsigned Long expiration_timestamp_secs, ChainId chain_id) {
+    public RawTransaction(AccountAddress sender, @com.novi.serde.Unsigned Long sequence_number, TransactionPayload payload, @com.novi.serde.Unsigned Long max_gas_amount, @com.novi.serde.Unsigned Long gas_unit_price, String gas_currency_code, @com.novi.serde.Unsigned Long expiration_timestamp_secs, ChainId chain_id) {
         assert sender != null;
         assert sequence_number != null;
         assert payload != null;
@@ -31,7 +32,7 @@ public final class RawTransaction {
         this.chain_id = chain_id;
     }
 
-    public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+    public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
         sender.serialize(serializer);
         serializer.serialize_u64(sequence_number);
         payload.serialize(serializer);
@@ -42,7 +43,13 @@ public final class RawTransaction {
         chain_id.serialize(serializer);
     }
 
-    public static RawTransaction deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static RawTransaction deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         Builder builder = new Builder();
         builder.sender = AccountAddress.deserialize(deserializer);
         builder.sequence_number = deserializer.deserialize_u64();
@@ -53,6 +60,15 @@ public final class RawTransaction {
         builder.expiration_timestamp_secs = deserializer.deserialize_u64();
         builder.chain_id = ChainId.deserialize(deserializer);
         return builder.build();
+    }
+
+    public static RawTransaction lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        RawTransaction value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
     }
 
     public boolean equals(Object obj) {
@@ -86,12 +102,12 @@ public final class RawTransaction {
 
     public static final class Builder {
         public AccountAddress sender;
-        public @com.facebook.serde.Unsigned Long sequence_number;
+        public @com.novi.serde.Unsigned Long sequence_number;
         public TransactionPayload payload;
-        public @com.facebook.serde.Unsigned Long max_gas_amount;
-        public @com.facebook.serde.Unsigned Long gas_unit_price;
+        public @com.novi.serde.Unsigned Long max_gas_amount;
+        public @com.novi.serde.Unsigned Long gas_unit_price;
         public String gas_currency_code;
-        public @com.facebook.serde.Unsigned Long expiration_timestamp_secs;
+        public @com.novi.serde.Unsigned Long expiration_timestamp_secs;
         public ChainId chain_id;
 
         public RawTransaction build() {

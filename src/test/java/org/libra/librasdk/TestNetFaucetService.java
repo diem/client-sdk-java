@@ -9,7 +9,7 @@ import org.libra.librasdk.dto.Transaction;
 
 public class TestNetFaucetService {
     private static final long DEFAULT_TIMEOUT = 10 * 1000;
-    public static String SERVER_URL = "http://faucet.testnet.libra.org/";
+    public static String SERVER_URL = "https://testnet.libra.org/mint";
 
     public static void mintCoins(Client client, long amount, String authKey, String currencyCode) {
         long nextAccountSeq = mintCoinsAsync(amount, authKey.toLowerCase(), currencyCode);
@@ -39,7 +39,7 @@ public class TestNetFaucetService {
         RequestBody emptyBody = RequestBody.create(null, new byte[0]);
         Request request = new Request.Builder().url(url).post(emptyBody).build();
 
-        int retry = 3;
+        int retry = 10;
         for (int i = 0; i <= retry; i++) {
             try {
                 Response response = client.newCall(request).execute();
@@ -53,15 +53,15 @@ public class TestNetFaucetService {
                 String body = response.body().string();
                 return Long.parseLong(body);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                // ignore errors and retry
             }
         }
-        throw new RuntimeException();
+        throw new RuntimeException("mint coins failed");
     }
 
     private static void waitAWhile() {
         try {
-            Thread.sleep(500);
+            Thread.sleep(1100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

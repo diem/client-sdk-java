@@ -2,6 +2,7 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
+
 public final class SignedTransaction {
     public final RawTransaction raw_txn;
     public final TransactionAuthenticator authenticator;
@@ -13,16 +14,31 @@ public final class SignedTransaction {
         this.authenticator = authenticator;
     }
 
-    public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+    public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
         raw_txn.serialize(serializer);
         authenticator.serialize(serializer);
     }
 
-    public static SignedTransaction deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static SignedTransaction deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         Builder builder = new Builder();
         builder.raw_txn = RawTransaction.deserialize(deserializer);
         builder.authenticator = TransactionAuthenticator.deserialize(deserializer);
         return builder.build();
+    }
+
+    public static SignedTransaction lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        SignedTransaction value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
     }
 
     public boolean equals(Object obj) {

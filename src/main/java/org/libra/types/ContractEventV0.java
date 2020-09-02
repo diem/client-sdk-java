@@ -2,13 +2,14 @@ package org.libra.types;
 
 import java.math.BigInteger;
 
+
 public final class ContractEventV0 {
     public final EventKey key;
-    public final @com.facebook.serde.Unsigned Long sequence_number;
+    public final @com.novi.serde.Unsigned Long sequence_number;
     public final TypeTag type_tag;
-    public final com.facebook.serde.Bytes event_data;
+    public final com.novi.serde.Bytes event_data;
 
-    public ContractEventV0(EventKey key, @com.facebook.serde.Unsigned Long sequence_number, TypeTag type_tag, com.facebook.serde.Bytes event_data) {
+    public ContractEventV0(EventKey key, @com.novi.serde.Unsigned Long sequence_number, TypeTag type_tag, com.novi.serde.Bytes event_data) {
         assert key != null;
         assert sequence_number != null;
         assert type_tag != null;
@@ -19,20 +20,35 @@ public final class ContractEventV0 {
         this.event_data = event_data;
     }
 
-    public void serialize(com.facebook.serde.Serializer serializer) throws java.lang.Exception {
+    public void serialize(com.novi.serde.Serializer serializer) throws java.lang.Exception {
         key.serialize(serializer);
         serializer.serialize_u64(sequence_number);
         type_tag.serialize(serializer);
         serializer.serialize_bytes(event_data);
     }
 
-    public static ContractEventV0 deserialize(com.facebook.serde.Deserializer deserializer) throws java.lang.Exception {
+    public byte[] lcsSerialize() throws java.lang.Exception {
+        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+        serialize(serializer);
+        return serializer.get_bytes();
+    }
+
+    public static ContractEventV0 deserialize(com.novi.serde.Deserializer deserializer) throws java.lang.Exception {
         Builder builder = new Builder();
         builder.key = EventKey.deserialize(deserializer);
         builder.sequence_number = deserializer.deserialize_u64();
         builder.type_tag = TypeTag.deserialize(deserializer);
         builder.event_data = deserializer.deserialize_bytes();
         return builder.build();
+    }
+
+    public static ContractEventV0 lcsDeserialize(byte[] input) throws java.lang.Exception {
+        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        ContractEventV0 value = deserialize(deserializer);
+        if (deserializer.get_buffer_offset() < input.length) {
+             throw new Exception("Some input bytes were not read");
+        }
+        return value;
     }
 
     public boolean equals(Object obj) {
@@ -58,9 +74,9 @@ public final class ContractEventV0 {
 
     public static final class Builder {
         public EventKey key;
-        public @com.facebook.serde.Unsigned Long sequence_number;
+        public @com.novi.serde.Unsigned Long sequence_number;
         public TypeTag type_tag;
-        public com.facebook.serde.Bytes event_data;
+        public com.novi.serde.Bytes event_data;
 
         public ContractEventV0 build() {
             return new ContractEventV0(

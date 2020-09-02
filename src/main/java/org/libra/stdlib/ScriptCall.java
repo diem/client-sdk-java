@@ -2,11 +2,12 @@ package org.libra.stdlib;
 
 import java.math.BigInteger;
 
+
 public abstract class ScriptCall {
 
     /**
      * Add a `Currency` balance to `account`, which will enable `account` to send and receive
-     * `Libra<Currency>`.
+     * `Libra Currency `.
      * Aborts with NOT_A_CURRENCY if `Currency` is not an accepted currency type in the Libra system
      * Aborts with `LibraAccount::ADD_EXISTING_CURRENCY` if the account already holds a balance in
      * `Currency`.
@@ -88,17 +89,61 @@ public abstract class ScriptCall {
     }
 
     /**
+     * Append the `hash` to script hashes list allowed to be executed by the network.
+     */
+    public static final class AddToScriptAllowList extends ScriptCall {
+        public final com.novi.serde.Bytes hash;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
+
+        public AddToScriptAllowList(com.novi.serde.Bytes hash, @com.novi.serde.Unsigned Long sliding_nonce) {
+            assert hash != null;
+            assert sliding_nonce != null;
+            this.hash = hash;
+            this.sliding_nonce = sliding_nonce;
+        }
+
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null) return false;
+            if (getClass() != obj.getClass()) return false;
+            AddToScriptAllowList other = (AddToScriptAllowList) obj;
+            if (!java.util.Objects.equals(this.hash, other.hash)) { return false; }
+            if (!java.util.Objects.equals(this.sliding_nonce, other.sliding_nonce)) { return false; }
+            return true;
+        }
+
+        public int hashCode() {
+            int value = 7;
+            value = 31 * value + (this.hash != null ? this.hash.hashCode() : 0);
+            value = 31 * value + (this.sliding_nonce != null ? this.sliding_nonce.hashCode() : 0);
+            return value;
+        }
+
+        public static final class Builder {
+            public com.novi.serde.Bytes hash;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
+
+            public AddToScriptAllowList build() {
+                return new AddToScriptAllowList(
+                    hash,
+                    sliding_nonce
+                );
+            }
+        }
+    }
+
+    /**
      * Add `new_validator` to the validator set.
      * Fails if the `new_validator` address is already in the validator set
      * or does not have a `ValidatorConfig` resource stored at the address.
      * Emits a NewEpochEvent.
      */
     public static final class AddValidatorAndReconfigure extends ScriptCall {
-        public final @com.facebook.serde.Unsigned Long sliding_nonce;
-        public final com.facebook.serde.Bytes validator_name;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
+        public final com.novi.serde.Bytes validator_name;
         public final org.libra.types.AccountAddress validator_address;
 
-        public AddValidatorAndReconfigure(@com.facebook.serde.Unsigned Long sliding_nonce, com.facebook.serde.Bytes validator_name, org.libra.types.AccountAddress validator_address) {
+        public AddValidatorAndReconfigure(@com.novi.serde.Unsigned Long sliding_nonce, com.novi.serde.Bytes validator_name, org.libra.types.AccountAddress validator_address) {
             assert sliding_nonce != null;
             assert validator_name != null;
             assert validator_address != null;
@@ -127,8 +172,8 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public @com.facebook.serde.Unsigned Long sliding_nonce;
-            public com.facebook.serde.Bytes validator_name;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
+            public com.novi.serde.Bytes validator_name;
             public org.libra.types.AccountAddress validator_address;
 
             public AddValidatorAndReconfigure build() {
@@ -142,17 +187,17 @@ public abstract class ScriptCall {
     }
 
     /**
-     * Permanently destroy the `Token`s stored in the oldest burn request under the `Preburn` resource.
-     * This will only succeed if `account` has a `MintCapability<Token>`, a `Preburn<Token>` resource
+     * Permanently destroy the `TypeTag`s stored in the oldest burn request under the `Preburn` resource.
+     * This will only succeed if `account` has a `MintCapability TypeTag `, a `Preburn TypeTag ` resource
      * exists under `preburn_address`, and there is a pending burn request.
      * sliding_nonce is a unique nonce for operation, see sliding_nonce.move for details
      */
     public static final class Burn extends ScriptCall {
         public final org.libra.types.TypeTag token;
-        public final @com.facebook.serde.Unsigned Long sliding_nonce;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final org.libra.types.AccountAddress preburn_address;
 
-        public Burn(org.libra.types.TypeTag token, @com.facebook.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress preburn_address) {
+        public Burn(org.libra.types.TypeTag token, @com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress preburn_address) {
             assert token != null;
             assert sliding_nonce != null;
             assert preburn_address != null;
@@ -182,7 +227,7 @@ public abstract class ScriptCall {
 
         public static final class Builder {
             public org.libra.types.TypeTag token;
-            public @com.facebook.serde.Unsigned Long sliding_nonce;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
             public org.libra.types.AccountAddress preburn_address;
 
             public Burn build() {
@@ -235,7 +280,7 @@ public abstract class ScriptCall {
 
     /**
      * Cancel the oldest burn request from `preburn_address` and return the funds.
-     * Fails if the sender does not have a published `BurnCapability<Token>`.
+     * Fails if the sender does not have a published `BurnCapability Token `.
      */
     public static final class CancelBurn extends ScriptCall {
         public final org.libra.types.TypeTag token;
@@ -294,17 +339,17 @@ public abstract class ScriptCall {
      * * If `parent_vasp` already has 256 child accounts with error: `VASP::ETOO_MANY_CHILDREN`
      * * If `CoinType` is not a registered currency with error: `LibraAccount::ENOT_A_CURRENCY`
      * * If `parent_vasp`'s withdrawal capability has been extracted with error:  `LibraAccount::EWITHDRAWAL_CAPABILITY_ALREADY_EXTRACTED`
-     * * If `parent_vasp` doesn't hold `CoinType` and `child_initial_balance > 0` with error: `LibraAccount::EPAYER_DOESNT_HOLD_CURRENCY`
-     * * If `parent_vasp` doesn't at least `child_initial_balance` of `CoinType` in its account balance with error: `LibraAccount::EINSUFFICIENT_BALANCE`
+     * * If `parent_vasp` doesn't hold CoinType and child_initial_balance  0 with error: `LibraAccount::EPAYER_DOESNT_HOLD_CURRENCY`
+     * * If `parent_vasp` doesn't at least child_initial_balance of CoinType in its account balance with error: `LibraAccount::EINSUFFICIENT_BALANCE`
      */
     public static final class CreateChildVaspAccount extends ScriptCall {
         public final org.libra.types.TypeTag coin_type;
         public final org.libra.types.AccountAddress child_address;
-        public final com.facebook.serde.Bytes auth_key_prefix;
+        public final com.novi.serde.Bytes auth_key_prefix;
         public final Boolean add_all_currencies;
-        public final @com.facebook.serde.Unsigned Long child_initial_balance;
+        public final @com.novi.serde.Unsigned Long child_initial_balance;
 
-        public CreateChildVaspAccount(org.libra.types.TypeTag coin_type, org.libra.types.AccountAddress child_address, com.facebook.serde.Bytes auth_key_prefix, Boolean add_all_currencies, @com.facebook.serde.Unsigned Long child_initial_balance) {
+        public CreateChildVaspAccount(org.libra.types.TypeTag coin_type, org.libra.types.AccountAddress child_address, com.novi.serde.Bytes auth_key_prefix, Boolean add_all_currencies, @com.novi.serde.Unsigned Long child_initial_balance) {
             assert coin_type != null;
             assert child_address != null;
             assert auth_key_prefix != null;
@@ -343,9 +388,9 @@ public abstract class ScriptCall {
         public static final class Builder {
             public org.libra.types.TypeTag coin_type;
             public org.libra.types.AccountAddress child_address;
-            public com.facebook.serde.Bytes auth_key_prefix;
+            public com.novi.serde.Bytes auth_key_prefix;
             public Boolean add_all_currencies;
-            public @com.facebook.serde.Unsigned Long child_initial_balance;
+            public @com.novi.serde.Unsigned Long child_initial_balance;
 
             public CreateChildVaspAccount build() {
                 return new CreateChildVaspAccount(
@@ -367,30 +412,24 @@ public abstract class ScriptCall {
      */
     public static final class CreateDesignatedDealer extends ScriptCall {
         public final org.libra.types.TypeTag currency;
-        public final @com.facebook.serde.Unsigned Long sliding_nonce;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final org.libra.types.AccountAddress addr;
-        public final com.facebook.serde.Bytes auth_key_prefix;
-        public final com.facebook.serde.Bytes human_name;
-        public final com.facebook.serde.Bytes base_url;
-        public final com.facebook.serde.Bytes compliance_public_key;
+        public final com.novi.serde.Bytes auth_key_prefix;
+        public final com.novi.serde.Bytes human_name;
         public final Boolean add_all_currencies;
 
-        public CreateDesignatedDealer(org.libra.types.TypeTag currency, @com.facebook.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress addr, com.facebook.serde.Bytes auth_key_prefix, com.facebook.serde.Bytes human_name, com.facebook.serde.Bytes base_url, com.facebook.serde.Bytes compliance_public_key, Boolean add_all_currencies) {
+        public CreateDesignatedDealer(org.libra.types.TypeTag currency, @com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress addr, com.novi.serde.Bytes auth_key_prefix, com.novi.serde.Bytes human_name, Boolean add_all_currencies) {
             assert currency != null;
             assert sliding_nonce != null;
             assert addr != null;
             assert auth_key_prefix != null;
             assert human_name != null;
-            assert base_url != null;
-            assert compliance_public_key != null;
             assert add_all_currencies != null;
             this.currency = currency;
             this.sliding_nonce = sliding_nonce;
             this.addr = addr;
             this.auth_key_prefix = auth_key_prefix;
             this.human_name = human_name;
-            this.base_url = base_url;
-            this.compliance_public_key = compliance_public_key;
             this.add_all_currencies = add_all_currencies;
         }
 
@@ -404,8 +443,6 @@ public abstract class ScriptCall {
             if (!java.util.Objects.equals(this.addr, other.addr)) { return false; }
             if (!java.util.Objects.equals(this.auth_key_prefix, other.auth_key_prefix)) { return false; }
             if (!java.util.Objects.equals(this.human_name, other.human_name)) { return false; }
-            if (!java.util.Objects.equals(this.base_url, other.base_url)) { return false; }
-            if (!java.util.Objects.equals(this.compliance_public_key, other.compliance_public_key)) { return false; }
             if (!java.util.Objects.equals(this.add_all_currencies, other.add_all_currencies)) { return false; }
             return true;
         }
@@ -417,20 +454,16 @@ public abstract class ScriptCall {
             value = 31 * value + (this.addr != null ? this.addr.hashCode() : 0);
             value = 31 * value + (this.auth_key_prefix != null ? this.auth_key_prefix.hashCode() : 0);
             value = 31 * value + (this.human_name != null ? this.human_name.hashCode() : 0);
-            value = 31 * value + (this.base_url != null ? this.base_url.hashCode() : 0);
-            value = 31 * value + (this.compliance_public_key != null ? this.compliance_public_key.hashCode() : 0);
             value = 31 * value + (this.add_all_currencies != null ? this.add_all_currencies.hashCode() : 0);
             return value;
         }
 
         public static final class Builder {
             public org.libra.types.TypeTag currency;
-            public @com.facebook.serde.Unsigned Long sliding_nonce;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
             public org.libra.types.AccountAddress addr;
-            public com.facebook.serde.Bytes auth_key_prefix;
-            public com.facebook.serde.Bytes human_name;
-            public com.facebook.serde.Bytes base_url;
-            public com.facebook.serde.Bytes compliance_public_key;
+            public com.novi.serde.Bytes auth_key_prefix;
+            public com.novi.serde.Bytes human_name;
             public Boolean add_all_currencies;
 
             public CreateDesignatedDealer build() {
@@ -440,8 +473,6 @@ public abstract class ScriptCall {
                     addr,
                     auth_key_prefix,
                     human_name,
-                    base_url,
-                    compliance_public_key,
                     add_all_currencies
                 );
             }
@@ -452,35 +483,29 @@ public abstract class ScriptCall {
      * Create an account with the ParentVASP role at `address` with authentication key
      * `auth_key_prefix` | `new_account_address` and a 0 balance of type `currency`. If
      * `add_all_currencies` is true, 0 balances for all available currencies in the system will
-     * also be added. This can only be invoked by an Association account.
+     * also be added. This can only be invoked by an TreasuryCompliance account.
      * `sliding_nonce` is a unique nonce for operation, see sliding_nonce.move for details.
      */
     public static final class CreateParentVaspAccount extends ScriptCall {
         public final org.libra.types.TypeTag coin_type;
-        public final @com.facebook.serde.Unsigned Long sliding_nonce;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final org.libra.types.AccountAddress new_account_address;
-        public final com.facebook.serde.Bytes auth_key_prefix;
-        public final com.facebook.serde.Bytes human_name;
-        public final com.facebook.serde.Bytes base_url;
-        public final com.facebook.serde.Bytes compliance_public_key;
+        public final com.novi.serde.Bytes auth_key_prefix;
+        public final com.novi.serde.Bytes human_name;
         public final Boolean add_all_currencies;
 
-        public CreateParentVaspAccount(org.libra.types.TypeTag coin_type, @com.facebook.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress new_account_address, com.facebook.serde.Bytes auth_key_prefix, com.facebook.serde.Bytes human_name, com.facebook.serde.Bytes base_url, com.facebook.serde.Bytes compliance_public_key, Boolean add_all_currencies) {
+        public CreateParentVaspAccount(org.libra.types.TypeTag coin_type, @com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress new_account_address, com.novi.serde.Bytes auth_key_prefix, com.novi.serde.Bytes human_name, Boolean add_all_currencies) {
             assert coin_type != null;
             assert sliding_nonce != null;
             assert new_account_address != null;
             assert auth_key_prefix != null;
             assert human_name != null;
-            assert base_url != null;
-            assert compliance_public_key != null;
             assert add_all_currencies != null;
             this.coin_type = coin_type;
             this.sliding_nonce = sliding_nonce;
             this.new_account_address = new_account_address;
             this.auth_key_prefix = auth_key_prefix;
             this.human_name = human_name;
-            this.base_url = base_url;
-            this.compliance_public_key = compliance_public_key;
             this.add_all_currencies = add_all_currencies;
         }
 
@@ -494,8 +519,6 @@ public abstract class ScriptCall {
             if (!java.util.Objects.equals(this.new_account_address, other.new_account_address)) { return false; }
             if (!java.util.Objects.equals(this.auth_key_prefix, other.auth_key_prefix)) { return false; }
             if (!java.util.Objects.equals(this.human_name, other.human_name)) { return false; }
-            if (!java.util.Objects.equals(this.base_url, other.base_url)) { return false; }
-            if (!java.util.Objects.equals(this.compliance_public_key, other.compliance_public_key)) { return false; }
             if (!java.util.Objects.equals(this.add_all_currencies, other.add_all_currencies)) { return false; }
             return true;
         }
@@ -507,20 +530,16 @@ public abstract class ScriptCall {
             value = 31 * value + (this.new_account_address != null ? this.new_account_address.hashCode() : 0);
             value = 31 * value + (this.auth_key_prefix != null ? this.auth_key_prefix.hashCode() : 0);
             value = 31 * value + (this.human_name != null ? this.human_name.hashCode() : 0);
-            value = 31 * value + (this.base_url != null ? this.base_url.hashCode() : 0);
-            value = 31 * value + (this.compliance_public_key != null ? this.compliance_public_key.hashCode() : 0);
             value = 31 * value + (this.add_all_currencies != null ? this.add_all_currencies.hashCode() : 0);
             return value;
         }
 
         public static final class Builder {
             public org.libra.types.TypeTag coin_type;
-            public @com.facebook.serde.Unsigned Long sliding_nonce;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
             public org.libra.types.AccountAddress new_account_address;
-            public com.facebook.serde.Bytes auth_key_prefix;
-            public com.facebook.serde.Bytes human_name;
-            public com.facebook.serde.Bytes base_url;
-            public com.facebook.serde.Bytes compliance_public_key;
+            public com.novi.serde.Bytes auth_key_prefix;
+            public com.novi.serde.Bytes human_name;
             public Boolean add_all_currencies;
 
             public CreateParentVaspAccount build() {
@@ -530,8 +549,6 @@ public abstract class ScriptCall {
                     new_account_address,
                     auth_key_prefix,
                     human_name,
-                    base_url,
-                    compliance_public_key,
                     add_all_currencies
                 );
             }
@@ -571,78 +588,15 @@ public abstract class ScriptCall {
     }
 
     /**
-     * Create an account with the ParentVASP role at `address` with authentication key
-     * `auth_key_prefix` | `new_account_address` and a 0 balance of type `currency`. If
-     * `add_all_currencies` is true, 0 balances for all available currencies in the system will
-     * also be added. This can only be invoked by an Association account.
-     * The `human_name`, `base_url`, and compliance_public_key` fields of the
-     * ParentVASP are filled in with dummy information.
-     */
-    public static final class CreateTestingAccount extends ScriptCall {
-        public final org.libra.types.TypeTag coin_type;
-        public final org.libra.types.AccountAddress new_account_address;
-        public final com.facebook.serde.Bytes auth_key_prefix;
-        public final Boolean add_all_currencies;
-
-        public CreateTestingAccount(org.libra.types.TypeTag coin_type, org.libra.types.AccountAddress new_account_address, com.facebook.serde.Bytes auth_key_prefix, Boolean add_all_currencies) {
-            assert coin_type != null;
-            assert new_account_address != null;
-            assert auth_key_prefix != null;
-            assert add_all_currencies != null;
-            this.coin_type = coin_type;
-            this.new_account_address = new_account_address;
-            this.auth_key_prefix = auth_key_prefix;
-            this.add_all_currencies = add_all_currencies;
-        }
-
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null) return false;
-            if (getClass() != obj.getClass()) return false;
-            CreateTestingAccount other = (CreateTestingAccount) obj;
-            if (!java.util.Objects.equals(this.coin_type, other.coin_type)) { return false; }
-            if (!java.util.Objects.equals(this.new_account_address, other.new_account_address)) { return false; }
-            if (!java.util.Objects.equals(this.auth_key_prefix, other.auth_key_prefix)) { return false; }
-            if (!java.util.Objects.equals(this.add_all_currencies, other.add_all_currencies)) { return false; }
-            return true;
-        }
-
-        public int hashCode() {
-            int value = 7;
-            value = 31 * value + (this.coin_type != null ? this.coin_type.hashCode() : 0);
-            value = 31 * value + (this.new_account_address != null ? this.new_account_address.hashCode() : 0);
-            value = 31 * value + (this.auth_key_prefix != null ? this.auth_key_prefix.hashCode() : 0);
-            value = 31 * value + (this.add_all_currencies != null ? this.add_all_currencies.hashCode() : 0);
-            return value;
-        }
-
-        public static final class Builder {
-            public org.libra.types.TypeTag coin_type;
-            public org.libra.types.AccountAddress new_account_address;
-            public com.facebook.serde.Bytes auth_key_prefix;
-            public Boolean add_all_currencies;
-
-            public CreateTestingAccount build() {
-                return new CreateTestingAccount(
-                    coin_type,
-                    new_account_address,
-                    auth_key_prefix,
-                    add_all_currencies
-                );
-            }
-        }
-    }
-
-    /**
      * Create a validator account at `new_validator_address` with `auth_key_prefix`and human_name.
      */
     public static final class CreateValidatorAccount extends ScriptCall {
-        public final @com.facebook.serde.Unsigned Long sliding_nonce;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final org.libra.types.AccountAddress new_account_address;
-        public final com.facebook.serde.Bytes auth_key_prefix;
-        public final com.facebook.serde.Bytes human_name;
+        public final com.novi.serde.Bytes auth_key_prefix;
+        public final com.novi.serde.Bytes human_name;
 
-        public CreateValidatorAccount(@com.facebook.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress new_account_address, com.facebook.serde.Bytes auth_key_prefix, com.facebook.serde.Bytes human_name) {
+        public CreateValidatorAccount(@com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress new_account_address, com.novi.serde.Bytes auth_key_prefix, com.novi.serde.Bytes human_name) {
             assert sliding_nonce != null;
             assert new_account_address != null;
             assert auth_key_prefix != null;
@@ -675,10 +629,10 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public @com.facebook.serde.Unsigned Long sliding_nonce;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
             public org.libra.types.AccountAddress new_account_address;
-            public com.facebook.serde.Bytes auth_key_prefix;
-            public com.facebook.serde.Bytes human_name;
+            public com.novi.serde.Bytes auth_key_prefix;
+            public com.novi.serde.Bytes human_name;
 
             public CreateValidatorAccount build() {
                 return new CreateValidatorAccount(
@@ -695,12 +649,12 @@ public abstract class ScriptCall {
      * Create a validator operator account at `new_validator_address` with `auth_key_prefix`and human_name.
      */
     public static final class CreateValidatorOperatorAccount extends ScriptCall {
-        public final @com.facebook.serde.Unsigned Long sliding_nonce;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final org.libra.types.AccountAddress new_account_address;
-        public final com.facebook.serde.Bytes auth_key_prefix;
-        public final com.facebook.serde.Bytes human_name;
+        public final com.novi.serde.Bytes auth_key_prefix;
+        public final com.novi.serde.Bytes human_name;
 
-        public CreateValidatorOperatorAccount(@com.facebook.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress new_account_address, com.facebook.serde.Bytes auth_key_prefix, com.facebook.serde.Bytes human_name) {
+        public CreateValidatorOperatorAccount(@com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress new_account_address, com.novi.serde.Bytes auth_key_prefix, com.novi.serde.Bytes human_name) {
             assert sliding_nonce != null;
             assert new_account_address != null;
             assert auth_key_prefix != null;
@@ -733,10 +687,10 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public @com.facebook.serde.Unsigned Long sliding_nonce;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
             public org.libra.types.AccountAddress new_account_address;
-            public com.facebook.serde.Bytes auth_key_prefix;
-            public com.facebook.serde.Bytes human_name;
+            public com.novi.serde.Bytes auth_key_prefix;
+            public com.novi.serde.Bytes human_name;
 
             public CreateValidatorOperatorAccount build() {
                 return new CreateValidatorOperatorAccount(
@@ -754,10 +708,10 @@ public abstract class ScriptCall {
      * `sliding_nonce` is a unique nonce for operation, see sliding_nonce.move for details.
      */
     public static final class FreezeAccount extends ScriptCall {
-        public final @com.facebook.serde.Unsigned Long sliding_nonce;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final org.libra.types.AccountAddress to_freeze_account;
 
-        public FreezeAccount(@com.facebook.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress to_freeze_account) {
+        public FreezeAccount(@com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress to_freeze_account) {
             assert sliding_nonce != null;
             assert to_freeze_account != null;
             this.sliding_nonce = sliding_nonce;
@@ -782,7 +736,7 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public @com.facebook.serde.Unsigned Long sliding_nonce;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
             public org.libra.types.AccountAddress to_freeze_account;
 
             public FreezeAccount build() {
@@ -799,9 +753,9 @@ public abstract class ScriptCall {
      * resulting LBR into the sending account.
      */
     public static final class MintLbr extends ScriptCall {
-        public final @com.facebook.serde.Unsigned Long amount_lbr;
+        public final @com.novi.serde.Unsigned Long amount_lbr;
 
-        public MintLbr(@com.facebook.serde.Unsigned Long amount_lbr) {
+        public MintLbr(@com.novi.serde.Unsigned Long amount_lbr) {
             assert amount_lbr != null;
             this.amount_lbr = amount_lbr;
         }
@@ -822,7 +776,7 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public @com.facebook.serde.Unsigned Long amount_lbr;
+            public @com.novi.serde.Unsigned Long amount_lbr;
 
             public MintLbr build() {
                 return new MintLbr(
@@ -833,49 +787,12 @@ public abstract class ScriptCall {
     }
 
     /**
-     * Modify publishing options. Takes the LCS bytes of a `VMPublishingOption` object as input.
-     */
-    public static final class ModifyPublishingOption extends ScriptCall {
-        public final com.facebook.serde.Bytes args;
-
-        public ModifyPublishingOption(com.facebook.serde.Bytes args) {
-            assert args != null;
-            this.args = args;
-        }
-
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null) return false;
-            if (getClass() != obj.getClass()) return false;
-            ModifyPublishingOption other = (ModifyPublishingOption) obj;
-            if (!java.util.Objects.equals(this.args, other.args)) { return false; }
-            return true;
-        }
-
-        public int hashCode() {
-            int value = 7;
-            value = 31 * value + (this.args != null ? this.args.hashCode() : 0);
-            return value;
-        }
-
-        public static final class Builder {
-            public com.facebook.serde.Bytes args;
-
-            public ModifyPublishingOption build() {
-                return new ModifyPublishingOption(
-                    args
-                );
-            }
-        }
-    }
-
-    /**
      * Transfer `amount` coins of type `Currency` from `payer` to `payee` with (optional) associated
      * `metadata` and an (optional) `metadata_signature` on the message
      * `metadata` | `Signer::address_of(payer)` | `amount` | `DualAttestation::DOMAIN_SEPARATOR`.
-     * The `metadata` and `metadata_signature` parameters are only required if `amount` >=
+     * The `metadata` and `metadata_signature` parameters are only required if `amount`
      * `DualAttestation::get_cur_microlibra_limit` LBR and `payer` and `payee` are distinct VASPs.
-     * However, a transaction sender can opt in to dual attestation even when it is not required (e.g., a DesignatedDealer -> VASP payment) by providing a non-empty `metadata_signature`.
+     * However, a transaction sender can opt in to dual attestation even when it is not required (e.g., a DesignatedDealer to VASP payment) by providing a non-empty `metadata_signature`.
      * Standardized `metadata` LCS format can be found in `libra_types::transaction::metadata::Metadata`.
      *
      * ## Events
@@ -908,11 +825,11 @@ public abstract class ScriptCall {
     public static final class PeerToPeerWithMetadata extends ScriptCall {
         public final org.libra.types.TypeTag currency;
         public final org.libra.types.AccountAddress payee;
-        public final @com.facebook.serde.Unsigned Long amount;
-        public final com.facebook.serde.Bytes metadata;
-        public final com.facebook.serde.Bytes metadata_signature;
+        public final @com.novi.serde.Unsigned Long amount;
+        public final com.novi.serde.Bytes metadata;
+        public final com.novi.serde.Bytes metadata_signature;
 
-        public PeerToPeerWithMetadata(org.libra.types.TypeTag currency, org.libra.types.AccountAddress payee, @com.facebook.serde.Unsigned Long amount, com.facebook.serde.Bytes metadata, com.facebook.serde.Bytes metadata_signature) {
+        public PeerToPeerWithMetadata(org.libra.types.TypeTag currency, org.libra.types.AccountAddress payee, @com.novi.serde.Unsigned Long amount, com.novi.serde.Bytes metadata, com.novi.serde.Bytes metadata_signature) {
             assert currency != null;
             assert payee != null;
             assert amount != null;
@@ -951,9 +868,9 @@ public abstract class ScriptCall {
         public static final class Builder {
             public org.libra.types.TypeTag currency;
             public org.libra.types.AccountAddress payee;
-            public @com.facebook.serde.Unsigned Long amount;
-            public com.facebook.serde.Bytes metadata;
-            public com.facebook.serde.Bytes metadata_signature;
+            public @com.novi.serde.Unsigned Long amount;
+            public com.novi.serde.Bytes metadata;
+            public com.novi.serde.Bytes metadata_signature;
 
             public PeerToPeerWithMetadata build() {
                 return new PeerToPeerWithMetadata(
@@ -969,13 +886,13 @@ public abstract class ScriptCall {
 
     /**
      * Preburn `amount` `Token`s from `account`.
-     * This will only succeed if `account` already has a published `Preburn<Token>` resource.
+     * This will only succeed if `account` already has a published Preburn Token resource.
      */
     public static final class Preburn extends ScriptCall {
         public final org.libra.types.TypeTag token;
-        public final @com.facebook.serde.Unsigned Long amount;
+        public final @com.novi.serde.Unsigned Long amount;
 
-        public Preburn(org.libra.types.TypeTag token, @com.facebook.serde.Unsigned Long amount) {
+        public Preburn(org.libra.types.TypeTag token, @com.novi.serde.Unsigned Long amount) {
             assert token != null;
             assert amount != null;
             this.token = token;
@@ -1001,7 +918,7 @@ public abstract class ScriptCall {
 
         public static final class Builder {
             public org.libra.types.TypeTag token;
-            public @com.facebook.serde.Unsigned Long amount;
+            public @com.novi.serde.Unsigned Long amount;
 
             public Preburn build() {
                 return new Preburn(
@@ -1020,9 +937,9 @@ public abstract class ScriptCall {
      * Aborts if the length of `new_public_key` is not 32.
      */
     public static final class PublishSharedEd25519PublicKey extends ScriptCall {
-        public final com.facebook.serde.Bytes public_key;
+        public final com.novi.serde.Bytes public_key;
 
-        public PublishSharedEd25519PublicKey(com.facebook.serde.Bytes public_key) {
+        public PublishSharedEd25519PublicKey(com.novi.serde.Bytes public_key) {
             assert public_key != null;
             this.public_key = public_key;
         }
@@ -1043,7 +960,7 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public com.facebook.serde.Bytes public_key;
+            public com.novi.serde.Bytes public_key;
 
             public PublishSharedEd25519PublicKey build() {
                 return new PublishSharedEd25519PublicKey(
@@ -1059,25 +976,19 @@ public abstract class ScriptCall {
      */
     public static final class RegisterValidatorConfig extends ScriptCall {
         public final org.libra.types.AccountAddress validator_account;
-        public final com.facebook.serde.Bytes consensus_pubkey;
-        public final com.facebook.serde.Bytes validator_network_identity_pubkey;
-        public final com.facebook.serde.Bytes validator_network_address;
-        public final com.facebook.serde.Bytes fullnodes_network_identity_pubkey;
-        public final com.facebook.serde.Bytes fullnodes_network_address;
+        public final com.novi.serde.Bytes consensus_pubkey;
+        public final com.novi.serde.Bytes validator_network_addresses;
+        public final com.novi.serde.Bytes fullnode_network_addresses;
 
-        public RegisterValidatorConfig(org.libra.types.AccountAddress validator_account, com.facebook.serde.Bytes consensus_pubkey, com.facebook.serde.Bytes validator_network_identity_pubkey, com.facebook.serde.Bytes validator_network_address, com.facebook.serde.Bytes fullnodes_network_identity_pubkey, com.facebook.serde.Bytes fullnodes_network_address) {
+        public RegisterValidatorConfig(org.libra.types.AccountAddress validator_account, com.novi.serde.Bytes consensus_pubkey, com.novi.serde.Bytes validator_network_addresses, com.novi.serde.Bytes fullnode_network_addresses) {
             assert validator_account != null;
             assert consensus_pubkey != null;
-            assert validator_network_identity_pubkey != null;
-            assert validator_network_address != null;
-            assert fullnodes_network_identity_pubkey != null;
-            assert fullnodes_network_address != null;
+            assert validator_network_addresses != null;
+            assert fullnode_network_addresses != null;
             this.validator_account = validator_account;
             this.consensus_pubkey = consensus_pubkey;
-            this.validator_network_identity_pubkey = validator_network_identity_pubkey;
-            this.validator_network_address = validator_network_address;
-            this.fullnodes_network_identity_pubkey = fullnodes_network_identity_pubkey;
-            this.fullnodes_network_address = fullnodes_network_address;
+            this.validator_network_addresses = validator_network_addresses;
+            this.fullnode_network_addresses = fullnode_network_addresses;
         }
 
         public boolean equals(Object obj) {
@@ -1087,10 +998,8 @@ public abstract class ScriptCall {
             RegisterValidatorConfig other = (RegisterValidatorConfig) obj;
             if (!java.util.Objects.equals(this.validator_account, other.validator_account)) { return false; }
             if (!java.util.Objects.equals(this.consensus_pubkey, other.consensus_pubkey)) { return false; }
-            if (!java.util.Objects.equals(this.validator_network_identity_pubkey, other.validator_network_identity_pubkey)) { return false; }
-            if (!java.util.Objects.equals(this.validator_network_address, other.validator_network_address)) { return false; }
-            if (!java.util.Objects.equals(this.fullnodes_network_identity_pubkey, other.fullnodes_network_identity_pubkey)) { return false; }
-            if (!java.util.Objects.equals(this.fullnodes_network_address, other.fullnodes_network_address)) { return false; }
+            if (!java.util.Objects.equals(this.validator_network_addresses, other.validator_network_addresses)) { return false; }
+            if (!java.util.Objects.equals(this.fullnode_network_addresses, other.fullnode_network_addresses)) { return false; }
             return true;
         }
 
@@ -1098,29 +1007,23 @@ public abstract class ScriptCall {
             int value = 7;
             value = 31 * value + (this.validator_account != null ? this.validator_account.hashCode() : 0);
             value = 31 * value + (this.consensus_pubkey != null ? this.consensus_pubkey.hashCode() : 0);
-            value = 31 * value + (this.validator_network_identity_pubkey != null ? this.validator_network_identity_pubkey.hashCode() : 0);
-            value = 31 * value + (this.validator_network_address != null ? this.validator_network_address.hashCode() : 0);
-            value = 31 * value + (this.fullnodes_network_identity_pubkey != null ? this.fullnodes_network_identity_pubkey.hashCode() : 0);
-            value = 31 * value + (this.fullnodes_network_address != null ? this.fullnodes_network_address.hashCode() : 0);
+            value = 31 * value + (this.validator_network_addresses != null ? this.validator_network_addresses.hashCode() : 0);
+            value = 31 * value + (this.fullnode_network_addresses != null ? this.fullnode_network_addresses.hashCode() : 0);
             return value;
         }
 
         public static final class Builder {
             public org.libra.types.AccountAddress validator_account;
-            public com.facebook.serde.Bytes consensus_pubkey;
-            public com.facebook.serde.Bytes validator_network_identity_pubkey;
-            public com.facebook.serde.Bytes validator_network_address;
-            public com.facebook.serde.Bytes fullnodes_network_identity_pubkey;
-            public com.facebook.serde.Bytes fullnodes_network_address;
+            public com.novi.serde.Bytes consensus_pubkey;
+            public com.novi.serde.Bytes validator_network_addresses;
+            public com.novi.serde.Bytes fullnode_network_addresses;
 
             public RegisterValidatorConfig build() {
                 return new RegisterValidatorConfig(
                     validator_account,
                     consensus_pubkey,
-                    validator_network_identity_pubkey,
-                    validator_network_address,
-                    fullnodes_network_identity_pubkey,
-                    fullnodes_network_address
+                    validator_network_addresses,
+                    fullnode_network_addresses
                 );
             }
         }
@@ -1132,11 +1035,11 @@ public abstract class ScriptCall {
      * Emits a NewEpochEvent.
      */
     public static final class RemoveValidatorAndReconfigure extends ScriptCall {
-        public final @com.facebook.serde.Unsigned Long sliding_nonce;
-        public final com.facebook.serde.Bytes validator_name;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
+        public final com.novi.serde.Bytes validator_name;
         public final org.libra.types.AccountAddress validator_address;
 
-        public RemoveValidatorAndReconfigure(@com.facebook.serde.Unsigned Long sliding_nonce, com.facebook.serde.Bytes validator_name, org.libra.types.AccountAddress validator_address) {
+        public RemoveValidatorAndReconfigure(@com.novi.serde.Unsigned Long sliding_nonce, com.novi.serde.Bytes validator_name, org.libra.types.AccountAddress validator_address) {
             assert sliding_nonce != null;
             assert validator_name != null;
             assert validator_address != null;
@@ -1165,8 +1068,8 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public @com.facebook.serde.Unsigned Long sliding_nonce;
-            public com.facebook.serde.Bytes validator_name;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
+            public com.novi.serde.Bytes validator_name;
             public org.libra.types.AccountAddress validator_address;
 
             public RemoveValidatorAndReconfigure build() {
@@ -1187,9 +1090,9 @@ public abstract class ScriptCall {
      * * Aborts with `LibraAccount::EMALFORMED_AUTHENTICATION_KEY` if the length of `new_key` != 32.
      */
     public static final class RotateAuthenticationKey extends ScriptCall {
-        public final com.facebook.serde.Bytes new_key;
+        public final com.novi.serde.Bytes new_key;
 
-        public RotateAuthenticationKey(com.facebook.serde.Bytes new_key) {
+        public RotateAuthenticationKey(com.novi.serde.Bytes new_key) {
             assert new_key != null;
             this.new_key = new_key;
         }
@@ -1210,7 +1113,7 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public com.facebook.serde.Bytes new_key;
+            public com.novi.serde.Bytes new_key;
 
             public RotateAuthenticationKey build() {
                 return new RotateAuthenticationKey(
@@ -1226,10 +1129,10 @@ public abstract class ScriptCall {
      * `sliding_nonce`, as a unique nonce for this operation. See sliding_nonce.move for details.
      */
     public static final class RotateAuthenticationKeyWithNonce extends ScriptCall {
-        public final @com.facebook.serde.Unsigned Long sliding_nonce;
-        public final com.facebook.serde.Bytes new_key;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
+        public final com.novi.serde.Bytes new_key;
 
-        public RotateAuthenticationKeyWithNonce(@com.facebook.serde.Unsigned Long sliding_nonce, com.facebook.serde.Bytes new_key) {
+        public RotateAuthenticationKeyWithNonce(@com.novi.serde.Unsigned Long sliding_nonce, com.novi.serde.Bytes new_key) {
             assert sliding_nonce != null;
             assert new_key != null;
             this.sliding_nonce = sliding_nonce;
@@ -1254,8 +1157,8 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public @com.facebook.serde.Unsigned Long sliding_nonce;
-            public com.facebook.serde.Bytes new_key;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
+            public com.novi.serde.Bytes new_key;
 
             public RotateAuthenticationKeyWithNonce build() {
                 return new RotateAuthenticationKeyWithNonce(
@@ -1272,10 +1175,10 @@ public abstract class ScriptCall {
      * `sliding_nonce`, as a unique nonce for this operation. See sliding_nonce.move for details.
      */
     public static final class RotateAuthenticationKeyWithNonceAdmin extends ScriptCall {
-        public final @com.facebook.serde.Unsigned Long sliding_nonce;
-        public final com.facebook.serde.Bytes new_key;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
+        public final com.novi.serde.Bytes new_key;
 
-        public RotateAuthenticationKeyWithNonceAdmin(@com.facebook.serde.Unsigned Long sliding_nonce, com.facebook.serde.Bytes new_key) {
+        public RotateAuthenticationKeyWithNonceAdmin(@com.novi.serde.Unsigned Long sliding_nonce, com.novi.serde.Bytes new_key) {
             assert sliding_nonce != null;
             assert new_key != null;
             this.sliding_nonce = sliding_nonce;
@@ -1300,8 +1203,8 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public @com.facebook.serde.Unsigned Long sliding_nonce;
-            public com.facebook.serde.Bytes new_key;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
+            public com.novi.serde.Bytes new_key;
 
             public RotateAuthenticationKeyWithNonceAdmin build() {
                 return new RotateAuthenticationKeyWithNonceAdmin(
@@ -1325,9 +1228,9 @@ public abstract class ScriptCall {
     public static final class RotateAuthenticationKeyWithRecoveryAddress extends ScriptCall {
         public final org.libra.types.AccountAddress recovery_address;
         public final org.libra.types.AccountAddress to_recover;
-        public final com.facebook.serde.Bytes new_key;
+        public final com.novi.serde.Bytes new_key;
 
-        public RotateAuthenticationKeyWithRecoveryAddress(org.libra.types.AccountAddress recovery_address, org.libra.types.AccountAddress to_recover, com.facebook.serde.Bytes new_key) {
+        public RotateAuthenticationKeyWithRecoveryAddress(org.libra.types.AccountAddress recovery_address, org.libra.types.AccountAddress to_recover, com.novi.serde.Bytes new_key) {
             assert recovery_address != null;
             assert to_recover != null;
             assert new_key != null;
@@ -1358,7 +1261,7 @@ public abstract class ScriptCall {
         public static final class Builder {
             public org.libra.types.AccountAddress recovery_address;
             public org.libra.types.AccountAddress to_recover;
-            public com.facebook.serde.Bytes new_key;
+            public com.novi.serde.Bytes new_key;
 
             public RotateAuthenticationKeyWithRecoveryAddress build() {
                 return new RotateAuthenticationKeyWithRecoveryAddress(
@@ -1376,10 +1279,10 @@ public abstract class ScriptCall {
      * Aborts if `new_key` is not a well-formed public key
      */
     public static final class RotateDualAttestationInfo extends ScriptCall {
-        public final com.facebook.serde.Bytes new_url;
-        public final com.facebook.serde.Bytes new_key;
+        public final com.novi.serde.Bytes new_url;
+        public final com.novi.serde.Bytes new_key;
 
-        public RotateDualAttestationInfo(com.facebook.serde.Bytes new_url, com.facebook.serde.Bytes new_key) {
+        public RotateDualAttestationInfo(com.novi.serde.Bytes new_url, com.novi.serde.Bytes new_key) {
             assert new_url != null;
             assert new_key != null;
             this.new_url = new_url;
@@ -1404,8 +1307,8 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public com.facebook.serde.Bytes new_url;
-            public com.facebook.serde.Bytes new_key;
+            public com.novi.serde.Bytes new_url;
+            public com.novi.serde.Bytes new_key;
 
             public RotateDualAttestationInfo build() {
                 return new RotateDualAttestationInfo(
@@ -1425,9 +1328,9 @@ public abstract class ScriptCall {
      * Aborts if the length of `new_public_key` is not 32.
      */
     public static final class RotateSharedEd25519PublicKey extends ScriptCall {
-        public final com.facebook.serde.Bytes public_key;
+        public final com.novi.serde.Bytes public_key;
 
-        public RotateSharedEd25519PublicKey(com.facebook.serde.Bytes public_key) {
+        public RotateSharedEd25519PublicKey(com.novi.serde.Bytes public_key) {
             assert public_key != null;
             this.public_key = public_key;
         }
@@ -1448,7 +1351,7 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public com.facebook.serde.Bytes public_key;
+            public com.novi.serde.Bytes public_key;
 
             public RotateSharedEd25519PublicKey build() {
                 return new RotateSharedEd25519PublicKey(
@@ -1464,25 +1367,19 @@ public abstract class ScriptCall {
      */
     public static final class SetValidatorConfigAndReconfigure extends ScriptCall {
         public final org.libra.types.AccountAddress validator_account;
-        public final com.facebook.serde.Bytes consensus_pubkey;
-        public final com.facebook.serde.Bytes validator_network_identity_pubkey;
-        public final com.facebook.serde.Bytes validator_network_address;
-        public final com.facebook.serde.Bytes fullnodes_network_identity_pubkey;
-        public final com.facebook.serde.Bytes fullnodes_network_address;
+        public final com.novi.serde.Bytes consensus_pubkey;
+        public final com.novi.serde.Bytes validator_network_addresses;
+        public final com.novi.serde.Bytes fullnode_network_addresses;
 
-        public SetValidatorConfigAndReconfigure(org.libra.types.AccountAddress validator_account, com.facebook.serde.Bytes consensus_pubkey, com.facebook.serde.Bytes validator_network_identity_pubkey, com.facebook.serde.Bytes validator_network_address, com.facebook.serde.Bytes fullnodes_network_identity_pubkey, com.facebook.serde.Bytes fullnodes_network_address) {
+        public SetValidatorConfigAndReconfigure(org.libra.types.AccountAddress validator_account, com.novi.serde.Bytes consensus_pubkey, com.novi.serde.Bytes validator_network_addresses, com.novi.serde.Bytes fullnode_network_addresses) {
             assert validator_account != null;
             assert consensus_pubkey != null;
-            assert validator_network_identity_pubkey != null;
-            assert validator_network_address != null;
-            assert fullnodes_network_identity_pubkey != null;
-            assert fullnodes_network_address != null;
+            assert validator_network_addresses != null;
+            assert fullnode_network_addresses != null;
             this.validator_account = validator_account;
             this.consensus_pubkey = consensus_pubkey;
-            this.validator_network_identity_pubkey = validator_network_identity_pubkey;
-            this.validator_network_address = validator_network_address;
-            this.fullnodes_network_identity_pubkey = fullnodes_network_identity_pubkey;
-            this.fullnodes_network_address = fullnodes_network_address;
+            this.validator_network_addresses = validator_network_addresses;
+            this.fullnode_network_addresses = fullnode_network_addresses;
         }
 
         public boolean equals(Object obj) {
@@ -1492,10 +1389,8 @@ public abstract class ScriptCall {
             SetValidatorConfigAndReconfigure other = (SetValidatorConfigAndReconfigure) obj;
             if (!java.util.Objects.equals(this.validator_account, other.validator_account)) { return false; }
             if (!java.util.Objects.equals(this.consensus_pubkey, other.consensus_pubkey)) { return false; }
-            if (!java.util.Objects.equals(this.validator_network_identity_pubkey, other.validator_network_identity_pubkey)) { return false; }
-            if (!java.util.Objects.equals(this.validator_network_address, other.validator_network_address)) { return false; }
-            if (!java.util.Objects.equals(this.fullnodes_network_identity_pubkey, other.fullnodes_network_identity_pubkey)) { return false; }
-            if (!java.util.Objects.equals(this.fullnodes_network_address, other.fullnodes_network_address)) { return false; }
+            if (!java.util.Objects.equals(this.validator_network_addresses, other.validator_network_addresses)) { return false; }
+            if (!java.util.Objects.equals(this.fullnode_network_addresses, other.fullnode_network_addresses)) { return false; }
             return true;
         }
 
@@ -1503,29 +1398,23 @@ public abstract class ScriptCall {
             int value = 7;
             value = 31 * value + (this.validator_account != null ? this.validator_account.hashCode() : 0);
             value = 31 * value + (this.consensus_pubkey != null ? this.consensus_pubkey.hashCode() : 0);
-            value = 31 * value + (this.validator_network_identity_pubkey != null ? this.validator_network_identity_pubkey.hashCode() : 0);
-            value = 31 * value + (this.validator_network_address != null ? this.validator_network_address.hashCode() : 0);
-            value = 31 * value + (this.fullnodes_network_identity_pubkey != null ? this.fullnodes_network_identity_pubkey.hashCode() : 0);
-            value = 31 * value + (this.fullnodes_network_address != null ? this.fullnodes_network_address.hashCode() : 0);
+            value = 31 * value + (this.validator_network_addresses != null ? this.validator_network_addresses.hashCode() : 0);
+            value = 31 * value + (this.fullnode_network_addresses != null ? this.fullnode_network_addresses.hashCode() : 0);
             return value;
         }
 
         public static final class Builder {
             public org.libra.types.AccountAddress validator_account;
-            public com.facebook.serde.Bytes consensus_pubkey;
-            public com.facebook.serde.Bytes validator_network_identity_pubkey;
-            public com.facebook.serde.Bytes validator_network_address;
-            public com.facebook.serde.Bytes fullnodes_network_identity_pubkey;
-            public com.facebook.serde.Bytes fullnodes_network_address;
+            public com.novi.serde.Bytes consensus_pubkey;
+            public com.novi.serde.Bytes validator_network_addresses;
+            public com.novi.serde.Bytes fullnode_network_addresses;
 
             public SetValidatorConfigAndReconfigure build() {
                 return new SetValidatorConfigAndReconfigure(
                     validator_account,
                     consensus_pubkey,
-                    validator_network_identity_pubkey,
-                    validator_network_address,
-                    fullnodes_network_identity_pubkey,
-                    fullnodes_network_address
+                    validator_network_addresses,
+                    fullnode_network_addresses
                 );
             }
         }
@@ -1535,10 +1424,10 @@ public abstract class ScriptCall {
      * Set validator's operator
      */
     public static final class SetValidatorOperator extends ScriptCall {
-        public final com.facebook.serde.Bytes operator_name;
+        public final com.novi.serde.Bytes operator_name;
         public final org.libra.types.AccountAddress operator_account;
 
-        public SetValidatorOperator(com.facebook.serde.Bytes operator_name, org.libra.types.AccountAddress operator_account) {
+        public SetValidatorOperator(com.novi.serde.Bytes operator_name, org.libra.types.AccountAddress operator_account) {
             assert operator_name != null;
             assert operator_account != null;
             this.operator_name = operator_name;
@@ -1563,11 +1452,64 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public com.facebook.serde.Bytes operator_name;
+            public com.novi.serde.Bytes operator_name;
             public org.libra.types.AccountAddress operator_account;
 
             public SetValidatorOperator build() {
                 return new SetValidatorOperator(
+                    operator_name,
+                    operator_account
+                );
+            }
+        }
+    }
+
+    /**
+     * Set validator operator as 'operator_account' of validator owner 'account' (via Admin Script).
+     * `operator_name` should match expected from operator account. This script also
+     * takes `sliding_nonce`, as a unique nonce for this operation. See `Sliding_nonce.move` for details.
+     */
+    public static final class SetValidatorOperatorWithNonceAdmin extends ScriptCall {
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
+        public final com.novi.serde.Bytes operator_name;
+        public final org.libra.types.AccountAddress operator_account;
+
+        public SetValidatorOperatorWithNonceAdmin(@com.novi.serde.Unsigned Long sliding_nonce, com.novi.serde.Bytes operator_name, org.libra.types.AccountAddress operator_account) {
+            assert sliding_nonce != null;
+            assert operator_name != null;
+            assert operator_account != null;
+            this.sliding_nonce = sliding_nonce;
+            this.operator_name = operator_name;
+            this.operator_account = operator_account;
+        }
+
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null) return false;
+            if (getClass() != obj.getClass()) return false;
+            SetValidatorOperatorWithNonceAdmin other = (SetValidatorOperatorWithNonceAdmin) obj;
+            if (!java.util.Objects.equals(this.sliding_nonce, other.sliding_nonce)) { return false; }
+            if (!java.util.Objects.equals(this.operator_name, other.operator_name)) { return false; }
+            if (!java.util.Objects.equals(this.operator_account, other.operator_account)) { return false; }
+            return true;
+        }
+
+        public int hashCode() {
+            int value = 7;
+            value = 31 * value + (this.sliding_nonce != null ? this.sliding_nonce.hashCode() : 0);
+            value = 31 * value + (this.operator_name != null ? this.operator_name.hashCode() : 0);
+            value = 31 * value + (this.operator_account != null ? this.operator_account.hashCode() : 0);
+            return value;
+        }
+
+        public static final class Builder {
+            public @com.novi.serde.Unsigned Long sliding_nonce;
+            public com.novi.serde.Bytes operator_name;
+            public org.libra.types.AccountAddress operator_account;
+
+            public SetValidatorOperatorWithNonceAdmin build() {
+                return new SetValidatorOperatorWithNonceAdmin(
+                    sliding_nonce,
                     operator_name,
                     operator_account
                 );
@@ -1583,12 +1525,12 @@ public abstract class ScriptCall {
      */
     public static final class TieredMint extends ScriptCall {
         public final org.libra.types.TypeTag coin_type;
-        public final @com.facebook.serde.Unsigned Long sliding_nonce;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final org.libra.types.AccountAddress designated_dealer_address;
-        public final @com.facebook.serde.Unsigned Long mint_amount;
-        public final @com.facebook.serde.Unsigned Long tier_index;
+        public final @com.novi.serde.Unsigned Long mint_amount;
+        public final @com.novi.serde.Unsigned Long tier_index;
 
-        public TieredMint(org.libra.types.TypeTag coin_type, @com.facebook.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress designated_dealer_address, @com.facebook.serde.Unsigned Long mint_amount, @com.facebook.serde.Unsigned Long tier_index) {
+        public TieredMint(org.libra.types.TypeTag coin_type, @com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress designated_dealer_address, @com.novi.serde.Unsigned Long mint_amount, @com.novi.serde.Unsigned Long tier_index) {
             assert coin_type != null;
             assert sliding_nonce != null;
             assert designated_dealer_address != null;
@@ -1626,10 +1568,10 @@ public abstract class ScriptCall {
 
         public static final class Builder {
             public org.libra.types.TypeTag coin_type;
-            public @com.facebook.serde.Unsigned Long sliding_nonce;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
             public org.libra.types.AccountAddress designated_dealer_address;
-            public @com.facebook.serde.Unsigned Long mint_amount;
-            public @com.facebook.serde.Unsigned Long tier_index;
+            public @com.novi.serde.Unsigned Long mint_amount;
+            public @com.novi.serde.Unsigned Long tier_index;
 
             public TieredMint build() {
                 return new TieredMint(
@@ -1648,10 +1590,10 @@ public abstract class ScriptCall {
      * `sliding_nonce` is a unique nonce for operation, see sliding_nonce.move for details.
      */
     public static final class UnfreezeAccount extends ScriptCall {
-        public final @com.facebook.serde.Unsigned Long sliding_nonce;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final org.libra.types.AccountAddress to_unfreeze_account;
 
-        public UnfreezeAccount(@com.facebook.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress to_unfreeze_account) {
+        public UnfreezeAccount(@com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress to_unfreeze_account) {
             assert sliding_nonce != null;
             assert to_unfreeze_account != null;
             this.sliding_nonce = sliding_nonce;
@@ -1676,7 +1618,7 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public @com.facebook.serde.Unsigned Long sliding_nonce;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
             public org.libra.types.AccountAddress to_unfreeze_account;
 
             public UnfreezeAccount build() {
@@ -1690,12 +1632,12 @@ public abstract class ScriptCall {
 
     /**
      * Unmints `amount_lbr` LBR from the sending account into the constituent coins and deposits
-     * the resulting coins into the sending account."
+     * the resulting coins into the sending account.
      */
     public static final class UnmintLbr extends ScriptCall {
-        public final @com.facebook.serde.Unsigned Long amount_lbr;
+        public final @com.novi.serde.Unsigned Long amount_lbr;
 
-        public UnmintLbr(@com.facebook.serde.Unsigned Long amount_lbr) {
+        public UnmintLbr(@com.novi.serde.Unsigned Long amount_lbr) {
             assert amount_lbr != null;
             this.amount_lbr = amount_lbr;
         }
@@ -1716,7 +1658,7 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public @com.facebook.serde.Unsigned Long amount_lbr;
+            public @com.novi.serde.Unsigned Long amount_lbr;
 
             public UnmintLbr build() {
                 return new UnmintLbr(
@@ -1730,10 +1672,10 @@ public abstract class ScriptCall {
      * Update the dual attesation limit to `new_micro_lbr_limit`.
      */
     public static final class UpdateDualAttestationLimit extends ScriptCall {
-        public final @com.facebook.serde.Unsigned Long sliding_nonce;
-        public final @com.facebook.serde.Unsigned Long new_micro_lbr_limit;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
+        public final @com.novi.serde.Unsigned Long new_micro_lbr_limit;
 
-        public UpdateDualAttestationLimit(@com.facebook.serde.Unsigned Long sliding_nonce, @com.facebook.serde.Unsigned Long new_micro_lbr_limit) {
+        public UpdateDualAttestationLimit(@com.novi.serde.Unsigned Long sliding_nonce, @com.novi.serde.Unsigned Long new_micro_lbr_limit) {
             assert sliding_nonce != null;
             assert new_micro_lbr_limit != null;
             this.sliding_nonce = sliding_nonce;
@@ -1758,8 +1700,8 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public @com.facebook.serde.Unsigned Long sliding_nonce;
-            public @com.facebook.serde.Unsigned Long new_micro_lbr_limit;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
+            public @com.novi.serde.Unsigned Long new_micro_lbr_limit;
 
             public UpdateDualAttestationLimit build() {
                 return new UpdateDualAttestationLimit(
@@ -1776,11 +1718,11 @@ public abstract class ScriptCall {
      */
     public static final class UpdateExchangeRate extends ScriptCall {
         public final org.libra.types.TypeTag currency;
-        public final @com.facebook.serde.Unsigned Long sliding_nonce;
-        public final @com.facebook.serde.Unsigned Long new_exchange_rate_numerator;
-        public final @com.facebook.serde.Unsigned Long new_exchange_rate_denominator;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
+        public final @com.novi.serde.Unsigned Long new_exchange_rate_numerator;
+        public final @com.novi.serde.Unsigned Long new_exchange_rate_denominator;
 
-        public UpdateExchangeRate(org.libra.types.TypeTag currency, @com.facebook.serde.Unsigned Long sliding_nonce, @com.facebook.serde.Unsigned Long new_exchange_rate_numerator, @com.facebook.serde.Unsigned Long new_exchange_rate_denominator) {
+        public UpdateExchangeRate(org.libra.types.TypeTag currency, @com.novi.serde.Unsigned Long sliding_nonce, @com.novi.serde.Unsigned Long new_exchange_rate_numerator, @com.novi.serde.Unsigned Long new_exchange_rate_denominator) {
             assert currency != null;
             assert sliding_nonce != null;
             assert new_exchange_rate_numerator != null;
@@ -1814,9 +1756,9 @@ public abstract class ScriptCall {
 
         public static final class Builder {
             public org.libra.types.TypeTag currency;
-            public @com.facebook.serde.Unsigned Long sliding_nonce;
-            public @com.facebook.serde.Unsigned Long new_exchange_rate_numerator;
-            public @com.facebook.serde.Unsigned Long new_exchange_rate_denominator;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
+            public @com.novi.serde.Unsigned Long new_exchange_rate_numerator;
+            public @com.novi.serde.Unsigned Long new_exchange_rate_denominator;
 
             public UpdateExchangeRate build() {
                 return new UpdateExchangeRate(
@@ -1834,10 +1776,10 @@ public abstract class ScriptCall {
      * `sliding_nonce` is a unique nonce for operation, see sliding_nonce.move for details.
      */
     public static final class UpdateLibraVersion extends ScriptCall {
-        public final @com.facebook.serde.Unsigned Long sliding_nonce;
-        public final @com.facebook.serde.Unsigned Long major;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
+        public final @com.novi.serde.Unsigned Long major;
 
-        public UpdateLibraVersion(@com.facebook.serde.Unsigned Long sliding_nonce, @com.facebook.serde.Unsigned Long major) {
+        public UpdateLibraVersion(@com.novi.serde.Unsigned Long sliding_nonce, @com.novi.serde.Unsigned Long major) {
             assert sliding_nonce != null;
             assert major != null;
             this.sliding_nonce = sliding_nonce;
@@ -1862,8 +1804,8 @@ public abstract class ScriptCall {
         }
 
         public static final class Builder {
-            public @com.facebook.serde.Unsigned Long sliding_nonce;
-            public @com.facebook.serde.Unsigned Long major;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
+            public @com.novi.serde.Unsigned Long major;
 
             public UpdateLibraVersion build() {
                 return new UpdateLibraVersion(

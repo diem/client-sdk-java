@@ -3,9 +3,9 @@
 
 package org.libra.librasdk;
 
-import com.facebook.lcs.LcsSerializer;
-import com.facebook.serde.Bytes;
-import com.facebook.serde.Serializer;
+import com.novi.lcs.LcsSerializer;
+import com.novi.serde.Bytes;
+import com.novi.serde.Serializer;
 import com.google.common.io.BaseEncoding;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bitcoinj.core.Bech32;
@@ -118,26 +118,8 @@ public class Utils {
         return bytesToHex(bytes.content());
     }
 
-    public static byte[] toLCS(RawTransaction rt) throws Exception {
-        Serializer serializer = new LcsSerializer();
-        rt.serialize(serializer);
-        return serializer.get_bytes();
-    }
-
-    public static byte[] toLCS(SignedTransaction rt) throws Exception {
-        Serializer serializer = new LcsSerializer();
-        rt.serialize(serializer);
-        return serializer.get_bytes();
-    }
-
-    public static byte[] toLCS(Script script) throws Exception {
-        Serializer serializer = new LcsSerializer();
-        new TransactionPayload.Script(script).serialize(serializer);
-        return serializer.get_bytes();
-    }
-
     public static String toLCSHex(SignedTransaction st) throws Exception {
-        return bytesToHex(toLCS(st));
+        return bytesToHex(st.lcsSerialize());
     }
 
     public static String addressToHex(AccountAddress address) {
@@ -158,7 +140,7 @@ public class Utils {
     }
 
     public static byte[] hashRawTransaction(RawTransaction txn) throws Exception {
-        return concat(sha3Hash("LIBRA::RawTransaction".getBytes()), toLCS(txn));
+        return concat(sha3Hash("LIBRA::RawTransaction".getBytes()), txn.lcsSerialize());
     }
 
     public static String Bech32Encode(String humanReadablePart, Byte[] data) {
