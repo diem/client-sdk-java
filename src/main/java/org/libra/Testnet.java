@@ -9,7 +9,7 @@ import org.libra.librasdk.Constants;
 import org.libra.librasdk.LibraClient;
 import org.libra.librasdk.dto.Transaction;
 
-public class TestNet {
+public class Testnet {
     public static String JSON_RPC_URL = "https://testnet.libra.org/v1";
     public static String FAUCET_SERVER_URL = "https://testnet.libra.org/mint";
     public static byte CHAIN_ID = Constants.TEST_NET_CHAIN_ID;
