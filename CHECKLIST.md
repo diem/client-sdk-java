@@ -1,7 +1,7 @@
 
 # Basics
 
-- [ ] module structure:
+- [ ] module structure: -- Xiao to finailize
   - libra
     - client: high level APIs interface, should support application to do easy mock / stub development.
     - jsonrpc: jsonrpc client
@@ -14,9 +14,6 @@
     - IntentURL: encoding & decoding Libra Intent URL. (LIP-5)
     - stdlib: generated code, move stdlib script encoder & decoder.
     - types: generated code, Libra on-chain data structure types.
-- [ ] JSON-RPC 2.0 Spec:
-  - [x] spec version validation.
-  - [ ] batch requests and responses handling.
 - [x] JSON-RPC client error handling should distinguish the following 3 type errors:
   - Transport layer error, e.g. HTTP call failure.
   - JSON-RPC protocol error: e.g. server responds to non json data, or can't be parsed into [Libra JSON-RPC SPEC][1] defined data structure, or missing result & error field.
@@ -30,9 +27,9 @@
 - [x] Multi-network: initialize Client with chain id, JSON-RPC server URL
   - [x] Validate server chain id: client should be initialized with chain id and validate server response chain id is the same.
 - [ ] Handle unsigned int64 data type properly
-- [ ] [Multi-signatures support](https://github.com/libra/libra/blob/master/specifications/crypto/spec.md#multi-signatures)
 - [ ] Transaction hash: for a given signed transaction, produce hash of the transaction executed.
   - hex-encode(sha3-256([]byte("Transaction")) + []byte {0} + signed transaction bytes)
+- [ ] Use okhttp
 
 # [LIP-4][7] support
 
@@ -54,7 +51,7 @@
 - [x] Get transactions
 - [x] Get account
 - [x] Get account transaction
-- [ ] Get account transactions
+- [ ] Get account transactions -- low priority
 - [x] Handle error response
 - [x] Serialize result JSON to typed data structure
 
@@ -73,25 +70,28 @@
 
 - [x] Generate ed25519 private key, derive ed25519 public keys from private key.
 - [x] Generate Single auth-keys
-- [ ] Generate MultiSig auth-keys
 - [x] Mint coins through [Faucet service][6]
 
 See [doc][5] for above concepts.
 
-# Examples
+# Nice to have -- low priority
+
+- [ ] [Multi-signatures support](https://github.com/libra/libra/blob/master/specifications/crypto/spec.md#multi-signatures)
+- [ ] JSON-RPC 2.0 Client:
+  - [x] spec version validation.
+  - [ ] Batch requests and responses handling.
+- [ ] Async client
+- [ ] CLI connects to testnet for trying out features.
+- [ ] Client connection pool.
+- [ ] Work under Android environment
+
+## Examples
 
 - [ ] [p2p transfer examples](https://github.com/libra/lip/blob/master/lips/lip-4.md#transaction-examples)
 - [ ] refund p2p transfer example
 - [ ] create childVASP example
 - [ ] Intent identifier encoding, decoding example
 
-# Nice to have
-
-- [ ] Async client
-- [ ] CLI connects to testnet for trying out features.
-- [ ] Client connection pool.
-- [ ] Use okhttp
-- [ ] Work under Android environment
 
 [1]: https://github.com/libra/libra/blob/master/json-rpc/json-rpc-spec.md "Libra JSON-RPC SPEC"
 [2]: https://github.com/libra/lip/blob/master/lips/lip-5.md "LIP-5"
