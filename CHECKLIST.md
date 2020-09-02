@@ -3,15 +3,15 @@
 
 - [ ] module structure: -- Xiao to finailize
   - libra
-    - client: high level APIs interface, should support application to do easy mock / stub development.
+    - client: Libra JSON-RPC client APIs interface, should support application to do easy mock / stub development.
     - jsonrpc: jsonrpc client
-    - testnet: testnet utils, should include FaucetService for handling testnet mint.
     - utils: includes crypto, data types converting and other utils functions
         - KeysUtils: keys utils, generate public & private keys for testing, create auth key and account address.
         - Signer: sign transaction logic
     - TransactionMetadata: utils for creating peer to peer transaction metadata. (LIP-4)
     - AccountIdentifier: encoding & decoding Libra Account Identifier. (LIP-5)
     - IntentURL: encoding & decoding Libra Intent URL. (LIP-5)
+    - TestNet: testnet utils, should include FaucetService for handling testnet mint.
     - stdlib: generated code, move stdlib script encoder & decoder.
     - types: generated code, Libra on-chain data structure types.
 - [x] JSON-RPC client error handling should distinguish the following 3 type errors:
