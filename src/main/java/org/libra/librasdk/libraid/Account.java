@@ -2,7 +2,6 @@ package org.libra.librasdk.libraid;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bitcoinj.core.Bech32;
-import org.libra.librasdk.BechBenny32;
 import org.libra.librasdk.LibraSDKException;
 import org.libra.librasdk.Utils;
 import org.libra.types.AccountAddress;
@@ -52,7 +51,7 @@ public class Account {
 
         Integer[] accountAddressUInt8 = byteToUInt8Array(dataNoVersion);
         byte[] bytes =
-                BechBenny32.convertBits(accountAddressUInt8, 0, dataNoVersion.length, 5, 8, false);
+                Utils.convertBits(accountAddressUInt8, 0, dataNoVersion.length, 5, 8, false);
 
         if (bytes.length != ACCOUNT_ADDRESS_LENGTH + SUB_ADDRESS_LENGTH) {
             throw new LibraSDKException("invalid account identifier, account address and " + "sub" +
@@ -79,7 +78,7 @@ public class Account {
         Integer[] program = mergeArrays(accountAddressUInt8, subAddressUInt8);
 
         // convert to bytes with max size 32
-        byte[] data = BechBenny32.convertBits(program, 0, program.length, 8, 5, true);
+        byte[] data = Utils.convertBits(program, 0, program.length, 8, 5, true);
 
         Byte[] versionByte = new Byte[]{this.version};
         Byte[] dataAndVersion = mergeArrays(versionByte, ArrayUtils.toObject(data));

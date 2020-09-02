@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.libra.librasdk.BechBenny32;
 import org.libra.librasdk.LibraSDKException;
 import org.libra.librasdk.Utils;
 import org.libra.types.AccountAddress;
@@ -86,7 +85,7 @@ public class AccountTest {
         AccountAddress accountAddress = Utils.hexToAddress("f72589b71ff4f8d139674a3f7369c69b");
         Integer[] integers = Utils.byteToUInt8Array(accountAddress.value);
 
-        byte[] data = BechBenny32.convertBits(integers, 0, integers.length, 8, 5, true);
+        byte[] data = Utils.convertBits(integers, 0, integers.length, 8, 5, true);
         String bech32Encode = Utils.Bech32Encode(MainnetPrefix.name(), data);
 
         exceptionRule.expect(AddressFormatException.class);
