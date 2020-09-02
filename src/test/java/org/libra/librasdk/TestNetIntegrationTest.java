@@ -12,26 +12,26 @@ import org.libra.librasdk.dto.Transaction;
 import org.libra.librasdk.dto.*;
 import org.libra.librasdk.jsonrpc.JSONRPCErrorException;
 import org.libra.stdlib.Helpers;
+import org.libra.TestNet;
 import org.libra.types.*;
 
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.libra.librasdk.Net.TestNet;
 
 
 public class TestNetIntegrationTest {
 
     public static final int DEFAULT_TIMEOUT = 10 * 1000; // 10 seconds
-    private LibraClient libraClient;
+    private Client libraClient;
     private LocalAccount account1;
     private LocalAccount account2;
     private LocalAccount account3;
 
     @Before
     public void setup() {
-        libraClient = new LibraClient(TestNet());
+        libraClient = TestNet.createClient();
         account1 = Utils.generateLocalAccountFromPrivateKey(
                 "76e3de861d516283dc285e12ddadc95245a9e98f351c910b0ad722f790bac273");
         account2 = Utils.generateLocalAccountFromPrivateKey(
@@ -42,8 +42,6 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testGetMetadata() throws Exception {
-        libraClient = new LibraClient(Net.TestNet());
-
         Metadata response = libraClient.getMetadata();
         Assert.assertNotNull(response);
         Assert.assertTrue(response.timestamp > new Date().getTime() - 600);
@@ -101,9 +99,9 @@ public class TestNetIntegrationTest {
     @Test
     public void testSubmitTransaction() throws Exception {
         String currencyCode = "LBR";
-        TestNetFaucetService.mintCoins(libraClient, coins(100), account1.libra_auth_key,
+        TestNet.mintCoins(libraClient, coins(100), account1.libra_auth_key,
                 currencyCode);
-        TestNetFaucetService.mintCoins(libraClient, coins(100), account2.libra_auth_key,
+        TestNet.mintCoins(libraClient, coins(100), account2.libra_auth_key,
                 currencyCode);
 
         Script script = createP2PScript(account2.getAccountAddress(), currencyCode, coins(1));
@@ -136,9 +134,9 @@ public class TestNetIntegrationTest {
     @Test
     public void testTransferTransaction() throws Exception {
         String currencyCode = "LBR";
-        TestNetFaucetService.mintCoins(libraClient, coins(100), account1.libra_auth_key,
+        TestNet.mintCoins(libraClient, coins(100), account1.libra_auth_key,
                 currencyCode);
-        TestNetFaucetService.mintCoins(libraClient, coins(100), account2.libra_auth_key,
+        TestNet.mintCoins(libraClient, coins(100), account2.libra_auth_key,
                 currencyCode);
 
         SignedTransaction signedTransaction = libraClient.transfer(account1.libra_account_address,
@@ -166,9 +164,9 @@ public class TestNetIntegrationTest {
     @Test
     public void testSubmitExpiredTransaction() throws Exception {
         String currencyCode = "LBR";
-        TestNetFaucetService.mintCoins(libraClient, coins(100), account1.libra_auth_key,
+        TestNet.mintCoins(libraClient, coins(100), account1.libra_auth_key,
                 currencyCode);
-        TestNetFaucetService.mintCoins(libraClient, coins(100), account2.libra_auth_key,
+        TestNet.mintCoins(libraClient, coins(100), account2.libra_auth_key,
                 currencyCode);
 
         Script script = createP2PScript(account2.getAccountAddress(), currencyCode, coins(1));
@@ -188,7 +186,7 @@ public class TestNetIntegrationTest {
     @Test
     public void testSubmitTransactionAndExecuteFailed() throws Exception {
         String currencyCode = "LBR";
-        TestNetFaucetService.mintCoins(libraClient, coins(100), account1.libra_auth_key,
+        TestNet.mintCoins(libraClient, coins(100), account1.libra_auth_key,
                 currencyCode);
 
         Script script = createP2PScript(account3.getAccountAddress(), currencyCode, coins(1));
