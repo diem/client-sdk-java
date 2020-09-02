@@ -215,19 +215,10 @@ public class Utils {
         return uInt8;
     }
 
-    public static Byte[] byteToUInt8ByteArray(Byte[] bytes) {
-        Byte[] uInt8 = new Byte[bytes.length];
+    public static Integer[] byteToUInt8Array(byte[] bytes) {
+        Integer[] uInt8 = new Integer[bytes.length];
         for (int i = 0; i < bytes.length; i++) {
-            uInt8[i] = byteToUInt8Byte(bytes[i]);
-        }
-
-        return uInt8;
-    }
-
-    public static Byte[] byteToUInt8ByteArray(byte[] bytes) {
-        Byte[] uInt8 = new Byte[bytes.length];
-        for (int i = 0; i < bytes.length; i++) {
-            uInt8[i] = byteToUInt8Byte(bytes[i]);
+            uInt8[i] = byteToUInt8(bytes[i]);
         }
 
         return uInt8;

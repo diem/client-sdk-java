@@ -8,6 +8,7 @@ import org.libra.librasdk.Utils;
 import org.libra.types.AccountAddress;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import static org.libra.librasdk.Utils.byteToUInt8Array;
 import static org.libra.librasdk.Utils.mergeArrays;
@@ -43,23 +44,23 @@ public class Account {
         return new Account(prefix, accountAddress, subAddress).encode();
     }
 
-    public static Account decodeToAccount(NetworkPrefix prefix, String uri) throws LibraSDKException {
-        Bech32.Bech32Data hrpAndDp = Utils.Bech32Decode(uri);
-        String hrp = hrpAndDp.hrp;
+    public static Account decodeToAccount(NetworkPrefix prefix, String uri)
+    throws LibraSDKException {
+        Bech32.Bech32Data hrpAndData = Utils.Bech32Decode(uri);
 
-        if (!hrp.equals(prefix.value)) {
-            throw new LibraSDKException("FIXME");
+        byte[] dataNoVersion = Arrays.copyOfRange(hrpAndData.data, 1, hrpAndData.data.length);
+
+        Integer[] accountAddressUInt8 = byteToUInt8Array(dataNoVersion);
+        byte[] bytes =
+                BechBenny32.convertBits(accountAddressUInt8, 0, dataNoVersion.length, 5, 8, false);
+
+        if (bytes.length != ACCOUNT_ADDRESS_LENGTH + SUB_ADDRESS_LENGTH) {
+            throw new LibraSDKException("invalid account identifier, account address and " + "sub" +
+                    "-address length does not match");
         }
 
-        byte[] dp = hrpAndDp.data;
-
-        if (dp.length != ACCOUNT_ADDRESS_LENGTH + SUB_ADDRESS_LENGTH) {
-            throw new LibraSDKException("invalid account identifier, account address and " + "sub"
-                    + "-address length does not match");
-        }
-
-        byte[] addressChars = Arrays.copyOfRange(dp, 0, ACCOUNT_ADDRESS_LENGTH);
-        byte[] subAddressChars = Arrays.copyOfRange(dp, ACCOUNT_ADDRESS_LENGTH,
+        byte[] addressChars = Arrays.copyOfRange(bytes, 0, ACCOUNT_ADDRESS_LENGTH);
+        byte[] subAddressChars = Arrays.copyOfRange(bytes, ACCOUNT_ADDRESS_LENGTH,
                 ACCOUNT_ADDRESS_LENGTH + SUB_ADDRESS_LENGTH);
 
         Byte[] addressBytes = ArrayUtils.toObject(addressChars);
@@ -97,5 +98,24 @@ public class Account {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return version == account.version && prefix == account.prefix &&
+                Objects.equals(accountAddress, account.accountAddress) &&
+                Objects.equals(subAddress, account.subAddress);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(prefix, version, accountAddress, subAddress);
+    }
+
+    public boolean isValuesEqual(Account account) {
+        return (account.version == this.version && account.prefix == this.prefix &&
+                Arrays.equals(account.accountAddress.value, this.accountAddress.value) &&
+                Arrays.equals(account.subAddress.getSubAddress(), this.subAddress.getSubAddress()));
+    }
 }
