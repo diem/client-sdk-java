@@ -1,4 +1,4 @@
-package org.libra.librasdk.libraid;
+package org.libra;
 
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -15,9 +15,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class Intent {
+public class IntentIdentifier {
 
-    private Account account;
+    private final AccountIdentifier accountIdentifier;
     private String currency;
     private int amount;
 
@@ -26,17 +26,17 @@ public class Intent {
     private static final String AMOUNT_PARAM_NAME = "am";
 
 
-    public Intent(Account account, String currency, int amount) {
-        this.account = account;
+    public IntentIdentifier(AccountIdentifier accountIdentifier, String currency, int amount) {
+        this.accountIdentifier = accountIdentifier;
         this.currency = currency;
         this.amount = amount;
     }
 
-    public Intent(Account account) {
-        this.account = account;
+    public IntentIdentifier(AccountIdentifier accountIdentifier) {
+        this.accountIdentifier = accountIdentifier;
     }
 
-    public static Intent decodeToIntent(Account.NetworkPrefix prefix, String uriString) throws LibraSDKException {
+    public static IntentIdentifier decodeToIntent(AccountIdentifier.NetworkPrefix prefix, String uriString) throws LibraSDKException {
         String scheme;
         URI uri;
         String query;
@@ -49,7 +49,7 @@ public class Intent {
             query = uri.getQuery();
 
             if (!LIBRA_SCHEME.equals(scheme)) {
-                throw new LibraSDKException(String.format("invalid intent scheme: %s", scheme));
+                throw new LibraSDKException(String.format("invalid intentIdentifier scheme: %s", scheme));
             }
 
             if (query != null) {
@@ -65,12 +65,12 @@ public class Intent {
             throw new LibraSDKException(e);
         }
 
-        Account account = Account.decodeToAccount(prefix, uri.getHost());
-        return new Intent(account, currency, amount);
+        AccountIdentifier accountIdentifier = AccountIdentifier.decodeToAccount(prefix, uri.getHost());
+        return new IntentIdentifier(accountIdentifier, currency, amount);
     }
 
     public String encode() throws LibraSDKException {
-        String encodedAccount = this.account.encode();
+        String encodedAccount = this.accountIdentifier.encode();
 
         try {
             URI uri = new URI(LIBRA_SCHEME + "://" + encodedAccount);
@@ -94,17 +94,19 @@ public class Intent {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Intent intent = (Intent) o;
-        return amount == intent.amount && Objects.equals(account, intent.account) && Objects.equals(currency, intent.currency);
+        IntentIdentifier intentIdentifier = (IntentIdentifier) o;
+        return amount == intentIdentifier.amount && Objects.equals(
+                accountIdentifier, intentIdentifier.accountIdentifier) && Objects.equals(currency, intentIdentifier.currency);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(account, currency, amount);
+        return Objects.hash(accountIdentifier, currency, amount);
     }
 
-    public boolean isValuesEqual(Intent intent) {
-        return (this.amount == intent.amount && ObjectUtils.compare(this.currency,
-                intent.currency) == 0 && this.account.isValuesEqual(intent.account));
+    public boolean isValuesEqual(IntentIdentifier intentIdentifier) {
+        return (this.amount == intentIdentifier.amount && ObjectUtils.compare(this.currency,
+                intentIdentifier.currency) == 0 && this.accountIdentifier
+                .isValuesEqual(intentIdentifier.accountIdentifier));
     }
 }

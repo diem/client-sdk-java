@@ -1,4 +1,4 @@
-package org.libra.librasdk.libraid;
+package org.libra;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bitcoinj.core.Bech32;
@@ -9,29 +9,30 @@ import org.libra.types.AccountAddress;
 import java.util.Arrays;
 import java.util.Objects;
 
+import static org.libra.SubAddress.SUB_ADDRESS_LENGTH;
 import static org.libra.librasdk.Utils.byteToUInt8Array;
 import static org.libra.librasdk.Utils.mergeArrays;
-import static org.libra.librasdk.libraid.SubAddress.SUB_ADDRESS_LENGTH;
 
-public class Account {
+public class AccountIdentifier {
 
     public static final int ACCOUNT_ADDRESS_LENGTH = 16;
     public static final byte V1 = 1;
 
-    NetworkPrefix prefix;
-    byte version;
-    AccountAddress accountAddress;
-    SubAddress subAddress;
+    private final NetworkPrefix prefix;
+    private final byte version;
+    private final AccountAddress accountAddress;
+    private final SubAddress subAddress;
 
 
-    public Account(NetworkPrefix prefix, AccountAddress accountAddress, SubAddress subAddress) {
+    public AccountIdentifier(NetworkPrefix prefix, AccountAddress accountAddress, SubAddress subAddress) {
         this.prefix = prefix;
         this.version = V1;
         this.accountAddress = accountAddress;
         this.subAddress = subAddress;
     }
 
-    public Account(NetworkPrefix prefix, AccountAddress accountAddress) {
+    public AccountIdentifier(NetworkPrefix prefix, AccountAddress accountAddress)
+    throws LibraSDKException {
         this.prefix = prefix;
         this.version = V1;
         this.accountAddress = accountAddress;
@@ -40,12 +41,17 @@ public class Account {
 
     public static String encodeAccount(NetworkPrefix prefix, AccountAddress accountAddress,
                                        SubAddress subAddress) {
-        return new Account(prefix, accountAddress, subAddress).encode();
+        return new AccountIdentifier(prefix, accountAddress, subAddress).encode();
     }
 
-    public static Account decodeToAccount(NetworkPrefix prefix, String uri)
+    public static AccountIdentifier decodeToAccount(NetworkPrefix prefix, String uri)
     throws LibraSDKException {
         Bech32.Bech32Data hrpAndData = Utils.Bech32Decode(uri);
+        String hrp = hrpAndData.hrp;
+
+        if(!prefix.value.equals(hrp)){
+            throw new LibraSDKException(String.format("invalid human-readable part : %s != %s", prefix.value, hrp));
+        }
 
         byte[] dataNoVersion = Arrays.copyOfRange(hrpAndData.data, 1, hrpAndData.data.length);
 
@@ -66,12 +72,12 @@ public class Account {
         AccountAddress accountAddress = new AccountAddress(addressBytes);
         SubAddress subAddress = new SubAddress(subAddressChars);
 
-        return new Account(prefix, accountAddress, subAddress);
+        return new AccountIdentifier(prefix, accountAddress, subAddress);
     }
 
     public String encode() {
         Byte[] accountAddressBytes = this.accountAddress.value;
-        byte[] subAddressBytes = this.subAddress.getSubAddress();
+        byte[] subAddressBytes = this.subAddress.getBytes();
 
         Integer[] accountAddressUInt8 = byteToUInt8Array(accountAddressBytes);
         Integer[] subAddressUInt8 = byteToUInt8Array(ArrayUtils.toObject(subAddressBytes));
@@ -86,6 +92,21 @@ public class Account {
         return Utils.Bech32Encode(this.prefix.value, dataAndVersion);
     }
 
+    public NetworkPrefix getPrefix() {
+        return prefix;
+    }
+
+    public byte getVersion() {
+        return version;
+    }
+
+    public AccountAddress getAccountAddress() {
+        return accountAddress;
+    }
+
+    public SubAddress getSubAddress() {
+        return subAddress;
+    }
 
     enum NetworkPrefix {
         MainnetPrefix("lbr"), TestnetPrefix("tlb");
@@ -101,10 +122,10 @@ public class Account {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Account account = (Account) o;
-        return version == account.version && prefix == account.prefix &&
-                Objects.equals(accountAddress, account.accountAddress) &&
-                Objects.equals(subAddress, account.subAddress);
+        AccountIdentifier accountIdentifier = (AccountIdentifier) o;
+        return version == accountIdentifier.version && prefix == accountIdentifier.prefix &&
+                Objects.equals(accountAddress, accountIdentifier.accountAddress) &&
+                Objects.equals(subAddress, accountIdentifier.subAddress);
     }
 
     @Override
@@ -112,9 +133,9 @@ public class Account {
         return Objects.hash(prefix, version, accountAddress, subAddress);
     }
 
-    public boolean isValuesEqual(Account account) {
-        return (account.version == this.version && account.prefix == this.prefix &&
-                Arrays.equals(account.accountAddress.value, this.accountAddress.value) &&
-                Arrays.equals(account.subAddress.getSubAddress(), this.subAddress.getSubAddress()));
+    public boolean isValuesEqual(AccountIdentifier accountIdentifier) {
+        return (accountIdentifier.version == this.version && accountIdentifier.prefix == this.prefix &&
+                Arrays.equals(accountIdentifier.accountAddress.value, this.accountAddress.value) &&
+                Arrays.equals(accountIdentifier.subAddress.getBytes(), this.subAddress.getBytes()));
     }
 }
