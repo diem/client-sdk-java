@@ -1,3 +1,6 @@
+// Copyright (c) The Libra Core Contributors
+// SPDX-License-Identifier: Apache-2.0
+
 package org.libra.librasdk;
 
 import com.novi.serde.Bytes;
@@ -26,10 +29,6 @@ public class LibraClient implements Client {
     public LibraClient(String url, int chainId) {
         this.jsonRpcClient = new JSONRPCClient(url);
         this.libraLedgerState = new LibraLedgerState(chainId);
-    }
-
-    public LibraClient(Net net) {
-        this(net.uri, net.chainId);
     }
 
     public List<Transaction> getTransactions(long fromVersion, int limit, boolean includeEvents) throws LibraSDKException {
@@ -92,13 +91,14 @@ public class LibraClient implements Client {
         executeCall(Method.submit, params, null);
     }
 
+    @Override
     public SignedTransaction transfer(String senderAccountAddress, String libraAuthKey,
                                       String privateKey,
                                       String publicKey, String receiverAccountAddress,
                                       long amount, long maxGasAmount, long gasPriceUnit,
                                       String currencyCode,
                                       long expirationTimestampSecs, byte chainId,
-                                      byte[] metadata, byte[] metadataSignature) throws Exception {
+                                      byte[] metadata, byte[] metadataSignature) throws LibraSDKException {
 
         LocalAccount localAccount = new LocalAccount(senderAccountAddress, libraAuthKey,
                 privateKey, publicKey);

@@ -3,8 +3,8 @@
 
 package org.libra.librasdk;
 
-import com.google.common.io.BaseEncoding;
 import com.novi.serde.Bytes;
+import com.google.common.io.BaseEncoding;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Bech32;
@@ -24,9 +24,11 @@ import java.util.stream.Stream;
 
 public class Utils {
     public static SignedTransaction signTransaction(LocalAccount sender, long sequence_number,
-                                                    Script script, long maxGasAmount,
-                                                    long gasPriceUnit, String currencyCode,
-                                                    long expirationTimestampSecs, byte chainId) throws Exception {
+                                                    Script script, long
+                                                            maxGasAmount, long gasPriceUnit,
+                                                    String currencyCode,
+                                                    long expirationTimestampSecs,
+                                                    byte chainId) throws LibraSDKException {
         RawTransaction rt = createRawTransaction(sender.getAccountAddress(), sequence_number,
                 script, maxGasAmount, gasPriceUnit, currencyCode, expirationTimestampSecs, chainId);
 
@@ -80,7 +82,7 @@ public class Utils {
         return ret;
     }
 
-    public static byte[] sign(Ed25519PrivateKeyParameters privateKey, byte[] data) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+    public static byte[] sign(Ed25519PrivateKeyParameters privateKey, byte[] data) {
         Ed25519Signer signer = new Ed25519Signer();
         signer.init(true, privateKey);
 
@@ -118,8 +120,12 @@ public class Utils {
         return bytesToHex(bytes.content());
     }
 
-    public static String toLCSHex(SignedTransaction st) throws Exception {
-        return bytesToHex(st.lcsSerialize());
+    public static String toLCSHex(SignedTransaction st) throws LibraSDKException {
+        try {
+            return bytesToHex(st.lcsSerialize());
+        } catch (Exception e) {
+            throw new LibraSDKException(e);
+        }
     }
 
     public static String addressToHex(AccountAddress address) {
@@ -139,8 +145,12 @@ public class Utils {
                 new Identifier(currencyCode), new Identifier(currencyCode), new ArrayList<>());
     }
 
-    public static byte[] hashRawTransaction(RawTransaction txn) throws Exception {
-        return concat(sha3Hash("LIBRA::RawTransaction".getBytes()), txn.lcsSerialize());
+    public static byte[] hashRawTransaction(RawTransaction txn) throws LibraSDKException {
+        try {
+            return concat(sha3Hash("LIBRA::RawTransaction".getBytes()), txn.lcsSerialize());
+        } catch (Exception e) {
+            throw new LibraSDKException(e);
+        }
     }
 
     public static String Bech32Encode(String humanReadablePart, Byte[] data) {
