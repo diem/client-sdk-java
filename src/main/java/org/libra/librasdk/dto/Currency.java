@@ -3,12 +3,14 @@
 
 package org.libra.librasdk.dto;
 
+import com.novi.serde.Unsigned;
+
 import java.util.Objects;
 
 public class Currency {
     public String code;
-    public long scaling_factor;
-    public long fractional_part;
+    public @Unsigned long scaling_factor;
+    public @Unsigned long fractional_part;
     public float to_lbr_exchange_rate;
     public String mint_events_key;
     public String burn_events_key;

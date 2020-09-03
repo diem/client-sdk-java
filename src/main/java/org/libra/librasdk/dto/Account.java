@@ -4,13 +4,14 @@
 package org.libra.librasdk.dto;
 
 import com.google.gson.JsonElement;
+import com.novi.serde.Unsigned;
 
 import java.util.Arrays;
 import java.util.Objects;
 
 public class Account {
     public Amount[] balances;
-    public long sequence_number;
+    public @Unsigned long sequence_number;
     public String authentication_key;
     public String sent_events_key;
     public String received_events_key;

@@ -3,8 +3,8 @@
 
 package org.libra.librasdk;
 
-import com.novi.serde.Bytes;
 import com.google.common.io.BaseEncoding;
+import com.novi.serde.Bytes;
 import design.contract.bech32.Bech32;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
@@ -13,7 +13,7 @@ import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.libra.librasdk.dto.LocalAccount;
 import org.libra.types.*;
 
-import java.security.*;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 
