@@ -1,12 +1,10 @@
 package org.libra;
 
 import com.novi.lcs.LcsSerializer;
+import com.novi.serde.Bytes;
 import com.novi.serde.Unsigned;
 import org.libra.librasdk.LibraSDKException;
-import org.libra.types.AccountAddress;
-import org.libra.types.Metadata;
-import org.libra.types.TravelRuleMetadata;
-import org.libra.types.TravelRuleMetadataV0;
+import org.libra.types.*;
 
 import java.util.Optional;
 
@@ -59,6 +57,47 @@ public class TransactionMetadata {
         } catch (Exception e) {
             throw new LibraSDKException(e);
         }
+    }
+
+
+    public static Integer[] getNewGeneralMetadataToSubAddress(SubAddress toSubAddress)
+    throws LibraSDKException {
+        return getNewGeneralMetadata(Optional.empty(),
+                Optional.of(new Bytes(toSubAddress.getBytes())), Optional.empty());
+    }
+
+    public static Integer[] getNewGeneralMetadataFromSubAddress(SubAddress fromSubAddress)
+    throws LibraSDKException {
+        return getNewGeneralMetadata(Optional.of(new Bytes(fromSubAddress.getBytes())),
+                Optional.empty(), Optional.empty());
+    }
+
+    public static Integer[] getNewGeneralMetadataWithFromToSubAddresses(SubAddress fromSubAddress,
+                                                                        SubAddress toSubAddress)
+    throws LibraSDKException {
+        return getNewGeneralMetadata(Optional.of(new Bytes(fromSubAddress.getBytes())),
+                Optional.of(new Bytes(toSubAddress.getBytes())), Optional.empty());
+    }
+
+    private static Integer[] getNewGeneralMetadata(
+            Optional<com.novi.serde.Bytes> byteFromSubAddress,
+            Optional<com.novi.serde.Bytes> toSubAddress, Optional<@Unsigned Long> referencedEvent)
+    throws LibraSDKException {
+        Metadata.GeneralMetadata generalMetadata = new Metadata.GeneralMetadata(
+                new GeneralMetadata.GeneralMetadataVersion0(
+                        new GeneralMetadataV0(toSubAddress, byteFromSubAddress, referencedEvent)));
+
+        try {
+            LcsSerializer serializer = new LcsSerializer();
+            generalMetadata.serialize(serializer);
+            byte[] metadataBytes = serializer.get_bytes();
+
+            return byteToUInt8Array(metadataBytes);
+        } catch (Exception e) {
+            throw new LibraSDKException(e);
+
+        }
+
     }
 
 
