@@ -1,15 +1,26 @@
 // Copyright (c) The Libra Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
-package org.libra.librasdk;
-
+package org.libra;
 
 import okhttp3.*;
+import org.libra.librasdk.Client;
+import org.libra.librasdk.Constants;
+import org.libra.librasdk.LibraClient;
 import org.libra.librasdk.dto.Transaction;
 
-public class TestNetFaucetService {
+import java.io.IOException;
+
+public class Testnet {
+    public static String JSON_RPC_URL = "https://testnet.libra.org/v1";
+    public static String FAUCET_SERVER_URL = "https://testnet.libra.org/mint";
+    public static byte CHAIN_ID = Constants.TEST_NET_CHAIN_ID;
+
     private static final long DEFAULT_TIMEOUT = 10 * 1000;
-    public static String SERVER_URL = "https://testnet.libra.org/mint";
+
+    public static Client createClient() {
+        return new LibraClient(JSON_RPC_URL, CHAIN_ID);
+    }
 
     public static void mintCoins(Client client, long amount, String authKey, String currencyCode) {
         long nextAccountSeq = mintCoinsAsync(amount, authKey.toLowerCase(), currencyCode);
@@ -30,7 +41,7 @@ public class TestNetFaucetService {
 
     public static long mintCoinsAsync(long amount, String authKey, String currencyCode) {
         OkHttpClient client = new OkHttpClient();
-        HttpUrl.Builder builder = HttpUrl.parse(SERVER_URL).newBuilder();
+        HttpUrl.Builder builder = HttpUrl.parse(FAUCET_SERVER_URL).newBuilder();
         builder.addQueryParameter("amount", String.valueOf(amount));
         builder.addQueryParameter("auth_key", authKey);
         builder.addQueryParameter("currency_code", currencyCode);
@@ -40,23 +51,26 @@ public class TestNetFaucetService {
         Request request = new Request.Builder().url(url).post(emptyBody).build();
 
         int retry = 10;
-        for (int i = 0; i <= retry; i++) {
+        while(true) {
+            retry--;
+            Response response = null;
             try {
-                Response response = client.newCall(request).execute();
+                response = client.newCall(request).execute();
                 if (response.code() != 200) {
-                    if (i < retry) {
-                        waitAWhile();
-                        continue;
-                    }
-                    throw new RuntimeException(response.toString());
+                    throw new RuntimeException("Unexpected response: " + response.toString());
                 }
-                String body = response.body().string();
-                return Long.parseLong(body);
+                return Long.parseLong(response.body().string());
             } catch (Exception e) {
-                // ignore errors and retry
+                if (retry == 0) {
+                    throw new RuntimeException(e);
+                }
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
             }
+            waitAWhile();
         }
-        throw new RuntimeException("mint coins failed");
     }
 
     private static void waitAWhile() {
