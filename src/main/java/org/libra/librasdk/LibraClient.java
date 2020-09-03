@@ -3,9 +3,10 @@
 
 package org.libra.librasdk;
 
-import com.novi.serde.Bytes;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.novi.serde.Bytes;
+import com.novi.serde.Unsigned;
 import org.libra.librasdk.dto.*;
 import org.libra.librasdk.jsonrpc.JSONRPCClient;
 import org.libra.librasdk.jsonrpc.JSONRPCErrorException;
@@ -31,7 +32,7 @@ public class LibraClient implements Client {
         this.libraLedgerState = new LibraLedgerState(chainId);
     }
 
-    public List<Transaction> getTransactions(long fromVersion, int limit, boolean includeEvents) throws LibraSDKException {
+    public List<Transaction> getTransactions(@Unsigned long fromVersion, int limit, boolean includeEvents) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(fromVersion);
         params.add(limit);
@@ -56,7 +57,7 @@ public class LibraClient implements Client {
         return metadata;
     }
 
-    public Metadata getMetadata(long version) throws LibraSDKException {
+    public Metadata getMetadata(@Unsigned long version) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(version);
 
@@ -71,7 +72,7 @@ public class LibraClient implements Client {
         return currencies;
     }
 
-    public Transaction getAccountTransaction(String address, long sequence,
+    public Transaction getAccountTransaction(String address, @Unsigned long sequence,
                                              boolean includeEvents) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(address);
@@ -95,9 +96,9 @@ public class LibraClient implements Client {
     public SignedTransaction transfer(String senderAccountAddress, String libraAuthKey,
                                       String privateKey,
                                       String publicKey, String receiverAccountAddress,
-                                      long amount, long maxGasAmount, long gasPriceUnit,
+                                      @Unsigned long amount, @Unsigned long maxGasAmount, @Unsigned long gasPriceUnit,
                                       String currencyCode,
-                                      long expirationTimestampSecs, byte chainId,
+                                      @Unsigned long expirationTimestampSecs, byte chainId,
                                       byte[] metadata, byte[] metadataSignature) throws LibraSDKException {
 
         LocalAccount localAccount = new LocalAccount(senderAccountAddress, libraAuthKey,
@@ -123,8 +124,8 @@ public class LibraClient implements Client {
 
     }
 
-    public Transaction waitForTransaction(String address, long sequence, boolean includeEvents,
-                                          long timeoutMillis) throws InterruptedException,
+    public Transaction waitForTransaction(String address, @Unsigned long sequence, boolean includeEvents,
+                                          @Unsigned long timeoutMillis) throws InterruptedException,
             LibraSDKException {
         for (long millis = 0, step = 100; millis < timeoutMillis; millis += step) {
             Transaction transaction = this.getAccountTransaction(address, sequence, includeEvents);
@@ -137,7 +138,7 @@ public class LibraClient implements Client {
         return null;
     }
 
-    public List<Event> getEvents(String eventsKey, long start, long limit) throws LibraSDKException {
+    public List<Event> getEvents(String eventsKey, @Unsigned long start, @Unsigned long limit) throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(eventsKey);
         params.add(start);
@@ -173,7 +174,7 @@ public class LibraClient implements Client {
         return result;
     }
 
-    private Script createP2PScript(AccountAddress address, String currencyCode, long amount,
+    private Script createP2PScript(AccountAddress address, String currencyCode, @Unsigned long amount,
                                    byte[] metadata, byte[] metadataSignature) {
         TypeTag token = Utils.createCurrencyCodeTypeTag(currencyCode);
         return encode_peer_to_peer_with_metadata_script(

@@ -3,10 +3,12 @@
 
 package org.libra.librasdk.dto;
 
+import com.novi.serde.Unsigned;
+
 import java.util.Objects;
 
 public class Amount {
-    public long amount;
+    public @Unsigned long amount;
     public String currency;
 
     @Override
