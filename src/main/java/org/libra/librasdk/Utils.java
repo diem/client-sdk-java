@@ -5,6 +5,7 @@ package org.libra.librasdk;
 
 import com.google.common.io.BaseEncoding;
 import com.novi.serde.Bytes;
+import com.novi.serde.Unsigned;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Bech32;
@@ -117,6 +118,10 @@ public class Utils {
 
     public static String bytesToHex(byte[] bytes) {
         return BaseEncoding.base16().encode(bytes);
+    }
+
+    public static String bytesToHex( @Unsigned Byte[] bytes) {
+        return bytesToHex(ArrayUtils.toPrimitive(bytes));
     }
 
     public static String integersToHex(Integer[] integers) {

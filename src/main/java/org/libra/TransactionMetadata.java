@@ -1,15 +1,16 @@
 package org.libra;
 
+import com.novi.lcs.LcsDeserializer;
 import com.novi.lcs.LcsSerializer;
 import com.novi.serde.Bytes;
 import com.novi.serde.Unsigned;
 import org.libra.librasdk.LibraSDKException;
+import org.libra.librasdk.dto.Event;
 import org.libra.types.*;
 
 import java.util.Optional;
 
-import static org.libra.librasdk.Utils.byteToUInt8Array;
-import static org.libra.librasdk.Utils.mergeArrays;
+import static org.libra.librasdk.Utils.*;
 
 public class TransactionMetadata {
     private Integer[] metadata;
@@ -100,5 +101,74 @@ public class TransactionMetadata {
 
     }
 
+    public Event findRefundReferenceEventFromTransaction(
+            org.libra.librasdk.dto.Transaction transaction, AccountAddress receiver) {
+        Event result = null;
+
+        if (transaction == null) {
+            return null;
+        }
+
+        String address = bytesToHex(receiver.value);
+
+        for (Event event : transaction.events) {
+            if (event.data.type.equalsIgnoreCase("receivedpayment") &&
+                    event.data.receiver.equalsIgnoreCase(address)) {
+                result = event;
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    public Metadata deserializeMetadata(Event event) throws LibraSDKException {
+        if (event == null) {
+            throw new LibraSDKException("must provide refund reference event");
+        }
+
+        String metadata = event.data.metadata;
+        if (metadata.equals("")) {
+            return null;
+        }
+
+        byte[] bytes = hexToBytes(metadata);
+        Metadata deserialize;
+
+        try {
+            deserialize = Metadata.deserialize(new LcsDeserializer(bytes));
+        } catch (Exception e) {
+            throw new LibraSDKException(String.format("can't deserialize metadata: %s", metadata));
+        }
+
+        return deserialize;
+    }
+
+    public byte[] getNewRefundMetadataFromEventMetadata(int eventSequenceNumber,
+                                                        GeneralMetadata generalMetadata)
+    throws LibraSDKException {
+        if (generalMetadata == null) {
+            throw new LibraSDKException("must provide refund event general metadata");
+        }
+
+        GeneralMetadata.GeneralMetadataVersion0 generalMetadataVersion0 =
+                (GeneralMetadata.GeneralMetadataVersion0) generalMetadata;
+
+        GeneralMetadata.GeneralMetadataVersion0 result =
+                new GeneralMetadata.GeneralMetadataVersion0(
+                        new GeneralMetadataV0(generalMetadataVersion0.value.from_subaddress,
+                                generalMetadataVersion0.value.to_subaddress,
+                                Optional.of((long) eventSequenceNumber)));
+
+
+        byte[] bytes;
+        try {
+            bytes = result.lcsSerialize();
+        } catch (Exception e) {
+            throw new LibraSDKException("lcs serialize failed");
+        }
+
+        return bytes;
+    }
 
 }
