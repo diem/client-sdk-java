@@ -3,11 +3,11 @@
 
 package org.libra.librasdk;
 
-import com.novi.serde.Bytes;
 import com.google.common.io.BaseEncoding;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Bech32;
+import com.novi.serde.Bytes;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
 import org.bouncycastle.crypto.signers.Ed25519Signer;
