@@ -3,11 +3,13 @@
 
 package org.libra.librasdk.dto;
 
+import com.novi.serde.Unsigned;
+
 import java.util.Objects;
 
 public class Metadata {
-    public long version;
-    public long timestamp;
+    public @Unsigned long version;
+    public @Unsigned long timestamp;
 
     @Override
     public String toString() {

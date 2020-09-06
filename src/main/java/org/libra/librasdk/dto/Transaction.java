@@ -4,6 +4,7 @@
 package org.libra.librasdk.dto;
 
 import com.google.gson.JsonElement;
+import com.novi.serde.Unsigned;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -21,7 +22,7 @@ public class Transaction {
     public static class Script {
         public String type;
         public String receiver;
-        public long amount;
+        public @Unsigned long amount;
         public String currency;
         public String metadata;
         public String metadata_signature;
@@ -60,18 +61,18 @@ public class Transaction {
     public static class Data {
         public String type;
         // blockmetadata
-        public long timestamp_usecs;
+        public @Unsigned long timestamp_usecs;
         // user
         public String sender;
         public String signature_scheme;
         public String signature;
         public String public_key;
-        public long sequence_number;
+        public @Unsigned long sequence_number;
         public int chain_id;
-        public long max_gas_amount;
-        public long gas_unit_price;
+        public @Unsigned long max_gas_amount;
+        public @Unsigned long gas_unit_price;
         public String gas_currency;
-        public long expiration_timestamp_secs;
+        public @Unsigned long expiration_timestamp_secs;
         public String script_hash;
         public Script script;
 
@@ -122,12 +123,12 @@ public class Transaction {
         }
     }
 
-    public long version;
+    public @Unsigned long version;
     public Data transaction;
     public String hash;
     public Event[] events;
     public JsonElement vm_status;
-    public long gas_used;
+    public @Unsigned long gas_used;
 
     public boolean isExecuted() {
         return VM_STATUS_EXECUTED.equalsIgnoreCase(this.vmStatus());

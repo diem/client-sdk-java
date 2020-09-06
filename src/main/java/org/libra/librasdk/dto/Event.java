@@ -3,6 +3,8 @@
 
 package org.libra.librasdk.dto;
 
+import com.novi.serde.Unsigned;
+
 import java.util.Objects;
 
 public class Event {
@@ -27,12 +29,12 @@ public class Event {
         public String write_set;
 
         // newepoch
-        public long epoch;
+        public @Unsigned long epoch;
 
         // newblock
-        public long round;
+        public @Unsigned long round;
         public String proposer;
-        public long proposed_time;
+        public @Unsigned long proposed_time;
 
         // receivedmint
         public String destination_address;
@@ -85,8 +87,8 @@ public class Event {
     }
 
     public String key;
-    public long sequence_number;
-    public long transaction_version;
+    public @Unsigned long sequence_number;
+    public @Unsigned long transaction_version;
     public Data data;
 
     @Override
