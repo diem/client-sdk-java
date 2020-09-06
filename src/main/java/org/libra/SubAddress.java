@@ -1,8 +1,8 @@
 package org.libra;
 
-import org.libra.librasdk.LibraSDKException;
 import org.libra.librasdk.Utils;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class SubAddress {
@@ -10,23 +10,18 @@ public class SubAddress {
     public static final int SUB_ADDRESS_LENGTH = 8;
     private final byte[] bytes;
 
-    public SubAddress(byte[] bytes) throws LibraSDKException {
+    public SubAddress(byte[] bytes) {
         if (bytes.length != SUB_ADDRESS_LENGTH){
-            throw new LibraSDKException(String.format("Sub address should be 8 bytes, but given %d bytes", bytes.length));
+            throw new IllegalArgumentException(String.format("Sub address should be 8 bytes, but given %d bytes", bytes.length));
         }
         this.bytes = bytes;
     }
 
-    public SubAddress(String subAddress) throws LibraSDKException {
-        byte[] bytes = Utils.hexToBytes(subAddress);
-        if (bytes.length != SUB_ADDRESS_LENGTH){
-            throw new LibraSDKException(String.format("Sub address should be 8 bytes, but given %d bytes", bytes.length));
-        }
-
-        this.bytes = bytes;
+    public SubAddress(String subAddress) {
+        this(Utils.hexToBytes(subAddress));
     }
 
-    public static SubAddress generate() throws LibraSDKException {
+    public static SubAddress generate() {
         byte[] b = new byte[SUB_ADDRESS_LENGTH];
         new Random().nextBytes(b);
         return new SubAddress(b);
@@ -38,5 +33,18 @@ public class SubAddress {
 
     public byte[] getBytes() {
         return bytes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SubAddress that = (SubAddress) o;
+        return Arrays.equals(bytes, that.bytes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(bytes);
     }
 }

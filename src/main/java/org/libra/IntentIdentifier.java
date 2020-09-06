@@ -1,7 +1,6 @@
 package org.libra;
 
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -102,11 +101,5 @@ public class IntentIdentifier {
     @Override
     public int hashCode() {
         return Objects.hash(accountIdentifier, currency, amount);
-    }
-
-    public boolean isValuesEqual(IntentIdentifier intentIdentifier) {
-        return (this.amount == intentIdentifier.amount && ObjectUtils.compare(this.currency,
-                intentIdentifier.currency) == 0 && this.accountIdentifier
-                .isValuesEqual(intentIdentifier.accountIdentifier));
     }
 }

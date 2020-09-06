@@ -91,7 +91,7 @@ public class AccountIdentifierTest {
         String bech32Encode = Utils.Bech32Encode(MainnetPrefix.name(), data);
 
         exceptionRule.expect(LibraSDKException.class);
-        exceptionRule.expectMessage("invalid human-readable part");
+        exceptionRule.expectMessage("Invalid network prefix");
         decodeToAccount(MainnetPrefix, bech32Encode);
     }
 
