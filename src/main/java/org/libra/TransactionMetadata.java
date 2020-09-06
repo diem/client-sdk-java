@@ -13,8 +13,8 @@ import java.util.Optional;
 import static org.libra.librasdk.Utils.*;
 
 public class TransactionMetadata {
-    private Integer[] metadata;
-    private Integer[] signatureMessage;
+    private final Integer[] metadata;
+    private final Integer[] signatureMessage;
 
     public TransactionMetadata(Integer[] metadata, Integer[] signatureMessage) {
         this.metadata = metadata;
@@ -29,9 +29,8 @@ public class TransactionMetadata {
         return signatureMessage;
     }
 
-    public static TransactionMetadata getNewTravelRuleMetadata(String offChainReferenceId,
-                                                               AccountAddress senderAccountAddress,
-                                                               @Unsigned long amount)
+    public static TransactionMetadata getTravelRuleMetadata(String offChainReferenceId,
+                                                            AccountAddress senderAccountAddress, @Unsigned long amount)
     throws LibraSDKException {
         Metadata.TravelRuleMetadata travelRuleMetadata = new Metadata.TravelRuleMetadata(
                 new TravelRuleMetadata.TravelRuleMetadataVersion0(
@@ -50,9 +49,8 @@ public class TransactionMetadata {
             byte[] amountBytes = serializer.get_bytes();
             Integer[] amountAddressUInt8 = byteToUInt8Array(amountBytes);
 
-            Integer[] signatureMessageUInt8 =
-                    mergeArrays(metadataAddressUInt8, accountAddressUInt8, amountAddressUInt8,
-                            byteToUInt8Array("@@$$LIBRA_ATTEST$$@@".getBytes()));
+            Integer[] signatureMessageUInt8 = mergeArrays(metadataAddressUInt8, accountAddressUInt8, amountAddressUInt8,
+                    byteToUInt8Array("@@$$LIBRA_ATTEST$$@@".getBytes()));
 
             return new TransactionMetadata(metadataAddressUInt8, signatureMessageUInt8);
         } catch (Exception e) {
@@ -61,29 +59,24 @@ public class TransactionMetadata {
     }
 
 
-    public static Integer[] getNewGeneralMetadataToSubAddress(SubAddress toSubAddress)
+    public static Integer[] getGeneralMetadataToSubAddress(SubAddress toSubAddress) throws LibraSDKException {
+        return getGeneralMetadata(Optional.empty(), Optional.of(new Bytes(toSubAddress.getBytes())), Optional.empty());
+    }
+
+    public static Integer[] getGeneralMetadataFromSubAddress(SubAddress fromSubAddress) throws LibraSDKException {
+        return getGeneralMetadata(Optional.of(new Bytes(fromSubAddress.getBytes())), Optional.empty(),
+                Optional.empty());
+    }
+
+    public static Integer[] getGeneralMetadataWithFromToSubAddresses(SubAddress fromSubAddress, SubAddress toSubAddress)
     throws LibraSDKException {
-        return getNewGeneralMetadata(Optional.empty(),
+        return getGeneralMetadata(Optional.of(new Bytes(fromSubAddress.getBytes())),
                 Optional.of(new Bytes(toSubAddress.getBytes())), Optional.empty());
     }
 
-    public static Integer[] getNewGeneralMetadataFromSubAddress(SubAddress fromSubAddress)
-    throws LibraSDKException {
-        return getNewGeneralMetadata(Optional.of(new Bytes(fromSubAddress.getBytes())),
-                Optional.empty(), Optional.empty());
-    }
-
-    public static Integer[] getNewGeneralMetadataWithFromToSubAddresses(SubAddress fromSubAddress,
-                                                                        SubAddress toSubAddress)
-    throws LibraSDKException {
-        return getNewGeneralMetadata(Optional.of(new Bytes(fromSubAddress.getBytes())),
-                Optional.of(new Bytes(toSubAddress.getBytes())), Optional.empty());
-    }
-
-    private static Integer[] getNewGeneralMetadata(
-            Optional<com.novi.serde.Bytes> byteFromSubAddress,
-            Optional<com.novi.serde.Bytes> toSubAddress, Optional<@Unsigned Long> referencedEvent)
-    throws LibraSDKException {
+    private static Integer[] getGeneralMetadata(Optional<com.novi.serde.Bytes> byteFromSubAddress,
+                                                Optional<com.novi.serde.Bytes> toSubAddress,
+                                                Optional<@Unsigned Long> referencedEvent) throws LibraSDKException {
         Metadata.GeneralMetadata generalMetadata = new Metadata.GeneralMetadata(
                 new GeneralMetadata.GeneralMetadataVersion0(
                         new GeneralMetadataV0(toSubAddress, byteFromSubAddress, referencedEvent)));
@@ -96,13 +89,12 @@ public class TransactionMetadata {
             return byteToUInt8Array(metadataBytes);
         } catch (Exception e) {
             throw new LibraSDKException(e);
-
         }
 
     }
 
-    public Event findRefundReferenceEventFromTransaction(
-            org.libra.librasdk.dto.Transaction transaction, AccountAddress receiver) {
+    public static Event findRefundReferenceEventFromTransaction(org.libra.librasdk.dto.Transaction transaction,
+                                                                AccountAddress receiver) {
         Event result = null;
 
         if (transaction == null) {
@@ -112,8 +104,7 @@ public class TransactionMetadata {
         String address = bytesToHex(receiver.value);
 
         for (Event event : transaction.events) {
-            if (event.data.type.equalsIgnoreCase("receivedpayment") &&
-                    event.data.receiver.equalsIgnoreCase(address)) {
+            if (event.data.type.equalsIgnoreCase("receivedpayment") && event.data.receiver.equalsIgnoreCase(address)) {
                 result = event;
                 break;
             }
@@ -122,7 +113,7 @@ public class TransactionMetadata {
         return result;
     }
 
-    public Metadata deserializeMetadata(Event event) throws LibraSDKException {
+    public static Metadata deserializeMetadata(Event event) throws LibraSDKException {
         if (event == null) {
             throw new LibraSDKException("must provide refund reference event");
         }
@@ -144,8 +135,7 @@ public class TransactionMetadata {
         return deserialize;
     }
 
-    public byte[] getNewRefundMetadataFromEventMetadata(int eventSequenceNumber,
-                                                        GeneralMetadata generalMetadata)
+    public static byte[] getRefundMetadataFromEvent(long eventSequenceNumber, GeneralMetadata generalMetadata)
     throws LibraSDKException {
         if (generalMetadata == null) {
             throw new LibraSDKException("must provide refund event general metadata");
@@ -154,16 +144,13 @@ public class TransactionMetadata {
         GeneralMetadata.GeneralMetadataVersion0 generalMetadataVersion0 =
                 (GeneralMetadata.GeneralMetadataVersion0) generalMetadata;
 
-        GeneralMetadata.GeneralMetadataVersion0 result =
-                new GeneralMetadata.GeneralMetadataVersion0(
-                        new GeneralMetadataV0(generalMetadataVersion0.value.from_subaddress,
-                                generalMetadataVersion0.value.to_subaddress,
-                                Optional.of((long) eventSequenceNumber)));
-
+        Metadata metadata = new Metadata.GeneralMetadata(new GeneralMetadata.GeneralMetadataVersion0(
+                new GeneralMetadataV0(generalMetadataVersion0.value.from_subaddress,
+                        generalMetadataVersion0.value.to_subaddress, Optional.of(eventSequenceNumber))));
 
         byte[] bytes;
         try {
-            bytes = result.lcsSerialize();
+            bytes = metadata.lcsSerialize();
         } catch (Exception e) {
             throw new LibraSDKException("lcs serialize failed");
         }
