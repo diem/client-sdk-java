@@ -147,10 +147,10 @@ public class LibraClient implements Client {
     public Transaction waitForTransaction(String address, @Unsigned long sequence, String transactionHash,
                                           @Unsigned long expirationTimeSec, int timeout) throws LibraSDKException {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, timeout);
+        calendar.add(Calendar.MINUTE, timeout);
         Date maxTime = calendar.getTime();
 
-        while (!Calendar.getInstance().getTime().after(maxTime)) {
+        while (Calendar.getInstance().getTime().before(maxTime)) {
             Transaction accountTransaction = getAccountTransaction(address, sequence, true);
 
             if (accountTransaction != null) {
@@ -159,11 +159,12 @@ public class LibraClient implements Client {
                             String.format("found transaction, but hash does not match, given %s, but got %s",
                                     transactionHash, accountTransaction.hash));
                 }
-                if (accountTransaction.vmStatus().equals(VM_STATUS_EXECUTED)) {
+                if (!accountTransaction.vmStatus().equals(VM_STATUS_EXECUTED)) {
                     throw new LibraSDKException(
                             String.format("transaction execution failed: %s", accountTransaction.vmStatus()));
                 }
 
+                return accountTransaction;
             }
             if (expirationTimeSec * 1000000 <= libraLedgerState.getTimestampUsecs()) {
                 throw new LibraSDKException("transaction expired");

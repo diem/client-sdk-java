@@ -36,7 +36,7 @@ public interface Client {
     Transaction waitForTransaction(SignedTransaction signedTransaction, int timeout) throws LibraSDKException;
 
     Transaction waitForTransaction(String address, @Unsigned long sequence, String transactionHash,
-                                   @Unsigned long expirationTimeSec, int timeout) throws InterruptedException, LibraSDKException;
+                                   @Unsigned long expirationTimeSec, int timeout) throws LibraSDKException;
 
     List<Transaction> getTransactions(@Unsigned long fromVersion, int limit, boolean includeEvents)
     throws LibraSDKException;
