@@ -190,4 +190,12 @@ public class Utils {
 
         return new LocalAccount(accountAddress, authKey, privateKey, publicKey);
     }
+
+    public static void waitAWhile(int l) {
+        try {
+            Thread.sleep(l);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
