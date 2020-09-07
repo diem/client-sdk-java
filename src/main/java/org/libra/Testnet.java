@@ -70,7 +70,7 @@ public class Testnet {
                 String result = EntityUtils.toString(response.getEntity());
 
                 if (response.getStatusLine().getStatusCode() != 200) {
-                    throw new RuntimeException(response.toString());
+                    continue;
                 }
 
                 return Long.parseLong(result);
