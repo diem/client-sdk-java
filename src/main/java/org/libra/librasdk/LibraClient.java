@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.novi.serde.Bytes;
 import com.novi.serde.Unsigned;
+import org.libra.librasdk.dto.Currency;
 import org.libra.librasdk.dto.*;
 import org.libra.librasdk.jsonrpc.JSONRPCClient;
 import org.libra.librasdk.jsonrpc.JSONRPCErrorException;
@@ -16,10 +17,11 @@ import org.libra.types.Script;
 import org.libra.types.SignedTransaction;
 import org.libra.types.TypeTag;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
+import static org.libra.librasdk.TransactionHash.hashTransaction;
+import static org.libra.librasdk.Utils.*;
+import static org.libra.librasdk.dto.Transaction.VM_STATUS_EXECUTED;
 import static org.libra.stdlib.Helpers.encode_peer_to_peer_with_metadata_script;
 
 public class LibraClient implements Client {
@@ -32,14 +34,14 @@ public class LibraClient implements Client {
         this.libraLedgerState = new LibraLedgerState(chainId);
     }
 
-    public List<Transaction> getTransactions(@Unsigned long fromVersion, int limit, boolean includeEvents) throws LibraSDKException {
+    public List<Transaction> getTransactions(@Unsigned long fromVersion, int limit, boolean includeEvents)
+    throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(fromVersion);
         params.add(limit);
         params.add(includeEvents);
 
-        Transaction[] transactions = executeCall(Method.get_transactions, params,
-                Transaction[].class);
+        Transaction[] transactions = executeCall(Method.get_transactions, params, Transaction[].class);
         return Arrays.asList(transactions);
     }
 
@@ -66,21 +68,19 @@ public class LibraClient implements Client {
     }
 
     public Currency[] getCurrencies() throws LibraSDKException {
-        Currency[] currencies = executeCall(Method.get_currencies, new ArrayList<>(),
-                Currency[].class);
+        Currency[] currencies = executeCall(Method.get_currencies, new ArrayList<>(), Currency[].class);
 
         return currencies;
     }
 
-    public Transaction getAccountTransaction(String address, @Unsigned long sequence,
-                                             boolean includeEvents) throws LibraSDKException {
+    public Transaction getAccountTransaction(String address, @Unsigned long sequence, boolean includeEvents)
+    throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(address);
         params.add(sequence);
         params.add(includeEvents);
 
-        Transaction transaction = executeCall(Method.get_account_transaction, params,
-                Transaction.class);
+        Transaction transaction = executeCall(Method.get_account_transaction, params, Transaction.class);
 
         return transaction;
     }
@@ -93,30 +93,21 @@ public class LibraClient implements Client {
     }
 
     @Override
-    public SignedTransaction transfer(String senderAccountAddress, String libraAuthKey,
-                                      String privateKey,
-                                      String publicKey, String receiverAccountAddress,
-                                      @Unsigned long amount, @Unsigned long maxGasAmount, @Unsigned long gasPriceUnit,
-                                      String currencyCode,
-                                      @Unsigned long expirationTimestampSecs, byte chainId,
-                                      byte[] metadata, byte[] metadataSignature) throws LibraSDKException {
+    public SignedTransaction transfer(String senderAccountAddress, String libraAuthKey, String privateKey,
+                                      String publicKey, String receiverAccountAddress, @Unsigned long amount,
+                                      @Unsigned long maxGasAmount, @Unsigned long gasPriceUnit, String currencyCode,
+                                      @Unsigned long expirationTimestampSecs, byte chainId, byte[] metadata,
+                                      byte[] metadataSignature) throws LibraSDKException {
 
-        LocalAccount localAccount = new LocalAccount(senderAccountAddress, libraAuthKey,
-                privateKey, publicKey);
+        LocalAccount localAccount = new LocalAccount(senderAccountAddress, libraAuthKey, privateKey, publicKey);
         AccountAddress accountAddressObject = Utils.hexToAddress(receiverAccountAddress);
-        Script script = createP2PScript(accountAddressObject, currencyCode, amount, metadata,
-                metadataSignature);
+        Script script = createP2PScript(accountAddressObject, currencyCode, amount, metadata, metadataSignature);
         Account account = getAccount(localAccount.libra_account_address);
 
         SignedTransaction signedTransaction;
-        signedTransaction = Utils.signTransaction(localAccount,
-                account.sequence_number,
-                script,
-                maxGasAmount,
-                gasPriceUnit,
-                currencyCode,
-                expirationTimestampSecs,
-                chainId);
+        signedTransaction =
+                Utils.signTransaction(localAccount, account.sequence_number, script, maxGasAmount, gasPriceUnit,
+                        currencyCode, expirationTimestampSecs, chainId);
         String lcsHex = Utils.toLCSHex(signedTransaction);
         submit(lcsHex);
 
@@ -125,8 +116,7 @@ public class LibraClient implements Client {
     }
 
     public Transaction waitForTransaction(String address, @Unsigned long sequence, boolean includeEvents,
-                                          @Unsigned long timeoutMillis) throws InterruptedException,
-            LibraSDKException {
+                                          @Unsigned long timeoutMillis) throws InterruptedException, LibraSDKException {
         for (long millis = 0, step = 100; millis < timeoutMillis; millis += step) {
             Transaction transaction = this.getAccountTransaction(address, sequence, includeEvents);
             if (transaction != null) {
@@ -138,7 +128,55 @@ public class LibraClient implements Client {
         return null;
     }
 
-    public List<Event> getEvents(String eventsKey, @Unsigned long start, @Unsigned long limit) throws LibraSDKException {
+    public Transaction waitForTransaction(String signedTransactionHash, int timeout) throws LibraSDKException {
+        byte[] bytes = hexToBytes(signedTransactionHash);
+        try {
+            return waitForTransaction(SignedTransaction.lcsDeserialize(bytes), timeout);
+        } catch (Exception e) {
+            throw new LibraSDKException(
+                    String.format("Deserialize given hex string as SignedTransaction LCS failed: %s", e.getMessage()));
+        }
+    }
+
+    public Transaction waitForTransaction(SignedTransaction signedTransaction, int timeout) throws LibraSDKException {
+        return waitForTransaction(addressToHex(signedTransaction.raw_txn.sender),
+                signedTransaction.raw_txn.sequence_number, hashTransaction(signedTransaction),
+                signedTransaction.raw_txn.expiration_timestamp_secs, timeout);
+    }
+
+    public Transaction waitForTransaction(String address, @Unsigned long sequence, String transactionHash,
+                                          @Unsigned long expirationTimeSec, int timeout) throws LibraSDKException {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, timeout);
+        Date maxTime = calendar.getTime();
+
+        while (!Calendar.getInstance().getTime().after(maxTime)) {
+            Transaction accountTransaction = getAccountTransaction(address, sequence, true);
+
+            if (accountTransaction != null) {
+                if (!accountTransaction.hash.equals(transactionHash)) {
+                    throw new LibraSDKException(
+                            String.format("found transaction, but hash does not match, given %s, but got %s",
+                                    transactionHash, accountTransaction.hash));
+                }
+                if (accountTransaction.vmStatus().equals(VM_STATUS_EXECUTED)) {
+                    throw new LibraSDKException(
+                            String.format("transaction execution failed: %s", accountTransaction.vmStatus()));
+                }
+
+            }
+            if (expirationTimeSec * 1000000 <= libraLedgerState.getTimestampUsecs()) {
+                throw new LibraSDKException("transaction expired");
+            }
+            waitAWhile(500);
+        }
+
+        throw new LibraSDKException(
+                String.format("transaction not found within timeout period: %d (seconds)", timeout));
+    }
+
+    public List<Event> getEvents(String eventsKey, @Unsigned long start, @Unsigned long limit)
+    throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(eventsKey);
         params.add(start);
@@ -159,8 +197,7 @@ public class LibraClient implements Client {
                 throw new JSONRPCErrorException(libraResponse.getError().toString());
             }
 
-            libraLedgerState.handleLedgerState(libraResponse.getLibraChainId(),
-                    libraResponse.getLibraLedgerVersion(),
+            libraLedgerState.handleLedgerState(libraResponse.getLibraChainId(), libraResponse.getLibraLedgerVersion(),
                     libraResponse.getLibraLedgerTimestampusec());
             result = null;
 
@@ -174,16 +211,11 @@ public class LibraClient implements Client {
         return result;
     }
 
-    private Script createP2PScript(AccountAddress address, String currencyCode, @Unsigned long amount,
-                                   byte[] metadata, byte[] metadataSignature) {
+    private Script createP2PScript(AccountAddress address, String currencyCode, @Unsigned long amount, byte[] metadata,
+                                   byte[] metadataSignature) {
         TypeTag token = Utils.createCurrencyCodeTypeTag(currencyCode);
-        return encode_peer_to_peer_with_metadata_script(
-                token,
-                address,
-                amount,
-                new Bytes(metadata),
-                new Bytes(metadataSignature)
-        );
+        return encode_peer_to_peer_with_metadata_script(token, address, amount, new Bytes(metadata),
+                new Bytes(metadataSignature));
     }
 
 }

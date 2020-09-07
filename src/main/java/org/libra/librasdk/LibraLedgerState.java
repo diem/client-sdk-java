@@ -9,6 +9,10 @@ public class LibraLedgerState {
     long version;
     long timestampUsecs;
 
+    public long getTimestampUsecs() {
+        return timestampUsecs;
+    }
+
     public LibraLedgerState(int chainId) {
         this.chainId = chainId;
     }

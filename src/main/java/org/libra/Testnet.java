@@ -9,7 +9,7 @@ import org.libra.librasdk.Constants;
 import org.libra.librasdk.LibraClient;
 import org.libra.librasdk.dto.Transaction;
 
-import java.io.IOException;
+import static org.libra.librasdk.Utils.waitAWhile;
 
 public class Testnet {
     public static String JSON_RPC_URL = "https://testnet.libra.org/v1";
@@ -69,15 +69,7 @@ public class Testnet {
                     response.close();
                 }
             }
-            waitAWhile();
-        }
-    }
-
-    private static void waitAWhile() {
-        try {
-            Thread.sleep(1100);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            waitAWhile(1100);
         }
     }
 }
