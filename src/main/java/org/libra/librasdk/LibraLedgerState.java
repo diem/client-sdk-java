@@ -15,12 +15,12 @@ public class LibraLedgerState {
 
     private void validateLedgerState(int chainId, long version, long timestampUsecs) throws LibraSDKException {
         if (this.chainId != chainId) {
-            throw new LibraSDKException(String.format("chainId mismatch! Expected: %s Received: " +
+            throw new StaleResponseException(String.format("chainId mismatch! Expected: %s Received: " +
                     "%s", this.chainId, chainId));
         }
 
         if (this.version > version || this.timestampUsecs > timestampUsecs) {
-            throw new LibraSDKException(String.format("Current ledger state stale:\n" +
+            throw new StaleResponseException(String.format("Current ledger state stale:\n" +
                             "current blockchain version: %s last seen blockchain version: %s " +
                             "current blockchain timestamp usecs: %s last seen blockchain " +
                             "timestamp usecs: %s"
