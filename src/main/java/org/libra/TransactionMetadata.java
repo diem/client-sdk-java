@@ -95,8 +95,6 @@ public class TransactionMetadata {
 
     public static Event findRefundReferenceEventFromTransaction(org.libra.librasdk.dto.Transaction transaction,
                                                                 AccountAddress receiver) {
-        Event result = null;
-
         if (transaction == null) {
             return null;
         }
@@ -105,12 +103,11 @@ public class TransactionMetadata {
 
         for (Event event : transaction.events) {
             if (event.data.type.equalsIgnoreCase("receivedpayment") && event.data.receiver.equalsIgnoreCase(address)) {
-                result = event;
-                break;
+                return event;
             }
         }
 
-        return result;
+        return null;
     }
 
     public static Metadata deserializeMetadata(Event event) throws LibraSDKException {
