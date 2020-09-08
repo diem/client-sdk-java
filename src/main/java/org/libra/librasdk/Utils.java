@@ -4,10 +4,11 @@
 package org.libra.librasdk;
 
 import com.google.common.io.BaseEncoding;
+import com.novi.serde.Bytes;
+import com.novi.serde.Unsigned;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Bech32;
-import com.novi.serde.Bytes;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
 import org.bouncycastle.crypto.signers.Ed25519Signer;
@@ -16,26 +17,29 @@ import org.libra.librasdk.dto.LocalAccount;
 import org.libra.types.*;
 
 import java.io.ByteArrayOutputStream;
-import java.security.*;
+import java.nio.ByteBuffer;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Utils {
     public static SignedTransaction signTransaction(LocalAccount sender, long sequence_number,
-                                                    Script script, long
-                                                            maxGasAmount, long gasPriceUnit,
-                                                    String currencyCode,
-                                                    long expirationTimestampSecs,
-                                                    byte chainId) throws LibraSDKException {
-        RawTransaction rt = createRawTransaction(sender.getAccountAddress(), sequence_number,
-                script, maxGasAmount, gasPriceUnit, currencyCode, expirationTimestampSecs, chainId);
+                                                    Script script, long maxGasAmount,
+                                                    long gasPriceUnit, String currencyCode,
+                                                    long expirationTimestampSecs, byte chainId)
+    throws LibraSDKException {
+        RawTransaction rt =
+                createRawTransaction(sender.getAccountAddress(), sequence_number, script,
+                        maxGasAmount, gasPriceUnit, currencyCode, expirationTimestampSecs, chainId);
 
         byte[] hash = hashRawTransaction(rt);
         byte[] sign = sign(sender.getPrivateKey(), hash);
-        SignedTransaction st = new SignedTransaction(rt,
-                new TransactionAuthenticator.Ed25519(new Ed25519PublicKey(new Bytes(hexToBytes(sender.public_key))), new Ed25519Signature(new Bytes(sign))));
+        SignedTransaction st = new SignedTransaction(rt, new TransactionAuthenticator.Ed25519(
+                new Ed25519PublicKey(new Bytes(hexToBytes(sender.public_key))),
+                new Ed25519Signature(new Bytes(sign))));
         return st;
     }
 
@@ -116,6 +120,24 @@ public class Utils {
         return BaseEncoding.base16().encode(bytes);
     }
 
+    public static String bytesToHex( @Unsigned Byte[] bytes) {
+        return bytesToHex(ArrayUtils.toPrimitive(bytes));
+    }
+
+    public static String integersToHex(Integer[] integers) {
+        return Arrays.stream(integers).map(Utils::toHex).collect(Collectors.joining(""));
+    }
+
+    private static String toHex(int num) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(Integer.toHexString(num));
+        if (sb.length() < 2) {
+            sb.insert(0, '0');
+        }
+        return sb.toString();
+    }
+
+
     public static String bytesToHex(Bytes bytes) {
         return bytesToHex(bytes.content());
     }
@@ -179,7 +201,8 @@ public class Utils {
         return generateLocalAccountInner(privateKeyParameters);
     }
 
-    private static LocalAccount generateLocalAccountInner(Ed25519PrivateKeyParameters privateKeyParameters) {
+    private static LocalAccount generateLocalAccountInner(
+            Ed25519PrivateKeyParameters privateKeyParameters) {
         Ed25519PublicKeyParameters ed25519PublicKeyParameters =
                 privateKeyParameters.generatePublicKey();
         byte[] privateKeyBytes = privateKeyParameters.getEncoded();
@@ -189,8 +212,8 @@ public class Utils {
         String publicKey = bytesToHex(publicKeyBytes);
 
         byte[] authKeyBytes = createAuthKeyFromEd25519PublicKey(publicKeyBytes);
-        byte[] accountAddressBytes = Arrays.copyOfRange(authKeyBytes, authKeyBytes.length - 16,
-                authKeyBytes.length);
+        byte[] accountAddressBytes =
+                Arrays.copyOfRange(authKeyBytes, authKeyBytes.length - 16, authKeyBytes.length);
 
         String authKey = bytesToHex(authKeyBytes);
         String accountAddress = bytesToHex(accountAddressBytes);
@@ -240,6 +263,18 @@ public class Utils {
         return Stream.of(arrays).flatMap(Stream::of).toArray(Integer[]::new);
     }
 
+    public static byte[] mergeArrays(byte[]... arrays) {
+        int resultSize = Arrays.stream(arrays).mapToInt(a -> a.length).sum();
+        byte[] result = new byte[resultSize];
+        ByteBuffer buffer = ByteBuffer.wrap(result);
+
+        for (byte[] array : arrays) {
+            buffer.put(array);
+        }
+
+        return buffer.array();
+    }
+
     public static Byte[] mergeArrays(Byte[]... arrays) {
         return Stream.of(arrays).flatMap(Stream::of).toArray(Byte[]::new);
     }
@@ -248,9 +283,10 @@ public class Utils {
         return Stream.of(arrays).flatMapToInt(IntStream::of).toArray();
 
     }
+
     public static byte[] convertBits(final Integer[] in, final int inStart, final int inLen,
-                                     final int fromBits, final int toBits, final boolean pad) throws
-            AddressFormatException {
+                                     final int fromBits, final int toBits, final boolean pad)
+    throws AddressFormatException {
         int acc = 0;
         int bits = 0;
         ByteArrayOutputStream out = new ByteArrayOutputStream(64);
@@ -259,8 +295,9 @@ public class Utils {
         for (int i = 0; i < inLen; i++) {
             int value = in[i + inStart] & 0xff;
             if ((value >>> fromBits) != 0) {
-                throw new AddressFormatException(String.format("Input value '%X' exceeds '%d' bit" +
-                        " size", value, fromBits));
+                throw new AddressFormatException(
+                        String.format("Input value '%X' exceeds '%d' bit" + " size", value,
+                                fromBits));
             }
             acc = ((acc << fromBits) | value) & max_acc;
             bits += fromBits;
