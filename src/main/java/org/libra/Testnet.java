@@ -20,7 +20,7 @@ import java.net.URISyntaxException;
 
 public class Testnet {
     public static String JSON_RPC_URL = "https://testnet.libra.org/v1";
-    public static String FAUCET_SERVER_URL = "testnet.libra.org";
+    public static String FAUCET_SERVER_URL = "https://testnet.libra.org/mint";
     public static byte CHAIN_ID = Constants.TEST_NET_CHAIN_ID;
 
     private static final long DEFAULT_TIMEOUT = 10 * 1000;
@@ -47,16 +47,14 @@ public class Testnet {
     }
 
     public static long mintCoinsAsync(long amount, String authKey, String currencyCode) {
-        URIBuilder builder = new URIBuilder();
-        builder.setScheme("https").setHost(FAUCET_SERVER_URL).setPath("/mint")
-                .setParameter("amount", String.valueOf(amount)).setParameter("auth_key", authKey)
-                .setParameter("currency_code", currencyCode);
-
-        URI build = null;
+        URI build;
         try {
+            URIBuilder builder = new URIBuilder(FAUCET_SERVER_URL);
+            builder.setParameter("amount", String.valueOf(amount)).setParameter("auth_key", authKey)
+                    .setParameter("currency_code", currencyCode);
             build = builder.build();
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         HttpPost post = new HttpPost(build);
