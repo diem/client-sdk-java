@@ -130,12 +130,16 @@ public class LibraClient implements Client {
 
     public Transaction waitForTransaction(String signedTransactionHash, int timeout) throws LibraSDKException {
         byte[] bytes = hexToBytes(signedTransactionHash);
+        SignedTransaction signedTransaction;
+
         try {
-            return waitForTransaction(SignedTransaction.lcsDeserialize(bytes), timeout);
+            signedTransaction = SignedTransaction.lcsDeserialize(bytes);
         } catch (Exception e) {
             throw new LibraSDKException(
                     String.format("Deserialize given hex string as SignedTransaction LCS failed: %s", e.getMessage()));
         }
+
+        return waitForTransaction(signedTransaction, timeout);
     }
 
     public Transaction waitForTransaction(SignedTransaction signedTransaction, int timeout) throws LibraSDKException {
