@@ -131,8 +131,7 @@ public class TestNetIntegrationTest {
                 .transfer(account1.libra_account_address, account1.libra_auth_key, account1.private_key,
                         account1.public_key, account2.libra_account_address, 1000000L, 1000000L, 0L, currencyCode,
                         100000000000L, Constants.TEST_NET_CHAIN_ID, new byte[]{}, new byte[]{});
-        Transaction p2p = libraClient.waitForTransaction(Utils.addressToHex(signedTransaction.raw_txn.sender),
-                signedTransaction.raw_txn.sequence_number, true, DEFAULT_TIMEOUT);
+        Transaction p2p = libraClient.waitForTransaction(signedTransaction, DEFAULT_TIMEOUT);
         assertNotNull(p2p);
         assertTrue(p2p.vm_status.toString(), p2p.isExecuted());
         assertEquals(
@@ -158,6 +157,9 @@ public class TestNetIntegrationTest {
                 () -> libraClient.submit(Utils.toLCSHex(st)));
     }
 
+    @Rule
+    public ExpectedException exceptionRule = ExpectedException.none();
+
     @Test
     public void testSubmitTransactionAndExecuteFailed() throws Exception {
         String currencyCode = "LBR";
@@ -170,11 +172,10 @@ public class TestNetIntegrationTest {
                         100000000000L, Constants.TEST_NET_CHAIN_ID);
         libraClient.submit(Utils.toLCSHex(st));
 
-        Transaction p2p = libraClient
-                .waitForTransaction(Utils.addressToHex(st.raw_txn.sender), st.raw_txn.sequence_number, true,
-                        DEFAULT_TIMEOUT);
-        assertNotNull(p2p);
-        assertEquals(Transaction.VM_STATUS_MOVE_ABORT, p2p.vmStatus());
+        exceptionRule.expect(LibraSDKException.class);
+        exceptionRule.expectMessage("transaction execution failed");
+
+        libraClient.waitForTransaction(st, DEFAULT_TIMEOUT);
     }
 
     @Test
@@ -192,9 +193,6 @@ public class TestNetIntegrationTest {
         Assert.assertNotNull(events);
         Assert.assertTrue(events.size() > 0);
     }
-
-    @Rule
-    public ExpectedException exceptionRule = ExpectedException.none();
 
     @Test
     public void testWaitForTransactionFromHash_invalidHexString() throws LibraSDKException {

@@ -115,19 +115,6 @@ public class LibraClient implements Client {
 
     }
 
-    public Transaction waitForTransaction(String address, @Unsigned long sequence, boolean includeEvents,
-                                          @Unsigned long timeoutMillis) throws InterruptedException, LibraSDKException {
-        for (long millis = 0, step = 100; millis < timeoutMillis; millis += step) {
-            Transaction transaction = this.getAccountTransaction(address, sequence, includeEvents);
-            if (transaction != null) {
-                return transaction;
-            }
-            Thread.sleep(step);
-        }
-
-        return null;
-    }
-
     public Transaction waitForTransaction(String signedTransactionHash, int timeout) throws LibraSDKException {
         byte[] bytes = hexToBytes(signedTransactionHash);
         SignedTransaction signedTransaction;
@@ -158,7 +145,7 @@ public class LibraClient implements Client {
             Transaction accountTransaction = getAccountTransaction(address, sequence, true);
 
             if (accountTransaction != null) {
-                if (!accountTransaction.hash.equals(transactionHash)) {
+                if (!accountTransaction.hash.equalsIgnoreCase(transactionHash)) {
                     throw new LibraSDKException(
                             String.format("found transaction, but hash does not match, given %s, but got %s",
                                     transactionHash, accountTransaction.hash));

@@ -28,9 +28,6 @@ public interface Client {
                                @Unsigned long gasPriceUnit, String currencyCode, @Unsigned long expirationTimestampSecs,
                                byte chainId, byte[] metadata, byte[] metadataSignature) throws LibraSDKException;
 
-    Transaction waitForTransaction(String address, @Unsigned long sequence, boolean includeEvents,
-                                   @Unsigned long timeout) throws InterruptedException, LibraSDKException;
-
     Transaction waitForTransaction(String signedTransactionHash, int timeout) throws LibraSDKException;
 
     Transaction waitForTransaction(SignedTransaction signedTransaction, int timeout) throws LibraSDKException;
