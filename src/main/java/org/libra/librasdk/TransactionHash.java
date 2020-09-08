@@ -2,6 +2,7 @@ package org.libra.librasdk;
 
 import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.libra.types.SignedTransaction;
+import org.libra.types.Transaction;
 
 import static org.libra.librasdk.Utils.bytesToHex;
 
@@ -22,12 +23,12 @@ public class TransactionHash {
 
     public static String hashTransaction(SignedTransaction signedTransaction) throws LibraSDKException {
         try {
-            byte[] transactions = hash(hashPrefix("transaction"), signedTransaction.lcsSerialize());
+            Transaction.UserTransaction userTransaction = new Transaction.UserTransaction(signedTransaction);
+            byte[] transactions = hash(hashPrefix("Transaction"), userTransaction.lcsSerialize());
             return bytesToHex(transactions);
         } catch (Exception e) {
             throw new LibraSDKException(e);
         }
     }
-
 
 }

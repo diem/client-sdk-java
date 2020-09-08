@@ -110,9 +110,8 @@ public class TestNetIntegrationTest {
                 Utils.signTransaction(account1, account1Data.sequence_number, script, coins(1), 0, currencyCode,
                         100000000000L, Constants.TEST_NET_CHAIN_ID);
         libraClient.submit(Utils.toLCSHex(st));
-        Transaction p2p = libraClient
-                .waitForTransaction(Utils.addressToHex(st.raw_txn.sender), st.raw_txn.sequence_number, true,
-                        DEFAULT_TIMEOUT);
+        Transaction p2p = libraClient.waitForTransaction(st, DEFAULT_TIMEOUT);
+
         assertNotNull(p2p);
         assertTrue(p2p.vm_status.toString(), p2p.isExecuted());
         assertEquals(Utils.bytesToHex(((TransactionAuthenticator.Ed25519) st.authenticator).signature.value),
@@ -192,14 +191,6 @@ public class TestNetIntegrationTest {
         List<Event> events = libraClient.getEvents(currencies[0].mint_events_key, 0L, 1000L);
         Assert.assertNotNull(events);
         Assert.assertTrue(events.size() > 0);
-    }
-
-
-    @Test
-    public void testWaitForTransactionFromAddress_success() throws LibraSDKException {
-        Transaction transaction = libraClient.waitForTransaction(ROOT_ACCOUNT_ADDRESS, 1,
-                "28f8151939d68b692d296028ca54bb7e9e92a2f9543effd2a424a79df67d007f", System.currentTimeMillis(), 5);
-        assertNotNull(transaction);
     }
 
     @Rule
