@@ -4,8 +4,10 @@
 package org.libra.librasdk;
 
 import com.google.common.io.BaseEncoding;
+import org.apache.commons.lang3.ArrayUtils;
+import org.bitcoinj.core.AddressFormatException;
+import org.bitcoinj.core.Bech32;
 import com.novi.serde.Bytes;
-import design.contract.bech32.Bech32;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
 import org.bouncycastle.crypto.signers.Ed25519Signer;
@@ -13,9 +15,12 @@ import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.libra.librasdk.dto.LocalAccount;
 import org.libra.types.*;
 
-import java.security.SecureRandom;
+import java.io.ByteArrayOutputStream;
+import java.security.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Utils {
     public static SignedTransaction signTransaction(LocalAccount sender, long sequence_number,
@@ -29,10 +34,8 @@ public class Utils {
 
         byte[] hash = hashRawTransaction(rt);
         byte[] sign = sign(sender.getPrivateKey(), hash);
-        SignedTransaction st = new SignedTransaction(rt, new TransactionAuthenticator.Ed25519(
-                new Ed25519PublicKey(new Bytes(hexToBytes(sender.public_key))),
-                new Ed25519Signature(new Bytes(sign))
-        ));
+        SignedTransaction st = new SignedTransaction(rt,
+                new TransactionAuthenticator.Ed25519(new Ed25519PublicKey(new Bytes(hexToBytes(sender.public_key))), new Ed25519Signature(new Bytes(sign))));
         return st;
     }
 
@@ -42,8 +45,7 @@ public class Utils {
                                                       String currencyCode,
                                                       long expirationTimestampSecs, byte chainId) {
         return new RawTransaction(senderAddress, sequence_number,
-                new TransactionPayload.Script(script),
-                maxGasAmount, gasPriceUnit, currencyCode,
+                new TransactionPayload.Script(script), maxGasAmount, gasPriceUnit, currencyCode,
                 expirationTimestampSecs, new ChainId(chainId));
     }
 
@@ -139,12 +141,8 @@ public class Utils {
     }
 
     public static StructTag createCurrencyCodeStructTAg(String currencyCode) {
-        return new StructTag(
-                Utils.hexToAddress(Constants.CORE_CODE_ADDRESS),
-                new Identifier(currencyCode),
-                new Identifier(currencyCode),
-                new ArrayList<>()
-        );
+        return new StructTag(Utils.hexToAddress(Constants.CORE_CODE_ADDRESS),
+                new Identifier(currencyCode), new Identifier(currencyCode), new ArrayList<>());
     }
 
     public static byte[] hashRawTransaction(RawTransaction txn) throws LibraSDKException {
@@ -155,8 +153,17 @@ public class Utils {
         }
     }
 
-    public static String Bech32Encode(String humanReadablePart, char[] data) {
+    public static String Bech32Encode(String humanReadablePart, Byte[] data) {
+        return Bech32.encode(humanReadablePart, ArrayUtils.toPrimitive(data));
+    }
+
+    public static String Bech32Encode(String humanReadablePart, byte[] data) {
         return Bech32.encode(humanReadablePart, data);
+    }
+
+    public static Bech32.Bech32Data Bech32Decode(String data) {
+        Bech32.Bech32Data decode = Bech32.decode(data);
+        return decode;
     }
 
     public static LocalAccount generateLocalAccount() {
@@ -197,5 +204,76 @@ public class Utils {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Integer[] byteToUInt8Array(Byte[] bytes) {
+        Integer[] uInt8 = new Integer[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            uInt8[i] = byteToUInt8(bytes[i]);
+        }
+
+        return uInt8;
+    }
+
+    public static Integer[] byteToUInt8Array(byte[] bytes) {
+        Integer[] uInt8 = new Integer[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            uInt8[i] = byteToUInt8(bytes[i]);
+        }
+
+        return uInt8;
+    }
+
+    public static int intToUInt8(int i) {
+        return i & 0xFF;
+    }
+
+    public static int byteToUInt8(Byte aByte) {
+        return aByte & 0xFF;
+    }
+
+    public static byte byteToUInt8Byte(Byte aByte) {
+        return (byte) (aByte & 0xFF);
+    }
+
+    public static Integer[] mergeArrays(Integer[]... arrays) {
+        return Stream.of(arrays).flatMap(Stream::of).toArray(Integer[]::new);
+    }
+
+    public static Byte[] mergeArrays(Byte[]... arrays) {
+        return Stream.of(arrays).flatMap(Stream::of).toArray(Byte[]::new);
+    }
+
+    public static int[] mergeArrays(int[]... arrays) {
+        return Stream.of(arrays).flatMapToInt(IntStream::of).toArray();
+
+    }
+    public static byte[] convertBits(final Integer[] in, final int inStart, final int inLen,
+                                     final int fromBits, final int toBits, final boolean pad) throws
+            AddressFormatException {
+        int acc = 0;
+        int bits = 0;
+        ByteArrayOutputStream out = new ByteArrayOutputStream(64);
+        final int maxv = (1 << toBits) - 1;
+        final int max_acc = (1 << (fromBits + toBits - 1)) - 1;
+        for (int i = 0; i < inLen; i++) {
+            int value = in[i + inStart] & 0xff;
+            if ((value >>> fromBits) != 0) {
+                throw new AddressFormatException(String.format("Input value '%X' exceeds '%d' bit" +
+                        " size", value, fromBits));
+            }
+            acc = ((acc << fromBits) | value) & max_acc;
+            bits += fromBits;
+            while (bits >= toBits) {
+                bits -= toBits;
+                out.write((acc >>> bits) & maxv);
+            }
+        }
+        if (pad) {
+            if (bits > 0) out.write((acc << (toBits - bits)) & maxv);
+        } else if (bits >= fromBits || ((acc << (toBits - bits)) & maxv) != 0) {
+            throw new AddressFormatException("Could not convert bits, invalid padding");
+        }
+        return out.toByteArray();
     }
 }
