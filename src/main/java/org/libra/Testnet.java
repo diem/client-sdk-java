@@ -3,13 +3,20 @@
 
 package org.libra;
 
-import okhttp3.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.libra.librasdk.Client;
 import org.libra.librasdk.Constants;
 import org.libra.librasdk.LibraClient;
 import org.libra.librasdk.dto.Transaction;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class Testnet {
     public static String JSON_RPC_URL = "https://testnet.libra.org/v1";
@@ -40,33 +47,34 @@ public class Testnet {
     }
 
     public static long mintCoinsAsync(long amount, String authKey, String currencyCode) {
-        OkHttpClient client = new OkHttpClient();
-        HttpUrl.Builder builder = HttpUrl.parse(FAUCET_SERVER_URL).newBuilder();
-        builder.addQueryParameter("amount", String.valueOf(amount));
-        builder.addQueryParameter("auth_key", authKey);
-        builder.addQueryParameter("currency_code", currencyCode);
+        URI build;
+        try {
+            URIBuilder builder = new URIBuilder(FAUCET_SERVER_URL);
+            builder.setParameter("amount", String.valueOf(amount)).setParameter("auth_key", authKey)
+                    .setParameter("currency_code", currencyCode);
+            build = builder.build();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
 
-        HttpUrl url = builder.build();
-        RequestBody emptyBody = RequestBody.create(null, new byte[0]);
-        Request request = new Request.Builder().url(url).post(emptyBody).build();
+        HttpPost post = new HttpPost(build);
 
         int retry = 10;
-        while(true) {
+        while (true) {
             retry--;
-            Response response = null;
-            try {
-                response = client.newCall(request).execute();
-                if (response.code() != 200) {
-                    throw new RuntimeException("Unexpected response: " + response.toString());
+
+            try (CloseableHttpClient httpClient = HttpClients.createDefault();
+                 CloseableHttpResponse response = httpClient.execute(post)) {
+                String result = EntityUtils.toString(response.getEntity());
+
+                if (response.getStatusLine().getStatusCode() != 200) {
+                    continue;
                 }
-                return Long.parseLong(response.body().string());
-            } catch (Exception e) {
+
+                return Long.parseLong(result);
+            } catch (IOException e) {
                 if (retry == 0) {
                     throw new RuntimeException(e);
-                }
-            } finally {
-                if (response != null) {
-                    response.close();
                 }
             }
             waitAWhile();
@@ -80,4 +88,5 @@ public class Testnet {
             throw new RuntimeException(e);
         }
     }
+
 }
