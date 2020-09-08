@@ -33,7 +33,7 @@ public class IntentIdentifierTest {
         assertEquals(String.format("libra://%s", encodedAccount), intentEncoded);
 
         IntentIdentifier decodeToIntentIdentifier = decodeToIntent(MainnetPrefix, intentEncoded);
-        assertTrue(intentIdentifier.isValuesEqual(decodeToIntentIdentifier));
+        assertTrue(intentIdentifier.equals(decodeToIntentIdentifier));
     }
 
     @Test
@@ -43,7 +43,7 @@ public class IntentIdentifierTest {
         assertEquals(String.format("libra://%s?am=666&c=LBR", encodedAccount), intentEncoded);
 
         IntentIdentifier decodeToIntentIdentifier = decodeToIntent(MainnetPrefix, intentEncoded);
-        assertTrue(intentIdentifier.isValuesEqual(decodeToIntentIdentifier));
+        assertTrue(intentIdentifier.equals(decodeToIntentIdentifier));
     }
 
     @Rule

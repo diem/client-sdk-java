@@ -50,7 +50,7 @@ public class AccountIdentifier {
         String hrp = hrpAndData.hrp;
 
         if(!prefix.value.equals(hrp)){
-            throw new LibraSDKException(String.format("invalid human-readable part : %s != %s", prefix.value, hrp));
+            throw new LibraSDKException(String.format("Invalid network prefix : %s != %s", prefix.value, hrp));
         }
 
         byte[] dataNoVersion = Arrays.copyOfRange(hrpAndData.data, 1, hrpAndData.data.length);
@@ -122,20 +122,14 @@ public class AccountIdentifier {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AccountIdentifier accountIdentifier = (AccountIdentifier) o;
-        return version == accountIdentifier.version && prefix == accountIdentifier.prefix &&
-                Objects.equals(accountAddress, accountIdentifier.accountAddress) &&
-                Objects.equals(subAddress, accountIdentifier.subAddress);
+        AccountIdentifier that = (AccountIdentifier) o;
+        return version == that.version && prefix == that.prefix &&
+                Arrays.equals(accountAddress.value, that.accountAddress.value) &&
+                Arrays.equals(subAddress.getBytes(), that.subAddress.getBytes());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(prefix, version, accountAddress, subAddress);
-    }
-
-    public boolean isValuesEqual(AccountIdentifier accountIdentifier) {
-        return (accountIdentifier.version == this.version && accountIdentifier.prefix == this.prefix &&
-                Arrays.equals(accountIdentifier.accountAddress.value, this.accountAddress.value) &&
-                Arrays.equals(accountIdentifier.subAddress.getBytes(), this.subAddress.getBytes()));
     }
 }
