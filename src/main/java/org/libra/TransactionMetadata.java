@@ -112,7 +112,7 @@ public class TransactionMetadata {
 
     public static Metadata deserializeMetadata(Event event) throws LibraSDKException {
         if (event == null) {
-            throw new LibraSDKException("must provide refund reference event");
+            throw new IllegalArgumentException("must provide refund reference event");
         }
 
         String metadata = event.data.metadata;
@@ -135,7 +135,7 @@ public class TransactionMetadata {
     public static byte[] getRefundMetadataFromEvent(long eventSequenceNumber, GeneralMetadata generalMetadata)
     throws LibraSDKException {
         if (generalMetadata == null) {
-            throw new LibraSDKException("must provide refund event general metadata");
+            throw new IllegalArgumentException("must provide refund event general metadata");
         }
 
         GeneralMetadata.GeneralMetadataVersion0 generalMetadataVersion0 =
