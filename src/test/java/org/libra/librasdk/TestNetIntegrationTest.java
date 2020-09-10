@@ -195,10 +195,11 @@ public class TestNetIntegrationTest {
     }
 
     @Test
-    public void testWaitForTransactionFromAddress_hashMismatch() throws LibraSDKException {
+    public void testWaitForTransactionFromAddress_hashMismatch() throws LibraSDKException, InterruptedException {
+        submitTransaction(3);
         exceptionRule.expect(LibraSDKException.class);
         exceptionRule.expectMessage("found transaction, but hash does not match");
-        libraClient.waitForTransaction(ROOT_ACCOUNT_ADDRESS, 1,
+        libraClient.waitForTransaction(account1.libra_account_address, 1,
                 "28f8151939d68b692d296028ca54bb7e9e92a2f9543effd2a424a79df67d0071", System.currentTimeMillis(), 5);
     }
 
