@@ -124,6 +124,18 @@ public class Utils {
         return bytesToHex(ArrayUtils.toPrimitive(bytes));
     }
 
+    public static String bytesToHex(Bytes bytes) {
+        return bytesToHex(bytes.content());
+    }
+
+    public static String bytesToIntToHex( @Unsigned Byte[] bytes) {
+        return integersToHex(byteToUInt8Array(bytes));
+    }
+
+    public static String bytesToIntToHex( @Unsigned byte[] bytes) {
+        return integersToHex(byteToUInt8Array(bytes));
+    }
+
     public static String integersToHex(Integer[] integers) {
         return Arrays.stream(integers).map(Utils::toHex).collect(Collectors.joining(""));
     }
@@ -135,11 +147,6 @@ public class Utils {
             sb.insert(0, '0');
         }
         return sb.toString();
-    }
-
-
-    public static String bytesToHex(Bytes bytes) {
-        return bytesToHex(bytes.content());
     }
 
     public static String toLCSHex(SignedTransaction st) throws LibraSDKException {

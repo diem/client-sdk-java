@@ -7,12 +7,12 @@ import com.novi.serde.Bytes;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.libra.Testnet;
 import org.libra.librasdk.dto.Metadata;
 import org.libra.librasdk.dto.Transaction;
 import org.libra.librasdk.dto.*;
 import org.libra.librasdk.jsonrpc.JSONRPCErrorException;
 import org.libra.stdlib.Helpers;
-import org.libra.Testnet;
 import org.libra.types.*;
 
 import java.util.Date;
@@ -85,9 +85,9 @@ public class TestNetIntegrationTest {
     }
 
     @Test
-    public void testGetAccountTransaction() throws LibraSDKException {
-        Transaction response = libraClient.getAccountTransaction(Constants.ROOT_ACCOUNT_ADDRESS,
-                1, true);
+    public void testGetAccountTransaction() throws LibraSDKException, InterruptedException {
+        submitTransaction();
+        Transaction response = libraClient.getAccountTransaction(account1.libra_account_address, 1, true);
         Assert.assertNotNull(response);
         Assert.assertTrue(response.version > 0);
         Assert.assertTrue(response.hash.length() > 0);
@@ -98,34 +98,13 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testSubmitTransaction() throws Exception {
-        String currencyCode = "LBR";
-        Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key,
-                currencyCode);
-        Testnet.mintCoins(libraClient, coins(100), account2.libra_auth_key,
-                currencyCode);
-
-        Script script = createP2PScript(account2.getAccountAddress(), currencyCode, coins(1));
-        Account account1Data = libraClient.getAccount(account1.libra_account_address);
-        SignedTransaction st = Utils.signTransaction(account1,
-                account1Data.sequence_number,
-                script,
-                coins(1),
-                0,
-                currencyCode,
-                100000000000L,
-                Constants.TEST_NET_CHAIN_ID);
-        libraClient.submit(Utils.toLCSHex(st));
-        Transaction p2p = libraClient.waitForTransaction(
-                Utils.addressToHex(st.raw_txn.sender),
-                st.raw_txn.sequence_number,
-                true,
-                DEFAULT_TIMEOUT);
+        TransactionAndSigned transactionAndSigned = submitTransaction();
+        SignedTransaction st = transactionAndSigned.signedTransaction;
+        Transaction p2p = transactionAndSigned.transaction;
         assertNotNull(p2p);
         assertTrue(p2p.vm_status.toString(), p2p.isExecuted());
-        assertEquals(
-                Utils.bytesToHex(((TransactionAuthenticator.Ed25519) st.authenticator).signature.value),
-                p2p.transaction.signature.toUpperCase()
-        );
+        assertEquals(Utils.bytesToHex(((TransactionAuthenticator.Ed25519) st.authenticator).signature.value),
+                p2p.transaction.signature.toUpperCase());
         assertEquals(2, p2p.events.length);
         assertEquals("sentpayment", p2p.events[0].data.type);
         assertEquals("receivedpayment", p2p.events[1].data.type);
@@ -134,28 +113,20 @@ public class TestNetIntegrationTest {
     @Test
     public void testTransferTransaction() throws Exception {
         String currencyCode = "LBR";
-        Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key,
-                currencyCode);
-        Testnet.mintCoins(libraClient, coins(100), account2.libra_auth_key,
-                currencyCode);
+        Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key, currencyCode);
+        Testnet.mintCoins(libraClient, coins(100), account2.libra_auth_key, currencyCode);
 
-        SignedTransaction signedTransaction = libraClient.transfer(account1.libra_account_address,
-                account1.libra_auth_key,
-                account1.private_key, account1.public_key,
-                account2.libra_account_address, 1000000L,
-                1000000L, 0L, currencyCode, 100000000000L, Constants.TEST_NET_CHAIN_ID,
-                new byte[]{}, new byte[]{});
-        Transaction p2p = libraClient.waitForTransaction(
-                Utils.addressToHex(signedTransaction.raw_txn.sender),
-                signedTransaction.raw_txn.sequence_number,
-                true,
-                DEFAULT_TIMEOUT);
+        SignedTransaction signedTransaction = libraClient
+                .transfer(account1.libra_account_address, account1.libra_auth_key, account1.private_key,
+                        account1.public_key, account2.libra_account_address, 1000000L, 1000000L, 0L, currencyCode,
+                        100000000000L, Constants.TEST_NET_CHAIN_ID, new byte[]{}, new byte[]{});
+        Transaction p2p = libraClient.waitForTransaction(Utils.addressToHex(signedTransaction.raw_txn.sender),
+                signedTransaction.raw_txn.sequence_number, true, DEFAULT_TIMEOUT);
         assertNotNull(p2p);
         assertTrue(p2p.vm_status.toString(), p2p.isExecuted());
         assertEquals(
                 Utils.bytesToHex(((TransactionAuthenticator.Ed25519) signedTransaction.authenticator).signature.value),
-                p2p.transaction.signature.toUpperCase()
-        );
+                p2p.transaction.signature.toUpperCase());
         assertEquals(2, p2p.events.length);
         assertEquals("sentpayment", p2p.events[0].data.type);
         assertEquals("receivedpayment", p2p.events[1].data.type);
@@ -164,48 +135,33 @@ public class TestNetIntegrationTest {
     @Test
     public void testSubmitExpiredTransaction() throws Exception {
         String currencyCode = "LBR";
-        Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key,
-                currencyCode);
-        Testnet.mintCoins(libraClient, coins(100), account2.libra_auth_key,
-                currencyCode);
+        Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key, currencyCode);
+        Testnet.mintCoins(libraClient, coins(100), account2.libra_auth_key, currencyCode);
 
         Script script = createP2PScript(account2.getAccountAddress(), currencyCode, coins(1));
         Account account1Data = libraClient.getAccount(account1.libra_account_address);
-        SignedTransaction st = Utils.signTransaction(account1,
-                account1Data.sequence_number,
-                script,
-                coins(1),
-                0,
-                currencyCode,
-                0L,
-                Constants.TEST_NET_CHAIN_ID);
-        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED",
-                JSONRPCErrorException.class, () -> libraClient.submit(Utils.toLCSHex(st)));
+        SignedTransaction st =
+                Utils.signTransaction(account1, account1Data.sequence_number, script, coins(1), 0, currencyCode, 0L,
+                        Constants.TEST_NET_CHAIN_ID);
+        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED", JSONRPCErrorException.class,
+                () -> libraClient.submit(Utils.toLCSHex(st)));
     }
 
     @Test
     public void testSubmitTransactionAndExecuteFailed() throws Exception {
         String currencyCode = "LBR";
-        Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key,
-                currencyCode);
+        Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key, currencyCode);
 
         Script script = createP2PScript(account3.getAccountAddress(), currencyCode, coins(1));
         Account account1Data = libraClient.getAccount(account1.libra_account_address);
-        SignedTransaction st = Utils.signTransaction(account1,
-                account1Data.sequence_number,
-                script,
-                coins(1),
-                0,
-                currencyCode,
-                100000000000L,
-                Constants.TEST_NET_CHAIN_ID);
+        SignedTransaction st =
+                Utils.signTransaction(account1, account1Data.sequence_number, script, coins(1), 0, currencyCode,
+                        100000000000L, Constants.TEST_NET_CHAIN_ID);
         libraClient.submit(Utils.toLCSHex(st));
 
-        Transaction p2p = libraClient.waitForTransaction(
-                Utils.addressToHex(st.raw_txn.sender),
-                st.raw_txn.sequence_number,
-                true,
-                DEFAULT_TIMEOUT);
+        Transaction p2p = libraClient
+                .waitForTransaction(Utils.addressToHex(st.raw_txn.sender), st.raw_txn.sequence_number, true,
+                        DEFAULT_TIMEOUT);
         assertNotNull(p2p);
         assertEquals(Transaction.VM_STATUS_MOVE_ABORT, p2p.vmStatus());
     }
@@ -228,16 +184,39 @@ public class TestNetIntegrationTest {
 
     private Script createP2PScript(AccountAddress address, String currencyCode, long amount) {
         TypeTag token = Utils.createCurrencyCodeTypeTag(currencyCode);
-        return Helpers.encode_peer_to_peer_with_metadata_script(
-                token,
-                address,
-                amount,
-                new Bytes(new byte[]{}),
-                new Bytes(new byte[]{})
-        );
+        return Helpers.encode_peer_to_peer_with_metadata_script(token, address, amount, new Bytes(new byte[]{}),
+                new Bytes(new byte[]{}));
     }
 
     private static long coins(long n) {
         return n * 1000000;
+    }
+
+    private TransactionAndSigned submitTransaction() throws LibraSDKException, InterruptedException {
+        String currencyCode = "LBR";
+        Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key, currencyCode);
+        Testnet.mintCoins(libraClient, coins(100), account2.libra_auth_key, currencyCode);
+
+        Script script = createP2PScript(account2.getAccountAddress(), currencyCode, coins(1));
+        Account account1Data = libraClient.getAccount(account1.libra_account_address);
+        SignedTransaction st =
+                Utils.signTransaction(account1, account1Data.sequence_number, script, coins(1), 0, currencyCode,
+                        100000000000L, Constants.TEST_NET_CHAIN_ID);
+        libraClient.submit(Utils.toLCSHex(st));
+        Transaction transaction = libraClient
+                .waitForTransaction(Utils.addressToHex(st.raw_txn.sender), st.raw_txn.sequence_number, true,
+                        DEFAULT_TIMEOUT);
+        return new TransactionAndSigned(transaction, st);
+    }
+
+    public static class TransactionAndSigned {
+        Transaction transaction;
+        SignedTransaction signedTransaction;
+
+        public TransactionAndSigned(Transaction transaction, SignedTransaction signedTransaction) {
+            this.transaction = transaction;
+            this.signedTransaction = signedTransaction;
+        }
+
     }
 }

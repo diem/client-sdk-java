@@ -4,6 +4,7 @@ import com.novi.lcs.LcsDeserializer;
 import com.novi.lcs.LcsSerializer;
 import com.novi.serde.Bytes;
 import com.novi.serde.Unsigned;
+import org.apache.commons.lang3.ArrayUtils;
 import org.libra.librasdk.LibraSDKException;
 import org.libra.librasdk.dto.Event;
 import org.libra.types.*;
@@ -13,19 +14,19 @@ import java.util.Optional;
 import static org.libra.librasdk.Utils.*;
 
 public class TransactionMetadata {
-    private final Integer[] metadata;
-    private final Integer[] signatureMessage;
+    private final byte[] metadata;
+    private final byte[] signatureMessage;
 
-    public TransactionMetadata(Integer[] metadata, Integer[] signatureMessage) {
+    public TransactionMetadata(byte[] metadata, byte[] signatureMessage) {
         this.metadata = metadata;
         this.signatureMessage = signatureMessage;
     }
 
-    public Integer[] getMetadata() {
+    public byte[] getMetadata() {
         return metadata;
     }
 
-    public Integer[] getSignatureMessage() {
+    public byte[] getSignatureMessage() {
         return signatureMessage;
     }
 
@@ -40,43 +41,39 @@ public class TransactionMetadata {
             LcsSerializer serializer = new LcsSerializer();
             travelRuleMetadata.serialize(serializer);
             byte[] metadataBytes = serializer.get_bytes();
-            Integer[] metadataAddressUInt8 = byteToUInt8Array(metadataBytes);
-
-            Integer[] accountAddressUInt8 = byteToUInt8Array(senderAccountAddress.value);
+            byte[] senderAccountAddressBytes = ArrayUtils.toPrimitive(senderAccountAddress.value);
 
             serializer = new LcsSerializer();
             serializer.serialize_u64(amount);
             byte[] amountBytes = serializer.get_bytes();
-            Integer[] amountAddressUInt8 = byteToUInt8Array(amountBytes);
 
-            Integer[] signatureMessageUInt8 = mergeArrays(metadataAddressUInt8, accountAddressUInt8, amountAddressUInt8,
-                    byteToUInt8Array("@@$$LIBRA_ATTEST$$@@".getBytes()));
-
-            return new TransactionMetadata(metadataAddressUInt8, signatureMessageUInt8);
+            byte[] signatureMessage = mergeArrays(metadataBytes, senderAccountAddressBytes, amountBytes,
+                    "@@$$LIBRA_ATTEST$$@@".getBytes());
+            return new TransactionMetadata(metadataBytes, signatureMessage);
         } catch (Exception e) {
             throw new LibraSDKException(e);
         }
     }
 
 
-    public static Integer[] getGeneralMetadataToSubAddress(SubAddress toSubAddress) throws LibraSDKException {
+    public static byte[] getGeneralMetadataToSubAddress(SubAddress toSubAddress) throws LibraSDKException {
         return getGeneralMetadata(Optional.empty(), Optional.of(new Bytes(toSubAddress.getBytes())), Optional.empty());
     }
 
-    public static Integer[] getGeneralMetadataFromSubAddress(SubAddress fromSubAddress) throws LibraSDKException {
+    public static byte[] getGeneralMetadataFromSubAddress(SubAddress fromSubAddress) throws LibraSDKException {
         return getGeneralMetadata(Optional.of(new Bytes(fromSubAddress.getBytes())), Optional.empty(),
                 Optional.empty());
     }
 
-    public static Integer[] getGeneralMetadataWithFromToSubAddresses(SubAddress fromSubAddress, SubAddress toSubAddress)
+    public static byte[] getGeneralMetadataWithFromToSubAddresses(SubAddress fromSubAddress, SubAddress toSubAddress)
     throws LibraSDKException {
         return getGeneralMetadata(Optional.of(new Bytes(fromSubAddress.getBytes())),
                 Optional.of(new Bytes(toSubAddress.getBytes())), Optional.empty());
     }
 
-    private static Integer[] getGeneralMetadata(Optional<com.novi.serde.Bytes> byteFromSubAddress,
-                                                Optional<com.novi.serde.Bytes> toSubAddress,
-                                                Optional<@Unsigned Long> referencedEvent) throws LibraSDKException {
+    private static byte[] getGeneralMetadata(Optional<com.novi.serde.Bytes> byteFromSubAddress,
+                                             Optional<com.novi.serde.Bytes> toSubAddress,
+                                             Optional<@Unsigned Long> referencedEvent) throws LibraSDKException {
         Metadata.GeneralMetadata generalMetadata = new Metadata.GeneralMetadata(
                 new GeneralMetadata.GeneralMetadataVersion0(
                         new GeneralMetadataV0(toSubAddress, byteFromSubAddress, referencedEvent)));
@@ -86,7 +83,7 @@ public class TransactionMetadata {
             generalMetadata.serialize(serializer);
             byte[] metadataBytes = serializer.get_bytes();
 
-            return byteToUInt8Array(metadataBytes);
+            return metadataBytes;
         } catch (Exception e) {
             throw new LibraSDKException(e);
         }
