@@ -4,10 +4,7 @@
 package org.libra.librasdk;
 
 import com.novi.serde.Bytes;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.libra.Testnet;
 import org.libra.librasdk.dto.Metadata;
@@ -113,6 +110,7 @@ public class TestNetIntegrationTest {
         assertEquals("receivedpayment", p2p.events[1].data.type);
     }
 
+    @Ignore
     @Test
     public void testTransferTransaction() throws Exception {
         String currencyCode = "LBR";
@@ -236,7 +234,7 @@ public class TestNetIntegrationTest {
         return new TransactionAndSigned(transaction, st);
     }
 
-    public static class TransactionAndSigned {
+    private static class TransactionAndSigned {
         Transaction transaction;
         SignedTransaction signedTransaction;
 
