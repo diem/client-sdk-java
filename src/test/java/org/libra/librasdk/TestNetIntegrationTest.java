@@ -5,7 +5,7 @@ package org.libra.librasdk;
 
 import com.novi.serde.Bytes;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.libra.Testnet;
 import org.libra.librasdk.dto.Metadata;
@@ -23,15 +23,14 @@ import static org.junit.Assert.*;
 
 public class TestNetIntegrationTest {
 
-    private static final int DEFAULT_TIMEOUT = 10 * 1000; // 10 seconds
-    private static Client libraClient;
-    private static LocalAccount account1;
-    private static LocalAccount account2;
-    private static LocalAccount account3;
-    private static TransactionAndSigned transactionAndSigned;
+    public static final int DEFAULT_TIMEOUT = 10 * 1000; // 10 seconds
+    private Client libraClient;
+    private LocalAccount account1;
+    private LocalAccount account2;
+    private LocalAccount account3;
 
-    @BeforeClass
-    public static void init() throws LibraSDKException, InterruptedException {
+    @Before
+    public void setup() {
         libraClient = Testnet.createClient();
         account1 = Utils.generateLocalAccountFromPrivateKey(
                 "76e3de861d516283dc285e12ddadc95245a9e98f351c910b0ad722f790bac273");
@@ -39,7 +38,6 @@ public class TestNetIntegrationTest {
                 "b13968ad5722ee203968f7deea565b2f4266f923b3292065b6e190c368f91036");
         account3 = Utils.generateLocalAccountFromPrivateKey(
                 "aceb051a2c02ebe6493000613bd467ea97a6051988637440c918584043a769dd");
-        transactionAndSigned = submitTransaction();
     }
 
     @Test
@@ -88,6 +86,7 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testGetAccountTransaction() throws LibraSDKException, InterruptedException {
+        submitTransaction(1);
         Transaction response = libraClient.getAccountTransaction(account1.libra_account_address, 1, true);
         Assert.assertNotNull(response);
         Assert.assertTrue(response.version > 0);
@@ -99,6 +98,7 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testSubmitTransaction() throws Exception {
+        TransactionAndSigned transactionAndSigned = submitTransaction(2);
         SignedTransaction st = transactionAndSigned.signedTransaction;
         Transaction p2p = transactionAndSigned.transaction;
         assertNotNull(p2p);
@@ -182,7 +182,7 @@ public class TestNetIntegrationTest {
         Assert.assertTrue(events.size() > 0);
     }
 
-    private static Script createP2PScript(AccountAddress address, String currencyCode, long amount) {
+    private Script createP2PScript(AccountAddress address, String currencyCode, long amount) {
         TypeTag token = Utils.createCurrencyCodeTypeTag(currencyCode);
         return Helpers.encode_peer_to_peer_with_metadata_script(token, address, amount, new Bytes(new byte[]{}),
                 new Bytes(new byte[]{}));
@@ -192,12 +192,12 @@ public class TestNetIntegrationTest {
         return n * 1000000;
     }
 
-    private static TransactionAndSigned submitTransaction() throws LibraSDKException, InterruptedException {
+    private TransactionAndSigned submitTransaction(int transactionAmount) throws LibraSDKException, InterruptedException {
         String currencyCode = "LBR";
         Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key, currencyCode);
         Testnet.mintCoins(libraClient, coins(100), account2.libra_auth_key, currencyCode);
 
-        Script script = createP2PScript(account2.getAccountAddress(), currencyCode, coins(1));
+        Script script = createP2PScript(account2.getAccountAddress(), currencyCode, coins(transactionAmount));
         Account account1Data = libraClient.getAccount(account1.libra_account_address);
         SignedTransaction st =
                 Utils.signTransaction(account1, account1Data.sequence_number, script, coins(1), 0, currencyCode,
