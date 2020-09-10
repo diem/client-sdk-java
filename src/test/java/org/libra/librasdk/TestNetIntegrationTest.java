@@ -89,7 +89,7 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testGetAccountTransaction() throws LibraSDKException, InterruptedException {
-        submitTransaction();
+        submitTransaction(1);
         Transaction response = libraClient.getAccountTransaction(account1.libra_account_address, 1, true);
         Assert.assertNotNull(response);
         Assert.assertTrue(response.version > 0);
@@ -101,7 +101,7 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testSubmitTransaction() throws Exception {
-        TransactionAndSigned transactionAndSigned = submitTransaction();
+        TransactionAndSigned transactionAndSigned = submitTransaction(2);
         SignedTransaction st = transactionAndSigned.signedTransaction;
         Transaction p2p = transactionAndSigned.transaction;
         assertNotNull(p2p);
@@ -220,12 +220,12 @@ public class TestNetIntegrationTest {
         return n * 1000000;
     }
 
-    private TransactionAndSigned submitTransaction() throws LibraSDKException, InterruptedException {
+    private synchronized TransactionAndSigned submitTransaction(int transactionAmount) throws LibraSDKException, InterruptedException {
         String currencyCode = "LBR";
         Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key, currencyCode);
         Testnet.mintCoins(libraClient, coins(100), account2.libra_auth_key, currencyCode);
 
-        Script script = createP2PScript(account2.getAccountAddress(), currencyCode, coins(1));
+        Script script = createP2PScript(account2.getAccountAddress(), currencyCode, coins(transactionAmount));
         Account account1Data = libraClient.getAccount(account1.libra_account_address);
         SignedTransaction st =
                 Utils.signTransaction(account1, account1Data.sequence_number, script, coins(1), 0, currencyCode,
