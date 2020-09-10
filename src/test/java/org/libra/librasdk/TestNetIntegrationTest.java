@@ -96,6 +96,7 @@ public class TestNetIntegrationTest {
         Assert.assertTrue(response.isExecuted());
     }
 
+    @Ignore
     @Test
     public void testSubmitTransaction() throws Exception {
         TransactionAndSigned transactionAndSigned = submitTransaction(2);
