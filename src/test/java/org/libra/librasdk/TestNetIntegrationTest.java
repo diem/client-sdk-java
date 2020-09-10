@@ -150,6 +150,7 @@ public class TestNetIntegrationTest {
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
 
+    @Ignore
     @Test
     public void testSubmitTransactionAndExecuteFailed() throws Exception {
         String currencyCode = "LBR";
