@@ -192,7 +192,7 @@ public class TestNetIntegrationTest {
         return n * 1000000;
     }
 
-    private synchronized TransactionAndSigned submitTransaction(int transactionAmount) throws LibraSDKException, InterruptedException {
+    private TransactionAndSigned submitTransaction(int transactionAmount) throws LibraSDKException, InterruptedException {
         String currencyCode = "LBR";
         Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key, currencyCode);
         Testnet.mintCoins(libraClient, coins(100), account2.libra_auth_key, currencyCode);
