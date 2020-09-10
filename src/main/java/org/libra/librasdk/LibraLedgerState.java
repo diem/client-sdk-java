@@ -13,7 +13,7 @@ public class LibraLedgerState {
         this.chainId = chainId;
     }
 
-    private void validateLedgerState(int chainId, long version, long timestampUsecs) throws LibraSDKException {
+    private synchronized void validateLedgerState(int chainId, long version, long timestampUsecs) throws LibraSDKException {
         if (this.chainId != chainId) {
             throw new StaleResponseException(String.format("chainId mismatch! Expected: %s Received: " +
                     "%s", this.chainId, chainId));
@@ -28,7 +28,7 @@ public class LibraLedgerState {
         }
     }
 
-    private void updateLedgerState(long version, long timestampUsecs) {
+    private synchronized void updateLedgerState(long version, long timestampUsecs) {
         this.version = version;
         this.timestampUsecs = timestampUsecs;
     }
@@ -37,7 +37,7 @@ public class LibraLedgerState {
         return this.chainId > 0;
     }
 
-    public void handleLedgerState(int chainId, long version, long timestampUsecs) throws LibraSDKException {
+    public synchronized void  handleLedgerState(int chainId, long version, long timestampUsecs) throws LibraSDKException {
         // dont validate on first call
         if (isSet()) {
             validateLedgerState(chainId, version, timestampUsecs);
