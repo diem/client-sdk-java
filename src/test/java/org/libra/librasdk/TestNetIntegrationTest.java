@@ -111,6 +111,7 @@ public class TestNetIntegrationTest {
         assertEquals("receivedpayment", p2p.events[1].data.type);
     }
 
+    @Ignore
     @Test
     public void testTransferTransaction() throws Exception {
         String currencyCode = "LBR";
