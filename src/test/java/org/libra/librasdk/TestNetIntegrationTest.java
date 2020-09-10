@@ -6,6 +6,7 @@ package org.libra.librasdk;
 import com.novi.serde.Bytes;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.libra.Testnet;
 import org.libra.librasdk.dto.Metadata;
@@ -147,6 +148,7 @@ public class TestNetIntegrationTest {
                 () -> libraClient.submit(Utils.toLCSHex(st)));
     }
 
+    @Ignore
     @Test
     public void testSubmitTransactionAndExecuteFailed() throws Exception {
         String currencyCode = "LBR";
