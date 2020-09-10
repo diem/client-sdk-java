@@ -21,6 +21,7 @@ import java.util.List;
 public class JSONRPCClient {
 
     private final String uri;
+    private final CloseableHttpClient client;
 
     public JSONRPCClient(String uri) {
         try {
@@ -30,6 +31,7 @@ public class JSONRPCClient {
         }
 
         this.uri = uri;
+        this.client =  HttpClients.createDefault();
     }
 
     public String call(Method method, List<Object> params) throws LibraSDKException {
@@ -50,19 +52,28 @@ public class JSONRPCClient {
         return response;
     }
 
-    private static String httpCall(HttpPost post) throws LibraSDKException {
-        String result;
-        try (CloseableHttpClient httpClient = HttpClients.createDefault();
-             CloseableHttpResponse response = httpClient.execute(post)) {
-            result = EntityUtils.toString(response.getEntity());
+    public void close() throws IOException {
+        this.client.close();
+    }
 
+    private String httpCall(HttpPost post) throws LibraSDKException {
+        CloseableHttpResponse response = null;
+        try {
+            response = client.execute(post);
             if (response.getStatusLine().getStatusCode() != 200) {
                 throw new UnexpectedResponseException(response.toString());
             }
+            return EntityUtils.toString(response.getEntity());
         } catch (IOException e) {
             throw new UnexpectedRemoteCallException(e);
+        } finally {
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
         }
-
-        return result;
     }
 }

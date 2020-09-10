@@ -7,6 +7,7 @@ import com.novi.serde.Unsigned;
 import org.libra.librasdk.dto.*;
 import org.libra.types.SignedTransaction;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface Client {
@@ -36,4 +37,6 @@ public interface Client {
     List<Transaction> getTransactions(@Unsigned long fromVersion, int limit, boolean includeEvents) throws LibraSDKException;
 
     List<Event> getEvents(String events_key, @Unsigned long start, @Unsigned long limit) throws LibraSDKException;
+
+    void close() throws IOException;
 }

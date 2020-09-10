@@ -4,6 +4,7 @@
 package org.libra.librasdk;
 
 import com.novi.serde.Bytes;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +16,7 @@ import org.libra.stdlib.Helpers;
 import org.libra.Testnet;
 import org.libra.types.*;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +40,11 @@ public class TestNetIntegrationTest {
                 "b13968ad5722ee203968f7deea565b2f4266f923b3292065b6e190c368f91036");
         account3 = Utils.generateLocalAccountFromPrivateKey(
                 "aceb051a2c02ebe6493000613bd467ea97a6051988637440c918584043a769dd");
+    }
+
+    @After
+    public void teardown() throws IOException {
+        libraClient.close();
     }
 
     @Test

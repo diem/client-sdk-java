@@ -16,6 +16,7 @@ import org.libra.types.Script;
 import org.libra.types.SignedTransaction;
 import org.libra.types.TypeTag;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -128,9 +129,13 @@ public class LibraClient implements Client {
                                           @Unsigned long timeoutMillis) throws InterruptedException,
             LibraSDKException {
         for (long millis = 0, step = 100; millis < timeoutMillis; millis += step) {
-            Transaction transaction = this.getAccountTransaction(address, sequence, includeEvents);
-            if (transaction != null) {
-                return transaction;
+            try {
+                Transaction transaction = this.getAccountTransaction(address, sequence, includeEvents);
+                if (transaction != null) {
+                    return transaction;
+                }
+            } catch (StaleResponseException e) {
+                // ignore
             }
             Thread.sleep(step);
         }
@@ -146,6 +151,11 @@ public class LibraClient implements Client {
 
         Event[] events = executeCall(Method.get_events, params, Event[].class);
         return Arrays.asList(events);
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.jsonRpcClient.close();
     }
 
     private <T> T executeCall(Method method, List<Object> params, Class<T> responseType) throws LibraSDKException {
