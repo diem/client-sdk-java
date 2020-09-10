@@ -23,12 +23,12 @@ import static org.junit.Assert.*;
 
 public class TestNetIntegrationTest {
 
-    public static final int DEFAULT_TIMEOUT = 10 * 1000; // 10 seconds
+    private static final int DEFAULT_TIMEOUT = 10 * 1000; // 10 seconds
     private static Client libraClient;
     private static LocalAccount account1;
     private static LocalAccount account2;
     private static LocalAccount account3;
-    static TransactionAndSigned transactionAndSigned;
+    private static TransactionAndSigned transactionAndSigned;
 
     @BeforeClass
     public static void init() throws LibraSDKException, InterruptedException {
