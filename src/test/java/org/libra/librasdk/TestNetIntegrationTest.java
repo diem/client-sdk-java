@@ -85,6 +85,7 @@ public class TestNetIntegrationTest {
         Assert.assertEquals(0, response.balances.length);
     }
 
+    @Ignore
     @Test
     public void testGetAccountTransaction() throws LibraSDKException, InterruptedException {
         submitTransaction(1);
