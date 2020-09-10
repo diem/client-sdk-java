@@ -88,8 +88,9 @@ public class TestNetIntegrationTest {
     }
 
     @Test
-    public void testGetAccountTransaction() throws LibraSDKException {
-        Transaction response = libraClient.getAccountTransaction(ROOT_ACCOUNT_ADDRESS, 1, true);
+    public void testGetAccountTransaction() throws LibraSDKException, InterruptedException {
+        submitTransaction();
+        Transaction response = libraClient.getAccountTransaction(account1.libra_account_address, 1, true);
         Assert.assertNotNull(response);
         Assert.assertTrue(response.version > 0);
         Assert.assertTrue(response.hash.length() > 0);
@@ -100,18 +101,9 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testSubmitTransaction() throws Exception {
-        String currencyCode = "LBR";
-        Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key, currencyCode);
-        Testnet.mintCoins(libraClient, coins(100), account2.libra_auth_key, currencyCode);
-
-        Script script = createP2PScript(account2.getAccountAddress(), currencyCode, coins(1));
-        Account account1Data = libraClient.getAccount(account1.libra_account_address);
-        SignedTransaction st =
-                Utils.signTransaction(account1, account1Data.sequence_number, script, coins(1), 0, currencyCode,
-                        100000000000L, Constants.TEST_NET_CHAIN_ID);
-        libraClient.submit(Utils.toLCSHex(st));
-        Transaction p2p = libraClient.waitForTransaction(st, DEFAULT_TIMEOUT);
-
+        TransactionAndSigned transactionAndSigned = submitTransaction();
+        SignedTransaction st = transactionAndSigned.signedTransaction;
+        Transaction p2p = transactionAndSigned.transaction;
         assertNotNull(p2p);
         assertTrue(p2p.vm_status.toString(), p2p.isExecuted());
         assertEquals(Utils.bytesToHex(((TransactionAuthenticator.Ed25519) st.authenticator).signature.value),
@@ -126,7 +118,6 @@ public class TestNetIntegrationTest {
         String currencyCode = "LBR";
         Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key, currencyCode);
         Testnet.mintCoins(libraClient, coins(100), account2.libra_auth_key, currencyCode);
-
         SignedTransaction signedTransaction = libraClient
                 .transfer(account1.libra_account_address, account1.libra_auth_key, account1.private_key,
                         account1.public_key, account2.libra_account_address, 1000000L, 1000000L, 0L, currencyCode,
@@ -227,5 +218,31 @@ public class TestNetIntegrationTest {
 
     private static long coins(long n) {
         return n * 1000000;
+    }
+
+    private TransactionAndSigned submitTransaction() throws LibraSDKException, InterruptedException {
+        String currencyCode = "LBR";
+        Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key, currencyCode);
+        Testnet.mintCoins(libraClient, coins(100), account2.libra_auth_key, currencyCode);
+
+        Script script = createP2PScript(account2.getAccountAddress(), currencyCode, coins(1));
+        Account account1Data = libraClient.getAccount(account1.libra_account_address);
+        SignedTransaction st =
+                Utils.signTransaction(account1, account1Data.sequence_number, script, coins(1), 0, currencyCode,
+                        100000000000L, Constants.TEST_NET_CHAIN_ID);
+        libraClient.submit(Utils.toLCSHex(st));
+        Transaction transaction = libraClient.waitForTransaction(st, DEFAULT_TIMEOUT);
+        return new TransactionAndSigned(transaction, st);
+    }
+
+    public static class TransactionAndSigned {
+        Transaction transaction;
+        SignedTransaction signedTransaction;
+
+        public TransactionAndSigned(Transaction transaction, SignedTransaction signedTransaction) {
+            this.transaction = transaction;
+            this.signedTransaction = signedTransaction;
+        }
+
     }
 }

@@ -18,8 +18,8 @@ import org.libra.types.Metadata;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
+import static org.libra.librasdk.Utils.bytesToIntToHex;
 import static org.libra.librasdk.Utils.intToUInt8;
-import static org.libra.librasdk.Utils.integersToHex;
 
 public class TransactionMetadataTest {
     public static final String ACCOUNT_ADDRESS = "f72589b71ff4f8d139674a3f7369c69b";
@@ -37,38 +37,38 @@ public class TransactionMetadataTest {
                 TransactionMetadata.getTravelRuleMetadata("off chain reference id", accountAddress, 1000);
 
         assertEquals("020001166f666620636861696e207265666572656e6365206964",
-                integersToHex(transactionMetadata.getMetadata()));
+                bytesToIntToHex(transactionMetadata.getMetadata()));
         assertEquals(
                 "020001166f666620636861696e207265666572656e6365206964f72589b71ff4f8d139674a3f7369c69be803000000000000404024244c494252415f41545445535424244040",
-                integersToHex(transactionMetadata.getSignatureMessage()));
+                bytesToIntToHex(transactionMetadata.getSignatureMessage()));
     }
 
     @Test
     public void testNewGeneralMetadataToSubAddress() throws LibraSDKException {
         SubAddress subAddress = new SubAddress("8f8b82153010a1bd");
-        Integer[] newGeneralMetadataToSubAddress = TransactionMetadata.getGeneralMetadataToSubAddress(subAddress);
+        byte[] newGeneralMetadataToSubAddress = TransactionMetadata.getGeneralMetadataToSubAddress(subAddress);
 
 
-        assertEquals("010001088f8b82153010a1bd0000", integersToHex(newGeneralMetadataToSubAddress));
+        assertEquals("010001088f8b82153010a1bd0000", bytesToIntToHex(newGeneralMetadataToSubAddress));
 
     }
 
     @Test
     public void testNewGeneralMetadataFromSubAddress() throws LibraSDKException {
         SubAddress subAddress = new SubAddress("8f8b82153010a1bd");
-        Integer[] newGeneralMetadataToSubAddress = TransactionMetadata.getGeneralMetadataFromSubAddress(subAddress);
+        byte[] newGeneralMetadataToSubAddress = TransactionMetadata.getGeneralMetadataFromSubAddress(subAddress);
 
-        assertEquals("01000001088f8b82153010a1bd00", integersToHex(newGeneralMetadataToSubAddress));
+        assertEquals("01000001088f8b82153010a1bd00", bytesToIntToHex(newGeneralMetadataToSubAddress));
     }
 
     @Test
     public void testNewGeneralMetadataWithFromToSubAddresses() throws LibraSDKException {
         SubAddress fromSubAddress = new SubAddress("8f8b82153010a1bd");
         SubAddress toSubAddress = new SubAddress("111111153010a111");
-        Integer[] newGeneralMetadataToSubAddress =
+        byte[] newGeneralMetadataToSubAddress =
                 TransactionMetadata.getGeneralMetadataWithFromToSubAddresses(fromSubAddress, toSubAddress);
 
-        assertEquals("01000108111111153010a11101088f8b82153010a1bd00", integersToHex(newGeneralMetadataToSubAddress));
+        assertEquals("01000108111111153010a11101088f8b82153010a1bd00", bytesToIntToHex(newGeneralMetadataToSubAddress));
     }
 
     @Test
@@ -107,9 +107,9 @@ public class TransactionMetadataTest {
     public void testGetRefundMetadataFromEvent_fromAndToSubAddresses() throws Exception {
         SubAddress fromSubAddress = new SubAddress(new byte[]{1, 2, 3, 4, 5, 6, 7, 8});
         SubAddress toSubAddress = new SubAddress(new byte[]{8, 7, 6, 5, 4, 3, 2, 1});
-        Integer[] metadataInts =
+        byte[] metadataInts =
                 TransactionMetadata.getGeneralMetadataWithFromToSubAddresses(fromSubAddress, toSubAddress);
-        String metadata = integersToHex(metadataInts);
+        String metadata = bytesToIntToHex(metadataInts);
 
         long sequenceNumber = intToUInt8(123);
         Event event = new Event(metadata, sequenceNumber);
@@ -134,8 +134,8 @@ public class TransactionMetadataTest {
     @Test
     public void testGetRefundMetadataFromEvent_fromSubAddresses() throws Exception {
         SubAddress fromSubAddress = new SubAddress(new byte[]{1, 2, 3, 4, 5, 6, 7, 8});
-        Integer[] generalMetadataInts = TransactionMetadata.getGeneralMetadataFromSubAddress(fromSubAddress);
-        String metadata = integersToHex(generalMetadataInts);
+        byte[] generalMetadataInts = TransactionMetadata.getGeneralMetadataFromSubAddress(fromSubAddress);
+        String metadata = bytesToIntToHex(generalMetadataInts);
 
         long sequenceNumber = intToUInt8(123);
         Event event = new Event(metadata, sequenceNumber);
@@ -158,8 +158,8 @@ public class TransactionMetadataTest {
     @Test
     public void testGetRefundMetadataFromEvent_toSubAddresses() throws Exception {
         SubAddress toSubAddress = new SubAddress(new byte[]{1, 2, 3, 4, 5, 6, 7, 8});
-        Integer[] generalMetadataInts = TransactionMetadata.getGeneralMetadataToSubAddress(toSubAddress);
-        String metadata = integersToHex(generalMetadataInts);
+        byte[] generalMetadataInts = TransactionMetadata.getGeneralMetadataToSubAddress(toSubAddress);
+        String metadata = bytesToIntToHex(generalMetadataInts);
 
         long sequenceNumber = intToUInt8(123);
         Event event = new Event(metadata, sequenceNumber);
@@ -184,7 +184,7 @@ public class TransactionMetadataTest {
 
     @Test
     public void testGetRefundMetadataFromEvent_nullEvent() throws Exception {
-        exceptionRule.expect(LibraSDKException.class);
+        exceptionRule.expect(IllegalArgumentException.class);
         exceptionRule.expectMessage("must provide refund reference event");
         TransactionMetadata.deserializeMetadata(null);
     }
