@@ -86,8 +86,8 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testGetAccountTransaction() throws LibraSDKException {
-        Transaction response = libraClient.getAccountTransaction(Constants.ROOT_ACCOUNT_ADDRESS,
-                1, true);
+        Transaction response = libraClient.getAccountTransaction(Constants.DD_ADDRESS,
+                0, true);
         Assert.assertNotNull(response);
         Assert.assertTrue(response.version > 0);
         Assert.assertTrue(response.hash.length() > 0);
