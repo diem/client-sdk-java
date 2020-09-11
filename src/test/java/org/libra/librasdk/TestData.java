@@ -23,6 +23,7 @@ public class TestData {
         Gson gson = new Gson();
         return gson.fromJson(text, TestData.class);
     }
+
     public Currency[] currencies;
     public Account root_example;
     public Account child_vasp_account_example;

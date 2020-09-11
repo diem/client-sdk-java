@@ -3,6 +3,7 @@
 
 package org.libra;
 
+import com.novi.serde.Unsigned;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
@@ -12,11 +13,14 @@ import org.apache.http.util.EntityUtils;
 import org.libra.librasdk.Client;
 import org.libra.librasdk.Constants;
 import org.libra.librasdk.LibraClient;
+import org.libra.librasdk.LibraSDKException;
 import org.libra.librasdk.dto.Transaction;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import static org.libra.librasdk.Utils.waitAWhile;
 
 public class Testnet {
     public static String JSON_RPC_URL = "https://testnet.libra.org/v1";
@@ -31,9 +35,9 @@ public class Testnet {
 
     public static void mintCoins(Client client, long amount, String authKey, String currencyCode) {
         long nextAccountSeq = mintCoinsAsync(amount, authKey.toLowerCase(), currencyCode);
-        Transaction txn = null;
+        Transaction txn;
         try {
-            txn = client.waitForTransaction(Constants.DD_ADDRESS, nextAccountSeq - 1, false, DEFAULT_TIMEOUT);
+            txn = waitForTransaction(Constants.DD_ADDRESS, nextAccountSeq - 1, false, DEFAULT_TIMEOUT, client);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -77,16 +81,21 @@ public class Testnet {
                     throw new RuntimeException(e);
                 }
             }
-            waitAWhile();
+            waitAWhile(1100);
         }
     }
 
-    private static void waitAWhile() {
-        try {
-            Thread.sleep(1100);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+    private static Transaction waitForTransaction(String address, @Unsigned long sequence, boolean includeEvents,
+                                                  @Unsigned long timeoutMillis, Client client) throws InterruptedException, LibraSDKException {
+        for (long millis = 0, step = 100; millis < timeoutMillis; millis += step) {
+            Transaction transaction = client.getAccountTransaction(address, sequence, includeEvents);
+            if (transaction != null) {
+                return transaction;
+            }
+            Thread.sleep(step);
         }
+
+        return null;
     }
 
 }

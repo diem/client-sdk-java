@@ -32,7 +32,7 @@ public class AccountIdentifier {
     }
 
     public AccountIdentifier(NetworkPrefix prefix, AccountAddress accountAddress)
-    throws LibraSDKException {
+            throws LibraSDKException {
         this.prefix = prefix;
         this.version = V1;
         this.accountAddress = accountAddress;
@@ -45,11 +45,11 @@ public class AccountIdentifier {
     }
 
     public static AccountIdentifier decodeToAccount(NetworkPrefix prefix, String uri)
-    throws LibraSDKException {
+            throws LibraSDKException {
         Bech32.Bech32Data hrpAndData = Utils.Bech32Decode(uri);
         String hrp = hrpAndData.hrp;
 
-        if(!prefix.value.equals(hrp)){
+        if (!prefix.value.equals(hrp)) {
             throw new LibraSDKException(String.format("Invalid network prefix : %s != %s", prefix.value, hrp));
         }
 

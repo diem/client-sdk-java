@@ -23,6 +23,7 @@ public class UtilsTest {
         byte[] bytes = Utils.hexToBytes(key);
         assertEquals(key.toUpperCase(), Utils.bytesToHex(bytes));
     }
+
     @Test
     public void testHexToAddress() {
         String address = "1668f6be25668c1a17cd8caf6b8d2f25";
