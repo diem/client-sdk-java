@@ -32,7 +32,7 @@ public class LibraLedgerState {
                     "%s", this.chainId, chainId));
         }
 
-        if (this.version > version + DEFAULT_DELTA || this.timestampUsecs > timestampUsecs + DEFAULT_DELTA * 1000) {
+        if (this.version > version + DEFAULT_DELTA || this.timestampUsecs > timestampUsecs + DEFAULT_DELTA * 1000000) {
             throw new StaleResponseException(String.format("Current ledger state stale:\n" +
                             "current blockchain version: %s last seen blockchain version: %s " +
                             "current blockchain timestamp usecs: %s last seen blockchain " +
