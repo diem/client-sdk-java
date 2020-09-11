@@ -84,7 +84,6 @@ public class TestNetIntegrationTest {
         Assert.assertEquals(0, response.balances.length);
     }
 
-    @Ignore
     @Test
     public void testGetAccountTransaction() throws LibraSDKException, InterruptedException {
         submitTransaction(1);
@@ -97,7 +96,6 @@ public class TestNetIntegrationTest {
         Assert.assertTrue(response.isExecuted());
     }
 
-    @Ignore
     @Test
     public void testSubmitTransaction() throws Exception {
         TransactionAndSigned transactionAndSigned = submitTransaction(2);
@@ -112,7 +110,6 @@ public class TestNetIntegrationTest {
         assertEquals("receivedpayment", p2p.events[1].data.type);
     }
 
-    @Ignore
     @Test
     public void testTransferTransaction() throws Exception {
         String currencyCode = "LBR";
@@ -133,7 +130,6 @@ public class TestNetIntegrationTest {
         assertEquals("receivedpayment", p2p.events[1].data.type);
     }
 
-    @Ignore
     @Test
     public void testSubmitExpiredTransaction() throws Exception {
         String currencyCode = "LBR";
@@ -152,7 +148,6 @@ public class TestNetIntegrationTest {
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
 
-    @Ignore
     @Test
     public void testSubmitTransactionAndExecuteFailed() throws Exception {
         String currencyCode = "LBR";
@@ -196,7 +191,6 @@ public class TestNetIntegrationTest {
         assertNull(transaction);
     }
 
-    @Ignore
     @Test
     public void testWaitForTransactionFromAddress_hashMismatch() throws LibraSDKException, InterruptedException {
         submitTransaction(3);
