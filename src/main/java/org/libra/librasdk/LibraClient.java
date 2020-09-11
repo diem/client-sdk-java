@@ -128,7 +128,6 @@ public class LibraClient implements Client {
     public Transaction waitForTransaction(String address, @Unsigned long sequence, boolean includeEvents,
                                           @Unsigned long timeoutMillis) throws InterruptedException,
             LibraSDKException {
-        int step = 100;
         long timeoutAt = System.currentTimeMillis() + timeoutMillis;
         while (System.currentTimeMillis() < timeoutAt) {
             try {
@@ -140,7 +139,7 @@ public class LibraClient implements Client {
                 // ignore stale response exception and retry
                 continue;
             }
-            Thread.sleep(step);
+            Thread.sleep(500);
         }
 
         return null;
