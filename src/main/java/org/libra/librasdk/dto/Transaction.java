@@ -19,7 +19,7 @@ public class Transaction {
     public static final String VM_STATUS_DESERIALIZATION_ERROR = "deserialization_error";
     public static final String VM_STATUS_PUBLISHING_FAILURE = "publishing_failure";
 
-    public Transaction(Event ...events) {
+    public Transaction(Event... events) {
         this.events = events;
     }
 

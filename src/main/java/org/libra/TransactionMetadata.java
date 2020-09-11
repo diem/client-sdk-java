@@ -32,7 +32,7 @@ public class TransactionMetadata {
 
     public static TransactionMetadata getTravelRuleMetadata(String offChainReferenceId,
                                                             AccountAddress senderAccountAddress, @Unsigned long amount)
-    throws LibraSDKException {
+            throws LibraSDKException {
         Metadata.TravelRuleMetadata travelRuleMetadata = new Metadata.TravelRuleMetadata(
                 new TravelRuleMetadata.TravelRuleMetadataVersion0(
                         new TravelRuleMetadataV0(Optional.of(offChainReferenceId))));
@@ -66,7 +66,7 @@ public class TransactionMetadata {
     }
 
     public static byte[] getGeneralMetadataWithFromToSubAddresses(SubAddress fromSubAddress, SubAddress toSubAddress)
-    throws LibraSDKException {
+            throws LibraSDKException {
         return getGeneralMetadata(Optional.of(new Bytes(fromSubAddress.getBytes())),
                 Optional.of(new Bytes(toSubAddress.getBytes())), Optional.empty());
     }
@@ -130,7 +130,7 @@ public class TransactionMetadata {
     }
 
     public static byte[] getRefundMetadataFromEvent(long eventSequenceNumber, GeneralMetadata generalMetadata)
-    throws LibraSDKException {
+            throws LibraSDKException {
         if (generalMetadata == null) {
             throw new IllegalArgumentException("must provide refund event general metadata");
         }

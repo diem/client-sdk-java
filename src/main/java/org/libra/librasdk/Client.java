@@ -19,7 +19,7 @@ public interface Client {
     Account getAccount(String address) throws LibraSDKException;
 
     Transaction getAccountTransaction(String address, @Unsigned long sequence, boolean includeEvents)
-    throws LibraSDKException;
+            throws LibraSDKException;
 
     void submit(String data) throws LibraSDKException;
 
@@ -36,7 +36,7 @@ public interface Client {
                                    @Unsigned long expirationTimeSec, int timeout) throws LibraSDKException;
 
     List<Transaction> getTransactions(@Unsigned long fromVersion, int limit, boolean includeEvents)
-    throws LibraSDKException;
+            throws LibraSDKException;
 
     List<Event> getEvents(String events_key, @Unsigned long start, @Unsigned long limit) throws LibraSDKException;
 }

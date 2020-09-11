@@ -45,7 +45,7 @@ public class AccountIdentifierTest {
 
     @Test
     public void testEncodeDecodeAccountIdentifierWithoutSubAddress_success()
-    throws LibraSDKException {
+            throws LibraSDKException {
         accountAddress = Utils.hexToAddress("f72589b71ff4f8d139674a3f7369c69b");
         byte[] subAddress = {0, 0, 0, 0, 0, 0, 0, 0};
         String encodeAccount =
@@ -83,7 +83,7 @@ public class AccountIdentifierTest {
 
     @Test
     public void testEncodeDecodeAccountIdentifierString_invalidAccountAddressLength()
-    throws LibraSDKException {
+            throws LibraSDKException {
         accountAddress = Utils.hexToAddress("f72589b71ff4f8d139674a3f7369c69b");
         Integer[] integers = Utils.byteToUInt8Array(accountAddress.value);
 

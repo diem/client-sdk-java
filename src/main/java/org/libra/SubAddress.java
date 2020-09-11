@@ -11,7 +11,7 @@ public class SubAddress {
     private final byte[] bytes;
 
     public SubAddress(byte[] bytes) {
-        if (bytes.length != SUB_ADDRESS_LENGTH){
+        if (bytes.length != SUB_ADDRESS_LENGTH) {
             throw new IllegalArgumentException(String.format("Sub address should be 8 bytes, but given %d bytes", bytes.length));
         }
         this.bytes = bytes;
@@ -27,7 +27,7 @@ public class SubAddress {
         return new SubAddress(b);
     }
 
-    public String toHex(){
+    public String toHex() {
         return Utils.bytesToHex(this.bytes);
     }
 

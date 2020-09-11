@@ -86,7 +86,7 @@ public class Testnet {
     }
 
     private static Transaction waitForTransaction(String address, @Unsigned long sequence, boolean includeEvents,
-                                                 @Unsigned long timeoutMillis, Client client) throws InterruptedException, LibraSDKException {
+                                                  @Unsigned long timeoutMillis, Client client) throws InterruptedException, LibraSDKException {
         for (long millis = 0, step = 100; millis < timeoutMillis; millis += step) {
             Transaction transaction = client.getAccountTransaction(address, sequence, includeEvents);
             if (transaction != null) {

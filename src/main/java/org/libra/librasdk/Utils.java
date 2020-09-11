@@ -30,7 +30,7 @@ public class Utils {
                                                     Script script, long maxGasAmount,
                                                     long gasPriceUnit, String currencyCode,
                                                     long expirationTimestampSecs, byte chainId)
-    throws LibraSDKException {
+            throws LibraSDKException {
         RawTransaction rt =
                 createRawTransaction(sender.getAccountAddress(), sequence_number, script,
                         maxGasAmount, gasPriceUnit, currencyCode, expirationTimestampSecs, chainId);
@@ -120,7 +120,7 @@ public class Utils {
         return BaseEncoding.base16().encode(bytes);
     }
 
-    public static String bytesToHex( @Unsigned Byte[] bytes) {
+    public static String bytesToHex(@Unsigned Byte[] bytes) {
         return bytesToHex(ArrayUtils.toPrimitive(bytes));
     }
 
@@ -128,11 +128,11 @@ public class Utils {
         return bytesToHex(bytes.content());
     }
 
-    public static String bytesToIntToHex( @Unsigned Byte[] bytes) {
+    public static String bytesToIntToHex(@Unsigned Byte[] bytes) {
         return integersToHex(byteToUInt8Array(bytes));
     }
 
-    public static String bytesToIntToHex( @Unsigned byte[] bytes) {
+    public static String bytesToIntToHex(@Unsigned byte[] bytes) {
         return integersToHex(byteToUInt8Array(bytes));
     }
 
@@ -293,7 +293,7 @@ public class Utils {
 
     public static byte[] convertBits(final Integer[] in, final int inStart, final int inLen,
                                      final int fromBits, final int toBits, final boolean pad)
-    throws AddressFormatException {
+            throws AddressFormatException {
         int acc = 0;
         int bits = 0;
         ByteArrayOutputStream out = new ByteArrayOutputStream(64);

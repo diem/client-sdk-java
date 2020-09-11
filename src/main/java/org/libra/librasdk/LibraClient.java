@@ -35,7 +35,7 @@ public class LibraClient implements Client {
     }
 
     public List<Transaction> getTransactions(@Unsigned long fromVersion, int limit, boolean includeEvents)
-    throws LibraSDKException {
+            throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(fromVersion);
         params.add(limit);
@@ -74,7 +74,7 @@ public class LibraClient implements Client {
     }
 
     public Transaction getAccountTransaction(String address, @Unsigned long sequence, boolean includeEvents)
-    throws LibraSDKException {
+            throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(address);
         params.add(sequence);
@@ -168,7 +168,7 @@ public class LibraClient implements Client {
     }
 
     public List<Event> getEvents(String eventsKey, @Unsigned long start, @Unsigned long limit)
-    throws LibraSDKException {
+            throws LibraSDKException {
         List<Object> params = new ArrayList<>();
         params.add(eventsKey);
         params.add(start);
