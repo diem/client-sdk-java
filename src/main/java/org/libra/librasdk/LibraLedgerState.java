@@ -39,7 +39,7 @@ public class LibraLedgerState {
                             "timestamp usecs: %s"
                     , this.version, version, this.timestampUsecs, timestampUsecs));
         }
-        return this.version > version || this.timestampUsecs > timestampUsecs;
+        return this.version < version || this.timestampUsecs < timestampUsecs;
     }
 
     private void updateLedgerState(long version, long timestampUsecs) {

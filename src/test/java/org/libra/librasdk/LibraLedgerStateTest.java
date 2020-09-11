@@ -26,7 +26,7 @@ public class LibraLedgerStateTest {
     public void testHandleLedgerState_invalidVersion() throws LibraSDKException {
         LibraLedgerState libraLedgerState = new LibraLedgerState(2);
         libraLedgerState.handleLedgerState(2, 2713598, 1595549134500031L);
-        assertThrows(LibraSDKException.class, () -> libraLedgerState.handleLedgerState(2, 2713597, 1595549134500031L));
+        assertThrows(LibraSDKException.class, () -> libraLedgerState.handleLedgerState(2, 2713597 - 30, 1595549134500031L));
     }
 
     @Test
@@ -34,7 +34,7 @@ public class LibraLedgerStateTest {
         LibraLedgerState libraLedgerState = new LibraLedgerState(2);
         libraLedgerState.handleLedgerState(2, 2713598, 1595549134500031L);
         assertThrows(LibraSDKException.class, () -> libraLedgerState.handleLedgerState(2, 2713599
-                , 1595549134500030L));
+                , 1595549134500030L - 30000));
     }
 
 }
