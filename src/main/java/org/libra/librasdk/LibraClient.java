@@ -128,14 +128,17 @@ public class LibraClient implements Client {
     public Transaction waitForTransaction(String address, @Unsigned long sequence, boolean includeEvents,
                                           @Unsigned long timeoutMillis) throws InterruptedException,
             LibraSDKException {
-        for (long millis = 0, step = 100; millis < timeoutMillis; millis += step) {
+        int step = 100;
+        long timeoutAt = System.currentTimeMillis() + timeoutMillis;
+        while (System.currentTimeMillis() < timeoutAt) {
             try {
                 Transaction transaction = this.getAccountTransaction(address, sequence, includeEvents);
                 if (transaction != null) {
                     return transaction;
                 }
             } catch (StaleResponseException e) {
-                // ignore
+                // ignore stale response exception and retry
+                continue;
             }
             Thread.sleep(step);
         }
