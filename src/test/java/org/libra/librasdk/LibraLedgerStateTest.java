@@ -34,7 +34,7 @@ public class LibraLedgerStateTest {
         LibraLedgerState libraLedgerState = new LibraLedgerState(2);
         libraLedgerState.handleLedgerState(2, 2713598, 1595549134500031L);
         assertThrows(LibraSDKException.class, () -> libraLedgerState.handleLedgerState(2, 2713599
-                , 1595549134500030L - 30000));
+                , 1595549134500030L - 30000000));
     }
 
 }
