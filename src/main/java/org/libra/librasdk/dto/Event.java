@@ -8,6 +8,19 @@ import com.novi.serde.Unsigned;
 import java.util.Objects;
 
 public class Event {
+    public Event(String type, String receiver) {
+        this.data = new Data();
+        this.data.type = type;
+        this.data.receiver = receiver;
+    }
+
+    public Event(String metadata, @Unsigned long sequenceNumber) {
+        this.data = new Data();
+        this.data.metadata = metadata;
+        this.sequence_number = sequenceNumber;
+    }
+
+
     public static class Data {
         public String type;
         // preburn, burn, cancelburn, mint, receivedpayment, sentpayment, receivedmint
@@ -41,22 +54,13 @@ public class Event {
 
         @Override
         public String toString() {
-            return "Data{" +
-                    "type='" + type + '\'' +
-                    ", amount=" + amount +
-                    ", preburn_address='" + preburn_address + '\'' +
-                    ", currency_code='" + currency_code + '\'' +
-                    ", new_to_lbr_exchange_rate=" + new_to_lbr_exchange_rate +
-                    ", sender='" + sender + '\'' +
-                    ", receiver='" + receiver + '\'' +
-                    ", metadata='" + metadata + '\'' +
-                    ", write_set='" + write_set + '\'' +
-                    ", epoch=" + epoch +
-                    ", round=" + round +
-                    ", proposer='" + proposer + '\'' +
-                    ", proposed_time=" + proposed_time +
-                    ", destination_address='" + destination_address + '\'' +
-                    '}';
+            return "Data{" + "type='" + type + '\'' + ", amount=" + amount + ", preburn_address='" +
+                    preburn_address + '\'' + ", currency_code='" + currency_code + '\'' +
+                    ", new_to_lbr_exchange_rate=" + new_to_lbr_exchange_rate + ", sender='" +
+                    sender + '\'' + ", receiver='" + receiver + '\'' + ", metadata='" + metadata +
+                    '\'' + ", write_set='" + write_set + '\'' + ", epoch=" + epoch + ", round=" +
+                    round + ", proposer='" + proposer + '\'' + ", proposed_time=" + proposed_time +
+                    ", destination_address='" + destination_address + '\'' + '}';
         }
 
         @Override
@@ -65,10 +69,8 @@ public class Event {
             if (o == null || getClass() != o.getClass()) return false;
             Data data = (Data) o;
             return Float.compare(data.new_to_lbr_exchange_rate, new_to_lbr_exchange_rate) == 0 &&
-                    epoch == data.epoch &&
-                    round == data.round &&
-                    proposed_time == data.proposed_time &&
-                    Objects.equals(type, data.type) &&
+                    epoch == data.epoch && round == data.round &&
+                    proposed_time == data.proposed_time && Objects.equals(type, data.type) &&
                     Objects.equals(amount, data.amount) &&
                     Objects.equals(preburn_address, data.preburn_address) &&
                     Objects.equals(currency_code, data.currency_code) &&
@@ -82,7 +84,10 @@ public class Event {
 
         @Override
         public int hashCode() {
-            return Objects.hash(type, amount, preburn_address, currency_code, new_to_lbr_exchange_rate, sender, receiver, metadata, write_set, epoch, round, proposer, proposed_time, destination_address);
+            return Objects
+                    .hash(type, amount, preburn_address, currency_code, new_to_lbr_exchange_rate,
+                            sender, receiver, metadata, write_set, epoch, round, proposer,
+                            proposed_time, destination_address);
         }
     }
 
@@ -93,12 +98,8 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" +
-                "key='" + key + '\'' +
-                ", sequence_number=" + sequence_number +
-                ", transaction_version=" + transaction_version +
-                ", data=" + data +
-                '}';
+        return "Event{" + "key='" + key + '\'' + ", sequence_number=" + sequence_number +
+                ", transaction_version=" + transaction_version + ", data=" + data + '}';
     }
 
     @Override
@@ -108,8 +109,7 @@ public class Event {
         Event event = (Event) o;
         return sequence_number == event.sequence_number &&
                 transaction_version == event.transaction_version &&
-                Objects.equals(key, event.key) &&
-                Objects.equals(data, event.data);
+                Objects.equals(key, event.key) && Objects.equals(data, event.data);
     }
 
     @Override
