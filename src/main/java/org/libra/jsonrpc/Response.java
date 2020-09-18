@@ -1,21 +1,20 @@
 // Copyright (c) The Libra Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
-package org.libra.librasdk.dto;
+package org.libra.jsonrpc;
 
 import com.google.gson.JsonElement;
-import org.libra.librasdk.jsonrpc.Error;
 
 import java.util.Objects;
 
-public class LibraResponse {
-    int id;
-    String jsonrpc;
-    int libra_chain_id;
-    long libra_ledger_timestampusec;
-    long libra_ledger_version;
-    JsonElement result;
-    Error error;
+public class Response {
+    private int id;
+    private String jsonrpc;
+    private int libra_chain_id;
+    private long libra_ledger_timestampusec;
+    private long libra_ledger_version;
+    private JsonElement result;
+    private Error error;
 
     public int getId() {
         return id;
@@ -49,7 +48,7 @@ public class LibraResponse {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LibraResponse that = (LibraResponse) o;
+        Response that = (Response) o;
         return id == that.id &&
                 libra_chain_id == that.libra_chain_id &&
                 libra_ledger_timestampusec == that.libra_ledger_timestampusec &&

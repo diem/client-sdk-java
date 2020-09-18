@@ -4,13 +4,16 @@
 package org.libra.librasdk;
 
 import com.novi.serde.Bytes;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.libra.Testnet;
+import org.libra.jsonrpc.JsonRpcError;
 import org.libra.librasdk.dto.Metadata;
 import org.libra.librasdk.dto.Transaction;
 import org.libra.librasdk.dto.*;
-import org.libra.librasdk.jsonrpc.JSONRPCErrorException;
 import org.libra.stdlib.Helpers;
 import org.libra.types.*;
 
@@ -111,26 +114,6 @@ public class TestNetIntegrationTest {
     }
 
     @Test
-    public void testTransferTransaction() throws Exception {
-        String currencyCode = "LBR";
-        Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key, currencyCode);
-        Testnet.mintCoins(libraClient, coins(100), account2.libra_auth_key, currencyCode);
-        SignedTransaction signedTransaction = libraClient
-                .transfer(account1.libra_account_address, account1.libra_auth_key, account1.private_key,
-                        account1.public_key, account2.libra_account_address, 1000000L, 1000000L, 0L, currencyCode,
-                        100000000000L, Constants.TEST_NET_CHAIN_ID, new byte[]{}, new byte[]{});
-        Transaction p2p = libraClient.waitForTransaction(signedTransaction, DEFAULT_TIMEOUT);
-        assertNotNull(p2p);
-        assertTrue(p2p.vm_status.toString(), p2p.isExecuted());
-        assertEquals(
-                Utils.bytesToHex(((TransactionAuthenticator.Ed25519) signedTransaction.authenticator).signature.value),
-                p2p.transaction.signature.toUpperCase());
-        assertEquals(2, p2p.events.length);
-        assertEquals("sentpayment", p2p.events[0].data.type);
-        assertEquals("receivedpayment", p2p.events[1].data.type);
-    }
-
-    @Test
     public void testSubmitExpiredTransaction() throws Exception {
         String currencyCode = "LBR";
         Testnet.mintCoins(libraClient, coins(100), account1.libra_auth_key, currencyCode);
@@ -141,7 +124,7 @@ public class TestNetIntegrationTest {
         SignedTransaction st =
                 Utils.signTransaction(account1, account1Data.sequence_number, script, coins(1), 0, currencyCode, 0L,
                         Constants.TEST_NET_CHAIN_ID);
-        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED", JSONRPCErrorException.class,
+        assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED", JsonRpcError.class,
                 () -> libraClient.submit(Utils.toLCSHex(st)));
     }
 

@@ -1,7 +1,7 @@
 // Copyright (c) The Libra Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
-package org.libra.librasdk.jsonrpc;
+package org.libra.jsonrpc;
 
 import com.google.gson.JsonElement;
 

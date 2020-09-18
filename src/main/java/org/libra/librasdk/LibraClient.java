@@ -4,33 +4,25 @@
 package org.libra.librasdk;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.novi.serde.Bytes;
 import com.novi.serde.Unsigned;
+import org.libra.jsonrpc.Client;
+import org.libra.jsonrpc.Response;
 import org.libra.librasdk.dto.Currency;
 import org.libra.librasdk.dto.*;
-import org.libra.librasdk.jsonrpc.JSONRPCClient;
-import org.libra.librasdk.jsonrpc.JSONRPCErrorException;
-import org.libra.librasdk.jsonrpc.UnexpectedResponseResultException;
-import org.libra.types.AccountAddress;
-import org.libra.types.Script;
 import org.libra.types.SignedTransaction;
-import org.libra.types.TypeTag;
 
 import java.util.*;
 
 import static org.libra.librasdk.TransactionHash.hashTransaction;
 import static org.libra.librasdk.Utils.*;
-import static org.libra.librasdk.dto.Transaction.VM_STATUS_EXECUTED;
-import static org.libra.stdlib.Helpers.encode_peer_to_peer_with_metadata_script;
 
-public class LibraClient implements Client {
+public class LibraClient implements org.libra.librasdk.Client {
 
-    private JSONRPCClient jsonRpcClient;
+    private Client jsonRpcClient;
     private LibraLedgerState libraLedgerState;
 
     public LibraClient(String url, int chainId) {
-        this.jsonRpcClient = new JSONRPCClient(url);
+        this.jsonRpcClient = new Client(url);
         this.libraLedgerState = new LibraLedgerState(chainId);
     }
 
@@ -80,9 +72,7 @@ public class LibraClient implements Client {
         params.add(sequence);
         params.add(includeEvents);
 
-        Transaction transaction = executeCall(Method.get_account_transaction, params, Transaction.class);
-
-        return transaction;
+        return executeCall(Method.get_account_transaction, params, Transaction.class);
     }
 
     public void submit(String data) throws LibraSDKException {
@@ -90,29 +80,6 @@ public class LibraClient implements Client {
         params.add(data);
 
         executeCall(Method.submit, params, null);
-    }
-
-    @Override
-    public SignedTransaction transfer(String senderAccountAddress, String libraAuthKey, String privateKey,
-                                      String publicKey, String receiverAccountAddress, @Unsigned long amount,
-                                      @Unsigned long maxGasAmount, @Unsigned long gasPriceUnit, String currencyCode,
-                                      @Unsigned long expirationTimestampSecs, byte chainId, byte[] metadata,
-                                      byte[] metadataSignature) throws LibraSDKException {
-
-        LocalAccount localAccount = new LocalAccount(senderAccountAddress, libraAuthKey, privateKey, publicKey);
-        AccountAddress accountAddressObject = Utils.hexToAddress(receiverAccountAddress);
-        Script script = createP2PScript(accountAddressObject, currencyCode, amount, metadata, metadataSignature);
-        Account account = getAccount(localAccount.libra_account_address);
-
-        SignedTransaction signedTransaction;
-        signedTransaction =
-                Utils.signTransaction(localAccount, account.sequence_number, script, maxGasAmount, gasPriceUnit,
-                        currencyCode, expirationTimestampSecs, chainId);
-        String lcsHex = Utils.toLCSHex(signedTransaction);
-        submit(lcsHex);
-
-        return signedTransaction;
-
     }
 
     public Transaction waitForTransaction(String signedTransactionHash, int timeout) throws LibraSDKException {
@@ -150,9 +117,9 @@ public class LibraClient implements Client {
                             String.format("found transaction, but hash does not match, given %s, but got %s",
                                     transactionHash, accountTransaction.hash));
                 }
-                if (!accountTransaction.vmStatus().equals(VM_STATUS_EXECUTED)) {
+                if (!accountTransaction.isExecuted()) {
                     throw new LibraSDKException(
-                            String.format("transaction execution failed: %s", accountTransaction.vmStatus()));
+                            String.format("transaction execution failed: %s", accountTransaction.vm_status));
                 }
 
                 return accountTransaction;
@@ -179,35 +146,15 @@ public class LibraClient implements Client {
     }
 
     private <T> T executeCall(Method method, List<Object> params, Class<T> responseType) throws LibraSDKException {
-        String response = jsonRpcClient.call(method, params);
-        T result;
+        Response response = jsonRpcClient.call(method, params);
 
-        try {
-            LibraResponse libraResponse = new Gson().fromJson(response, LibraResponse.class);
-
-            if (libraResponse.getError() != null) {
-                throw new JSONRPCErrorException(libraResponse.getError().toString());
-            }
-
-            libraLedgerState.handleLedgerState(libraResponse.getLibraChainId(), libraResponse.getLibraLedgerVersion(),
-                    libraResponse.getLibraLedgerTimestampusec());
-            result = null;
-
-            if (responseType != null) {
-                result = new Gson().fromJson(libraResponse.getResult(), responseType);
-            }
-        } catch (JsonSyntaxException e) {
-            throw new UnexpectedResponseResultException(e);
+        libraLedgerState.handleLedgerState(response.getLibraChainId(), response.getLibraLedgerVersion(),
+                response.getLibraLedgerTimestampusec());
+        if (responseType != null && response.getResult() != null) {
+            return new Gson().fromJson(response.getResult(), responseType);
         }
 
-        return result;
-    }
-
-    private Script createP2PScript(AccountAddress address, String currencyCode, @Unsigned long amount, byte[] metadata,
-                                   byte[] metadataSignature) {
-        TypeTag token = Utils.createCurrencyCodeTypeTag(currencyCode);
-        return encode_peer_to_peer_with_metadata_script(token, address, amount, new Bytes(metadata),
-                new Bytes(metadataSignature));
+        return null;
     }
 
 }

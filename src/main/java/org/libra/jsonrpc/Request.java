@@ -1,18 +1,18 @@
 // Copyright (c) The Libra Core Contributors
 // SPDX-License-Identifier: Apache-2.0
 
-package org.libra.librasdk.jsonrpc;
+package org.libra.jsonrpc;
 
 import java.util.Arrays;
 import java.util.Objects;
 
-public class JSONRPCRequest {
+public class Request {
     public String jsonrpc = "2.0";
     public String method;
     public Object[] params;
     public int id;
 
-    public JSONRPCRequest(int id, String method, Object[] params) {
+    public Request(int id, String method, Object[] params) {
         this.id = id;
         this.method = method;
         this.params = params;
@@ -32,11 +32,11 @@ public class JSONRPCRequest {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        JSONRPCRequest JSONRPCRequest = (JSONRPCRequest) o;
-        return id == JSONRPCRequest.id &&
-                Objects.equals(jsonrpc, JSONRPCRequest.jsonrpc) &&
-                Objects.equals(method, JSONRPCRequest.method) &&
-                Arrays.equals(params, JSONRPCRequest.params);
+        Request Request = (Request) o;
+        return id == Request.id &&
+                Objects.equals(jsonrpc, Request.jsonrpc) &&
+                Objects.equals(method, Request.method) &&
+                Arrays.equals(params, Request.params);
     }
 
     @Override

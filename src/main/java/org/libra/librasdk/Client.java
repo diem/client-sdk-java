@@ -22,12 +22,6 @@ public interface Client {
 
     void submit(String data) throws LibraSDKException;
 
-    SignedTransaction transfer(String senderAccountAddress,
-                               String libraAuthKey, String privateKey, String publicKey,
-                               String receiverAccountAddress, @Unsigned long amount, @Unsigned long maxGasAmount,
-                               @Unsigned long gasPriceUnit, String currencyCode, @Unsigned long expirationTimestampSecs,
-                               byte chainId, byte[] metadata, byte[] metadataSignature) throws LibraSDKException;
-
     Transaction waitForTransaction(String signedTransactionHash, int timeout) throws LibraSDKException;
 
     Transaction waitForTransaction(SignedTransaction signedTransaction, int timeout) throws LibraSDKException;
