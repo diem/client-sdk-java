@@ -29,23 +29,22 @@ public class TestNetIntegrationTest {
 
     private static LocalAccount account1;
     private static LocalAccount account2;
+    private static LibraClient libraClient;
 
     @BeforeClass
     public static void globalSetup() {
+        // setup account globally for improving test performance,
+        // we also need setup client globally for making sure each
+        // test won't get stale response, which may cause we get stale
+        // account sequence number.
+        libraClient = Testnet.createClient();
         account1 = LocalAccount.generate(
                 "76e3de861d516283dc285e12ddadc95245a9e98f351c910b0ad722f790bac273");
         account2 = LocalAccount.generate(
                 "b13968ad5722ee203968f7deea565b2f4266f923b3292065b6e190c368f91036");
 
-        Testnet.mintCoins(Testnet.createClient(), coins(10000), account1.authKey.hex(), CurrencyCode.LBR);
-        Testnet.mintCoins(Testnet.createClient(), coins(10000), account2.authKey.hex(), CurrencyCode.LBR);
-    }
-
-    private LibraClient libraClient;
-
-    @Before
-    public void setup() {
-        libraClient = Testnet.createClient();
+        Testnet.mintCoins(libraClient, coins(10000), account1.authKey.hex(), CurrencyCode.LBR);
+        Testnet.mintCoins(libraClient, coins(10000), account2.authKey.hex(), CurrencyCode.LBR);
     }
 
     @Test
