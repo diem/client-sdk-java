@@ -11,7 +11,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.libra.jsonrpc.LibraJsonRpcClient;
-import org.libra.jsonrpc.StaleResponseException;
 import org.libra.jsonrpctypes.JsonRpc;
 import org.libra.types.ChainId;
 import org.libra.utils.TransactionUtils;
@@ -92,15 +91,11 @@ public class Testnet {
     }
 
     private static JsonRpc.Transaction waitForTransaction(String address, @Unsigned long sequence, boolean includeEvents,
-                                                                   @Unsigned long timeoutMillis, LibraClient client) throws InterruptedException, LibraException {
+                                                          @Unsigned long timeoutMillis, LibraClient client) throws InterruptedException, LibraException {
         for (long millis = 0, step = 100; millis < timeoutMillis; millis += step) {
-            try {
-                JsonRpc.Transaction transaction = client.getAccountTransaction(address, sequence, includeEvents);
-                if (transaction != null) {
-                    return transaction;
-                }
-            } catch (StaleResponseException e) {
-                // ignore
+            JsonRpc.Transaction transaction = client.getAccountTransaction(address, sequence, includeEvents);
+            if (transaction != null) {
+                return transaction;
             }
             Thread.sleep(step);
         }
