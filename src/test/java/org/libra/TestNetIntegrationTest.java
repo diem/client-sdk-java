@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.libra.jsonrpc.JsonRpcError;
+import org.libra.jsonrpc.StaleResponseException;
 import org.libra.jsonrpctypes.JsonRpc;
 import org.libra.stdlib.Helpers;
 import org.libra.types.*;
@@ -216,7 +217,11 @@ public class TestNetIntegrationTest {
         SignedTransaction st = Signer.sign(sender.privateKey,
                 new RawTransaction(sender.address, seqNum, payload, coins(1), 0L, CurrencyCode.LBR,
                         100000000000L, Testnet.CHAIN_ID));
-        libraClient.submit(st);
+        try {
+            libraClient.submit(st);
+        } catch (StaleResponseException e) {
+            // ignore
+        }
         JsonRpc.Transaction transaction = libraClient.waitForTransaction(st, DEFAULT_TIMEOUT);
         return new TransactionAndSigned(transaction, st);
     }

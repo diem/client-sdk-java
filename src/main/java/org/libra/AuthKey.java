@@ -45,7 +45,7 @@ public class AuthKey {
     /**
      * Prefix of authentication key is first 16 bytes of the authentication key bytes.
      *
-     * @return
+     * @return Bytes
      */
     public Bytes prefix() {
         return new Bytes(Arrays.copyOfRange(bytes, 0, bytes.length - AccountAddressUtils.ACCOUNT_ADDRESS_LENGTH));

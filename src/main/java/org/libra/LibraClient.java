@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * <p>
  * LibraClient is interface of Libra JSON-RPC service client.
- * @see [Libra JSON-RPC SPEC](https://github.com/libra/libra/blob/master/json-rpc/json-rpc-spec.md)
+ * @see <a href="https://github.com/libra/libra/blob/master/json-rpc/json-rpc-spec.md">Libra JSON-RPC SPEC</a>
  * for API documents.
  * </p>
  *

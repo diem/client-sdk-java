@@ -38,7 +38,7 @@ public class HashUtils {
      *
      * @param signedTransaction
      * @return hex encoded Transaction#hash for the SignedTransaction.
-     * @see JsonRpc.TransactionOrBuilder#getHash()
+     * @link com.libra.jsonrpctypes.JsonRpc.Transaction#getHash
      */
     public static String transactionHash(SignedTransaction signedTransaction) {
         Transaction.UserTransaction userTransaction = new Transaction.UserTransaction(signedTransaction);

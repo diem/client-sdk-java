@@ -9,7 +9,6 @@ import org.libra.types.ChainId;
  * LedgerState records server respond ledger info version, timestamp and chain id for validating stale response.
  */
 public class LedgerState {
-    private static long DEFAULT_DELTA = 30;
 
     private ChainId chainId;
     private long version;
@@ -50,7 +49,7 @@ public class LedgerState {
                     "%s", this.chainId, chainId));
         }
 
-        if (this.version > version + DEFAULT_DELTA || this.timestampUsecs > timestampUsecs + DEFAULT_DELTA * 1000000) {
+        if (this.version > version || this.timestampUsecs > timestampUsecs) {
             throw new StaleResponseException(String.format("Current ledger state stale:\n" +
                             "current blockchain version: %s last seen blockchain version: %s " +
                             "current blockchain timestamp usecs: %s last seen blockchain " +

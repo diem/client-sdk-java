@@ -50,7 +50,7 @@ public class Utils {
         }
 
 
-        // WaitForTransaction retried for *libraclient.StaleResponseError
+        // WaitForTransaction retried for StaleResponseException
         // already, hence here we panic if got error (including timeout error)
         JsonRpc.Transaction transaction = client.waitForTransaction(txn, 30 * 1000);
         System.out.println("version: " + transaction.getVersion() + ", status: " + transaction.getVmStatus().getType());
