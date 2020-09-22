@@ -28,7 +28,7 @@ public class LedgerStateTest {
     public void testHandleLedgerState_invalidVersion() throws LibraException {
         LedgerState ledgerState = new LedgerState(Constants.TESTING_CHAIN_ID);
         ledgerState.save(Constants.TESTING_CHAIN_ID.value, 2713598, 1595549134500031L);
-        assertThrows(LibraException.class, () -> ledgerState.save(Constants.TESTING_CHAIN_ID.value, 2713597 - 30, 1595549134500031L));
+        assertThrows(LibraException.class, () -> ledgerState.save(Constants.TESTING_CHAIN_ID.value, 2713597, 1595549134500031L));
     }
 
     @Test
@@ -36,7 +36,7 @@ public class LedgerStateTest {
         LedgerState ledgerState = new LedgerState(Constants.TESTING_CHAIN_ID);
         ledgerState.save(Constants.TESTING_CHAIN_ID.value, 2713598, 1595549134500031L);
         assertThrows(LibraException.class, () -> ledgerState.save(Constants.TESTING_CHAIN_ID.value, 2713599
-                , 1595549134500030L - 30000000));
+                , 1595549134500030L));
     }
 
 }

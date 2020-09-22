@@ -10,7 +10,9 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.libra.jsonrpc.InvalidResponseException;
 import org.libra.jsonrpc.LibraJsonRpcClient;
+import org.libra.jsonrpc.Retry;
 import org.libra.jsonrpctypes.JsonRpc;
 import org.libra.types.ChainId;
 import org.libra.utils.TransactionUtils;
@@ -18,6 +20,7 @@ import org.libra.utils.TransactionUtils;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.Callable;
 
 /**
  * Testnet is utility class for handing Testnet specific data and functions.
@@ -63,35 +66,25 @@ public class Testnet {
         }
 
         HttpPost post = new HttpPost(build);
-
-        int retry = 10;
-        while (true) {
-            retry--;
-
-            try (CloseableHttpClient httpClient = HttpClients.createDefault();
-                 CloseableHttpResponse response = httpClient.execute(post)) {
-                String result = EntityUtils.toString(response.getEntity());
-
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        Retry<Long> retry = new Retry<Long>(10, 500, Exception.class);
+        try {
+            return retry.execute(() -> {
+                CloseableHttpResponse response = httpClient.execute(post);
+                String body = EntityUtils.toString(response.getEntity());
                 if (response.getStatusLine().getStatusCode() != 200) {
-                    continue;
+                    throw new InvalidResponseException(response.getStatusLine().getStatusCode(), body);
                 }
 
-                return Long.parseLong(result);
-            } catch (IOException e) {
-                if (retry == 0) {
-                    throw new RuntimeException(e);
-                }
-            }
-            try {
-                Thread.sleep(1100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+                return Long.parseLong(body);
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
     private static JsonRpc.Transaction waitForTransaction(String address, @Unsigned long sequence, boolean includeEvents,
-                                                                   @Unsigned long timeoutMillis, LibraClient client) throws InterruptedException, LibraException {
+                                                          @Unsigned long timeoutMillis, LibraClient client) throws InterruptedException, LibraException {
         for (long millis = 0, step = 100; millis < timeoutMillis; millis += step) {
             JsonRpc.Transaction transaction = client.getAccountTransaction(address, sequence, includeEvents);
             if (transaction != null) {

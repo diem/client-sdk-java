@@ -17,6 +17,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.libra.LibraClient;
@@ -43,15 +44,28 @@ import java.util.List;
 
 public class LibraJsonRpcClient implements LibraClient {
 
+    /**
+     * Default retry for handling StaleResponseException.
+     * Submit will not be retried, the stale response exception will be threw and client should
+     * decide what to do.
+     */
+    public static final Retry<Response> DEFAULT_RETRY_ON_STALE_RESPONSE = new Retry<>(
+            5, 200, StaleResponseException.class);
+
+    private static CloseableHttpClient createDefaultHttpClient() {
+        return HttpClients.custom().setKeepAliveStrategy((response, context) -> 30 * 1000).build();
+    }
+
     private final LedgerState state;
     private final URI serverURL;
     private final HttpClient httpClient;
+    private Retry<Response> retryGetMethods;
 
     public LibraJsonRpcClient(String serverURL, ChainId chainId) {
-        this(serverURL, HttpClients.createDefault(), chainId);
+        this(serverURL, createDefaultHttpClient(), chainId, DEFAULT_RETRY_ON_STALE_RESPONSE);
     }
 
-    public LibraJsonRpcClient(String serverURL, HttpClient httpClient, ChainId chainId) {
+    public LibraJsonRpcClient(String serverURL, HttpClient httpClient, ChainId chainId, Retry<Response> retryGetMethods) {
         try {
             this.serverURL = new URL(serverURL).toURI();
         } catch (URISyntaxException | MalformedURLException e) {
@@ -59,6 +73,7 @@ public class LibraJsonRpcClient implements LibraClient {
         }
         this.httpClient = httpClient;
         this.state = new LedgerState(chainId);
+        this.retryGetMethods = retryGetMethods;
     }
 
     @Override
@@ -144,7 +159,7 @@ public class LibraJsonRpcClient implements LibraClient {
         List<Object> params = new ArrayList<>();
         params.add(data);
 
-        call(Method.submit, params);
+        callWithoutRetry(Method.submit, params);
     }
 
     @Override
@@ -182,7 +197,7 @@ public class LibraJsonRpcClient implements LibraClient {
 
     @Override
     public JsonRpc.Transaction waitForTransaction(AccountAddress address, @Unsigned long sequence, String transactionHash,
-                                                           @Unsigned long expirationTimeSec, int timeout) throws LibraException {
+                                                  @Unsigned long expirationTimeSec, int timeout) throws LibraException {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MINUTE, timeout);
         Date maxTime = calendar.getTime();
@@ -207,7 +222,7 @@ public class LibraJsonRpcClient implements LibraClient {
                 throw new LibraException("transaction expired");
             }
             try {
-                Thread.sleep(500);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -257,18 +272,31 @@ public class LibraJsonRpcClient implements LibraClient {
             return null;
         }
 
+        @SuppressWarnings(value = "unchecked")
         private T parse(JsonElement ele, Message.Builder factory) throws InvalidResponseException {
             try {
                 PARSER.merge(ele.toString(), factory);
             } catch (InvalidProtocolBufferException e) {
                 throw new InvalidResponseException(e);
             }
+
             return (T) factory.build();
         }
     }
 
-    public Response call(Method method, List<Object> params) throws LibraException {
+    public Response call(final Method method, final List<Object> params) throws LibraException {
+        try {
+            return this.retryGetMethods.execute(() -> LibraJsonRpcClient.this.callWithoutRetry(method, params));
+        } catch (LibraException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Response callWithoutRetry(final Method method, final List<Object> params) throws LibraException {
         Request request = new Request(0, method.name(), params.toArray());
+
         String body = makeHttpCall(new Gson().toJson(request));
         Response resp = new Gson().fromJson(body, Response.class);
         if (resp.getError() != null) {
