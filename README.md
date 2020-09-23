@@ -35,7 +35,7 @@ You can find all examples code under src/test/java/org/libra/examples directory:
 **Gradle**
 
 ```gradle
-implementation 'org.libra:libra-client-sdk-java:0.0.2'
+implementation 'org.libra:libra-client-sdk-java:0.0.3'
 ```
 
 **Maven**
@@ -44,7 +44,7 @@ implementation 'org.libra:libra-client-sdk-java:0.0.2'
 <dependency>
   <groupId>org.libra</groupId>
   <artifactId>libra-client-sdk-java</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
 </dependency>
 ```
 [Download Jars](https://search.maven.org/search?q=a:libra-client-sdk-java)
