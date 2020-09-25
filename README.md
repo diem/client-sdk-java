@@ -11,7 +11,7 @@
 > SPEC = specification
 > LIP-X = Libra Improvement Protocol
 
-- `jsonrpc`: libra JSON-RPC APIs client. [SPEC](./json-rpc/json-rpc-spec.md)
+- `jsonrpc`: libra JSON-RPC APIs client. [SPEC](https://github.com/libra/libra/blob/master/json-rpc/json-rpc-spec.md)
 - `jsonrpctypes`: generated code, JSON-RPC API response data object classes generated from protobuf definition.
 - `stdlib`: generated code, move stdlib script utils for constructing transaction script playload.
 - `types`: generated code, Libra on-chain data structure types. Mostly generated code with small extension code for attaching handy functions to generated types.
