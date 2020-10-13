@@ -38,7 +38,7 @@ public abstract class WriteSetPayload {
         public final ChangeSet value;
 
         public Direct(ChangeSet value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 
@@ -88,8 +88,8 @@ public abstract class WriteSetPayload {
         public final org.libra.types.Script script;
 
         public Script(AccountAddress execute_as, org.libra.types.Script script) {
-            assert execute_as != null;
-            assert script != null;
+            java.util.Objects.requireNonNull(execute_as, "execute_as must not be null");
+            java.util.Objects.requireNonNull(script, "script must not be null");
             this.execute_as = execute_as;
             this.script = script;
         }

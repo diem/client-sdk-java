@@ -39,7 +39,7 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testGetMetadata() throws Exception {
-        JsonRpc.BlockMetadata response = client.getMetadata();
+        JsonRpc.Metadata response = client.getMetadata();
         assertNotNull(response);
         assertTrue(response.getTimestamp() > new Date().getTime() - 600);
         assertTrue(response.getVersion() > 1000);
@@ -47,7 +47,7 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testGetMetadataByVersion() throws Exception {
-        JsonRpc.BlockMetadata response = client.getMetadata(1);
+        JsonRpc.Metadata response = client.getMetadata(1);
         assertNotNull(response);
         assertEquals(1, response.getVersion());
     }

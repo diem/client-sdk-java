@@ -7,7 +7,7 @@ public final class Module {
     public final com.novi.serde.Bytes code;
 
     public Module(com.novi.serde.Bytes code) {
-        assert code != null;
+        java.util.Objects.requireNonNull(code, "code must not be null");
         this.code = code;
     }
 

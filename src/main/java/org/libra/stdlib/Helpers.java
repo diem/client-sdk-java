@@ -161,10 +161,12 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                                                           | Description                                                                                |
      * | ----------------           | --------------                                                         | -------------                                                                              |
-     * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ELIBRA_ROOT}                                           | The sending account is not the Libra Root account.                                         |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                                         | A {@code SlidingNonce} resource is not published under {@code lr_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                                         | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                                         | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}                                | The {@code sliding_nonce} has been previously recorded.                                          |
+     * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ELIBRA_ROOT}                                           | The sending account is not the Libra Root account.                                         |
+     * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::ELIBRA_ROOT}                                                   | The sending account is not the Libra Root account.                                         |
      * | {@code Errors::INVALID_ARGUMENT} | {@code LibraTransactionPublishingOption::EINVALID_SCRIPT_HASH}               | The script {@code hash} is an invalid length.                                                    |
      * | {@code Errors::INVALID_ARGUMENT} | {@code LibraTransactionPublishingOption::EALLOWLIST_ALREADY_CONTAINS_SCRIPT} | The on-chain allowlist already contains the script {@code hash}.                                 |
      *
@@ -207,11 +209,13 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                                  | Description                                                                                                                               |
      * | ----------------           | --------------                                | -------------                                                                                                                             |
-     * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ELIBRA_ROOT}                  | The sending account is not the Libra Root account.                                                                                        |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                | A {@code SlidingNonce} resource is not published under {@code lr_account}.                                                                            |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not.                                                |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                | The {@code sliding_nonce} is too far in the future.                                                                                             |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}       | The {@code sliding_nonce} has been previously recorded.                                                                                         |
-     * | EMPTY                      | 0                                             | The provided {@code validator_name} does not match the already-recorded human name for the validator.                                           |
+     * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ELIBRA_ROOT}                  | The sending account is not the Libra Root account.                                                                                        |
+     * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::ELIBRA_ROOT}                          | The sending account is not the Libra Root account.                                                                                        |
+     * | 0                          | 0                                             | The provided {@code validator_name} does not match the already-recorded human name for the validator.                                           |
      * | {@code Errors::INVALID_ARGUMENT} | {@code LibraSystem::EINVALID_PROSPECTIVE_VALIDATOR} | The validator to be added does not have a {@code ValidatorConfig::ValidatorConfig} resource published under it, or its {@code config} field is empty. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code LibraSystem::EALREADY_A_VALIDATOR}           | The {@code validator_address} account is already a registered validator.                                                                        |
      *
@@ -275,6 +279,7 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category                | Error Reason                            | Description                                                                                           |
      * | ----------------              | --------------                          | -------------                                                                                         |
+     * | {@code Errors::NOT_PUBLISHED}       | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code account}.                                           |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not.            |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                                         |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                                     |
@@ -389,6 +394,8 @@ public final class Helpers {
      * | {@code Errors::NOT_PUBLISHED}       | {@code Libra::ECURRENCY_INFO}                          | The specified {@code Token} is not a registered currency on-chain.                                          |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code LibraAccount::ECOIN_DEPOSIT_IS_ZERO}            | The value held in the preburn resource was zero.                                                      |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code LibraAccount::EPAYEE_CANT_ACCEPT_CURRENCY_TYPE} | The account at {@code preburn_address} doesn't have a balance resource for {@code Token}.                         |
+     * | {@code Errors::LIMIT_EXCEEDED}      | {@code LibraAccount::EDEPOSIT_EXCEEDS_LIMITS}          | The depositing of the funds held in the prebun area would exceed the {@code account}'s account limits.      |
+     * | {@code Errors::INVALID_STATE}       | {@code DualAttestation::EPAYEE_COMPLIANCE_KEY_NOT_SET} | The {@code account} does not have a compliance key set on it but dual attestion checking was performed.     |
      *
      * <p><b>Related Scripts</b>
      * <ul><li>{@code Script::burn_txn_fees}</li></ul>
@@ -446,6 +453,7 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category              | Error Reason                                             | Description                                                                              |
      * | ----------------            | --------------                                           | -------------                                                                            |
+     * | {@code Errors::INVALID_ARGUMENT}  | {@code LibraAccount::EMALFORMED_AUTHENTICATION_KEY}            | The {@code auth_key_prefix} was not of length 32.                                              |
      * | {@code Errors::REQUIRES_ROLE}     | {@code Roles::EPARENT_VASP}                                    | The sending account wasn't a Parent VASP account.                                        |
      * | {@code Errors::ALREADY_PUBLISHED} | {@code Roles::EROLE_ID}                                        | The {@code child_address} address is already taken.                                            |
      * | {@code Errors::LIMIT_EXCEEDED}    | {@code VASP::ETOO_MANY_CHILDREN}                               | The sending account has reached the maximum number of allowed child accounts.            |
@@ -453,10 +461,11 @@ public final class Helpers {
      * | {@code Errors::INVALID_STATE}     | {@code LibraAccount::EWITHDRAWAL_CAPABILITY_ALREADY_EXTRACTED} | The withdrawal capability for the sending account has already been extracted.            |
      * | {@code Errors::NOT_PUBLISHED}     | {@code LibraAccount::EPAYER_DOESNT_HOLD_CURRENCY}              | The sending account doesn't have a balance in {@code CoinType}.                                |
      * | {@code Errors::LIMIT_EXCEEDED}    | {@code LibraAccount::EINSUFFICIENT_BALANCE}                    | The sending account doesn't have at least {@code child_initial_balance} of {@code CoinType} balance. |
+     * | {@code Errors::INVALID_ARGUMENT}  | {@code LibraAccount::ECANNOT_CREATE_AT_VM_RESERVED}            | The {@code child_address} is the reserved address 0x0.                                         |
      *
      * <p><b>Related Scripts</b>
      * <ul><li>{@code Script::create_parent_vasp_account}</li></ul>
-     * <ul><li>{@code Script::add_currency}</li></ul>
+     * <ul><li>{@code Script::add_currency_to_account}</li></ul>
      * <ul><li>{@code Script::rotate_authentication_key}</li></ul>
      * <ul><li>{@code Script::add_recovery_rotation_capability}</li></ul>
      * <ul><li>{@code Script::create_recovery_address}</li></ul>
@@ -506,10 +515,12 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category              | Error Reason                            | Description                                                                                |
      * | ----------------            | --------------                          | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}     | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code tc_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                          |
      * | {@code Errors::REQUIRES_ADDRESS}  | {@code CoreAddresses::ETREASURY_COMPLIANCE}   | The sending account is not the Treasury Compliance account.                                |
+     * | {@code Errors::REQUIRES_ROLE}     | {@code Roles::ETREASURY_COMPLIANCE}           | The sending account is not the Treasury Compliance account.                                |
      * | {@code Errors::NOT_PUBLISHED}     | {@code Libra::ECURRENCY_INFO}                 | The {@code Currency} is not a registered currency on-chain.                                      |
      * | {@code Errors::ALREADY_PUBLISHED} | {@code Roles::EROLE_ID}                       | The {@code addr} address is already taken.                                                       |
      *
@@ -559,16 +570,18 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category              | Error Reason                            | Description                                                                                |
      * | ----------------            | --------------                          | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}     | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code tc_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                          |
-     * | {@code Errors::REQUIRES_ADDRESS}  | {@code CoreAddresses::ETREASURY_COMPLIANCE}   | The sending account is the Treasury Compliance account.                                    |
+     * | {@code Errors::REQUIRES_ADDRESS}  | {@code CoreAddresses::ETREASURY_COMPLIANCE}   | The sending account is not the Treasury Compliance account.                                |
+     * | {@code Errors::REQUIRES_ROLE}     | {@code Roles::ETREASURY_COMPLIANCE}           | The sending account is not the Treasury Compliance account.                                |
      * | {@code Errors::NOT_PUBLISHED}     | {@code Libra::ECURRENCY_INFO}                 | The {@code CoinType} is not a registered currency on-chain.                                      |
      * | {@code Errors::ALREADY_PUBLISHED} | {@code Roles::EROLE_ID}                       | The {@code new_account_address} address is already taken.                                        |
      *
      * <p><b>Related Scripts</b>
      * <ul><li>{@code Script::create_child_vasp_account}</li></ul>
-     * <ul><li>{@code Script::add_currency}</li></ul>
+     * <ul><li>{@code Script::add_currency_to_account}</li></ul>
      * <ul><li>{@code Script::rotate_authentication_key}</li></ul>
      * <ul><li>{@code Script::add_recovery_rotation_capability}</li></ul>
      * <ul><li>{@code Script::create_recovery_address}</li></ul>
@@ -657,10 +670,12 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category              | Error Reason                            | Description                                                                                |
      * | ----------------            | --------------                          | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}     | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code lr_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                          |
      * | {@code Errors::REQUIRES_ADDRESS}  | {@code CoreAddresses::ELIBRA_ROOT}            | The sending account is not the Libra Root account.                                         |
+     * | {@code Errors::REQUIRES_ROLE}     | {@code Roles::ELIBRA_ROOT}                    | The sending account is not the Libra Root account.                                         |
      * | {@code Errors::ALREADY_PUBLISHED} | {@code Roles::EROLE_ID}                       | The {@code new_account_address} address is already taken.                                        |
      *
      * <p><b>Related Scripts</b>
@@ -707,12 +722,14 @@ public final class Helpers {
      * | {@code human_name}          | {@code vector<u8>} | ASCII-encoded human name for the validator.                                                     |
      *
      * <p><b>Common Abort Conditions</b>
-     * | Error Category | Error Reason | Description |
-     * |----------------|--------------|-------------|
+     * | Error Category              | Error Reason                            | Description                                                                                |
+     * | ----------------            | --------------                          | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}     | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code lr_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                          |
      * | {@code Errors::REQUIRES_ADDRESS}  | {@code CoreAddresses::ELIBRA_ROOT}            | The sending account is not the Libra Root account.                                         |
+     * | {@code Errors::REQUIRES_ROLE}     | {@code Roles::ELIBRA_ROOT}                    | The sending account is not the Libra Root account.                                         |
      * | {@code Errors::ALREADY_PUBLISHED} | {@code Roles::EROLE_ID}                       | The {@code new_account_address} address is already taken.                                        |
      *
      * <p><b>Related Scripts</b>
@@ -771,10 +788,12 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                                 | Description                                                                                |
      * | ----------------           | --------------                               | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}               | A {@code SlidingNonce} resource is not published under {@code tc_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}               | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}               | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}      | The {@code sliding_nonce} has been previously recorded.                                          |
      * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ETREASURY_COMPLIANCE}        | The sending account is not the Treasury Compliance account.                                |
+     * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::ETREASURY_COMPLIANCE}                | The sending account is not the Treasury Compliance account.                                |
      * | {@code Errors::INVALID_ARGUMENT} | {@code AccountFreezing::ECANNOT_FREEZE_TC}         | {@code to_freeze_account} was the Treasury Compliance account ({@code 0xB1E55ED}).                     |
      * | {@code Errors::INVALID_ARGUMENT} | {@code AccountFreezing::ECANNOT_FREEZE_LIBRA_ROOT} | {@code to_freeze_account} was the Libra Root account ({@code 0xA550C18}).                              |
      *
@@ -790,58 +809,6 @@ public final class Helpers {
         builder.code = new Bytes(FREEZE_ACCOUNT_CODE);
         builder.ty_args = java.util.Arrays.asList();
         builder.args = java.util.Arrays.asList(new TransactionArgument.U64(sliding_nonce), new TransactionArgument.Address(to_freeze_account));
-        return builder.build();
-    }
-
-    /**
-     * <p><b>Summary</b>
-     * Mints LBR from the sending account's constituent coins by depositing in the
-     * on-chain LBR reserve. Deposits the newly-minted LBR into the sending
-     * account. Can be sent by any account that can hold balances for the constituent
-     * currencies for LBR and LBR.
-     *
-     * <p><b>Technical Description</b>
-     * Mints {@code amount_lbr} LBR from the sending account's constituent coins and deposits the
-     * resulting LBR into the sending account.
-     *
-     * <p><b>Events</b>
-     * Successful execution of this script emits three events:
-     * <ul><li>A {@code LibraAccount::SentPaymentEvent} with the Coin1 currency code, and a</li></ul>
-     * {@code LibraAccount::SentPaymentEvent} with the Coin2 currency code on {@code account}'s
-     * {@code LibraAccount::LibraAccount} {@code sent_events} handle with the {@code amounts} for each event being the
-     * components amounts of {@code amount_lbr} LBR; and
-     * <ul><li>A {@code LibraAccount::ReceivedPaymentEvent} on {@code account}'s {@code LibraAccount::LibraAccount}</li></ul>
-     * {@code received_events} handle with the LBR currency code and amount field equal to {@code amount_lbr}.
-     *
-     * <p><b>Parameters</b>
-     * | Name         | Type      | Description                                      |
-     * | ------       | ------    | -------------                                    |
-     * | {@code account}    | {@code &signer} | The signer reference of the sending account.     |
-     * | {@code amount_lbr} | {@code u64}     | The amount of LBR (in microlibra) to be created. |
-     *
-     * <p><b>Common Abort Conditions</b>
-     * | Error Category             | Error Reason                                     | Description                                                                      |
-     * | ----------------           | --------------                                   | -------------                                                                    |
-     * | {@code Errors::NOT_PUBLISHED}    | {@code LibraAccount::EPAYER_DOESNT_HOLD_CURRENCY}      | {@code account} doesn't hold a balance in one of the backing currencies of LBR.        |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code LBR::EZERO_LBR_MINT_NOT_ALLOWED}                | {@code amount_lbr} passed in was zero.                                                 |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code LBR::ECOIN1}                                    | The amount of {@code Coin1} needed for the specified LBR would exceed {@code LBR::MAX_U64}.  |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code LBR::ECOIN2}                                    | The amount of {@code Coin2} needed for the specified LBR would exceed {@code LBR::MAX_U64}.  |
-     * | {@code Errors::INVALID_STATE}    | {@code Libra::EMINTING_NOT_ALLOWED}                    | Minting of LBR is not allowed currently.                                         |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code LibraAccount::EPAYEE_CANT_ACCEPT_CURRENCY_TYPE} | {@code account} doesn't hold a balance in LBR.                                         |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code LibraAccount::EWITHDRAWAL_EXCEEDS_LIMITS}       | {@code account} has exceeded its daily withdrawal limits for the backing coins of LBR. |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code LibraAccount::EDEPOSIT_EXCEEDS_LIMITS}          | {@code account} has exceeded its daily deposit limits for LBR.                         |
-     *
-     * <p><b>Related Scripts</b>
-     * <ul><li>{@code Script::unmint_lbr}</li></ul>
-     *
-     * @param amount_lbr {@code @Unsigned Long} value
-     * @return Encoded {@link org.libra.types.Script} value.
-     */
-    public static Script encode_mint_lbr_script(@Unsigned Long amount_lbr) {
-        Script.Builder builder = new Script.Builder();
-        builder.code = new Bytes(MINT_LBR_CODE);
-        builder.ty_args = java.util.Arrays.asList();
-        builder.args = java.util.Arrays.asList(new TransactionArgument.U64(amount_lbr));
         return builder.build();
     }
 
@@ -1083,12 +1050,15 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                            | Description                                                                                     |
      * | ----------------           | --------------                          | -------------                                                                                   |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code lr_account}.                                  |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not.      |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                                   |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                               |
-     * | EMPTY                      | 0                                       | The provided {@code validator_name} does not match the already-recorded human name for the validator. |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}          | The sending account is not the Libra Root account or Treasury Compliance account                |
+     * | 0                          | 0                                       | The provided {@code validator_name} does not match the already-recorded human name for the validator. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code LibraSystem::ENOT_AN_ACTIVE_VALIDATOR} | The validator to be removed is not in the validator set.                                        |
      * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ELIBRA_ROOT}            | The sending account is not the Libra Root account.                                              |
+     * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::ELIBRA_ROOT}                    | The sending account is not the Libra Root account.                                              |
      *
      * <p><b>Related Scripts</b>
      * <ul><li>{@code Script::create_validator_account}</li></ul>
@@ -1171,6 +1141,7 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                                               | Description                                                                                |
      * | ----------------           | --------------                                             | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                             | A {@code SlidingNonce} resource is not published under {@code account}.                                |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                             | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                             | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}                    | The {@code sliding_nonce} has been previously recorded.                                          |
@@ -1215,6 +1186,7 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                                               | Description                                                                                                |
      * | ----------------           | --------------                                             | -------------                                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                             | A {@code SlidingNonce} resource is not published under {@code lr_account}.                                             |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                             | The {@code sliding_nonce} in {@code lr_account} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                             | The {@code sliding_nonce} in {@code lr_account} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}                    | The {@code sliding_nonce} in{@code  lr_account} has been previously recorded.                                          |
@@ -1398,17 +1370,18 @@ public final class Helpers {
      * | Error Category             | Error Reason                                   | Description                                                                                           |
      * | ----------------           | --------------                                 | -------------                                                                                         |
      * | {@code Errors::NOT_PUBLISHED}    | {@code ValidatorConfig::EVALIDATOR_CONFIG}           | {@code validator_address} does not have a {@code ValidatorConfig::ValidatorConfig} resource published under it.   |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code ValidatorConfig::EINVALID_TRANSACTION_SENDER} | {@code validator_operator_account} is not the registered operator for the validator at {@code validator_address}. |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code ValidatorConfig::EINVALID_CONSENSUS_KEY}      | {@code consensus_pubkey} is not a valid ed25519 public key.                                                 |
+     * | {@code Errors::REQUIRES_ROLE     | }Roles::EVALIDATOR_OPERATOR{@code                    | }validator_operator_account{@code  does not have a Validator Operator role.                                 |
+     * | }Errors::INVALID_ARGUMENT{@code  | }ValidatorConfig::EINVALID_TRANSACTION_SENDER{@code  | }validator_operator_account{@code  is not the registered operator for the validator at }validator_address{@code . |
+     * | }Errors::INVALID_ARGUMENT{@code  | }ValidatorConfig::EINVALID_CONSENSUS_KEY{@code       | }consensus_pubkey{@code  is not a valid ed25519 public key.                                                 |
      *
      * <p><b>Related Scripts</b>
-     * <ul><li>{@code Script::create_validator_account}</li></ul>
-     * <ul><li>{@code Script::create_validator_operator_account}</li></ul>
-     * <ul><li>{@code Script::add_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::remove_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator_with_nonce_admin}</li></ul>
-     * <ul><li>{@code Script::register_validator_config}</li></ul>
+     * <ul><li>}Script::create_validator_account{@code </li></ul>
+     * <ul><li>}Script::create_validator_operator_account{@code </li></ul>
+     * <ul><li>}Script::add_validator_and_reconfigure{@code </li></ul>
+     * <ul><li>}Script::remove_validator_and_reconfigure{@code </li></ul>
+     * <ul><li>}Script::set_validator_operator{@code </li></ul>
+     * <ul><li>}Script::set_validator_operator_with_nonce_admin{@code </li></ul>
+     * <ul><li>}Script::register_validator_config`</li></ul>
      *
      * @param validator_account {@code AccountAddress} value
      * @param consensus_pubkey {@code Bytes} value
@@ -1450,7 +1423,7 @@ public final class Helpers {
      * | Error Category             | Error Reason                                          | Description                                                                                                                                                  |
      * | ----------------           | --------------                                        | -------------                                                                                                                                                |
      * | {@code Errors::NOT_PUBLISHED}    | {@code ValidatorOperatorConfig::EVALIDATOR_OPERATOR_CONFIG} | The {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource is not published under {@code operator_account}.                                                   |
-     * | EMPTY                      | 0                                                     | The {@code human_name} field of the {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource under {@code operator_account} does not match the provided {@code human_name}. |
+     * | 0                          | 0                                                     | The {@code human_name} field of the {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource under {@code operator_account} does not match the provided {@code human_name}. |
      * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::EVALIDATOR}                                   | {@code account} does not have a Validator account role.                                                                                                            |
      * | {@code Errors::INVALID_ARGUMENT} | {@code ValidatorConfig::ENOT_A_VALIDATOR_OPERATOR}          | The account at {@code operator_account} does not have a {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource.                                               |
      * | {@code Errors::NOT_PUBLISHED}    | {@code ValidatorConfig::EVALIDATOR_CONFIG}                  | A {@code ValidatorConfig::ValidatorConfig} is not published under {@code account}.                                                                                       |
@@ -1503,11 +1476,13 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                                          | Description                                                                                                                                                  |
      * | ----------------           | --------------                                        | -------------                                                                                                                                                |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                        | A {@code SlidingNonce} resource is not published under {@code lr_account}.                                                                                               |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                        | The {@code sliding_nonce} in {@code lr_account} is too old and it's impossible to determine if it's duplicated or not.                                                   |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                        | The {@code sliding_nonce} in {@code lr_account} is too far in the future.                                                                                                |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}               | The {@code sliding_nonce} in{@code  lr_account} has been previously recorded.                                                                                            |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                        | The sending account is not the Libra Root account or Treasury Compliance account                                                                             |
      * | {@code Errors::NOT_PUBLISHED}    | {@code ValidatorOperatorConfig::EVALIDATOR_OPERATOR_CONFIG} | The {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource is not published under {@code operator_account}.                                                   |
-     * | EMPTY                      | 0                                                     | The {@code human_name} field of the {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource under {@code operator_account} does not match the provided {@code human_name}. |
+     * | 0                          | 0                                                     | The {@code human_name} field of the {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource under {@code operator_account} does not match the provided {@code human_name}. |
      * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::EVALIDATOR}                                   | {@code account} does not have a Validator account role.                                                                                                            |
      * | {@code Errors::INVALID_ARGUMENT} | {@code ValidatorConfig::ENOT_A_VALIDATOR_OPERATOR}          | The account at {@code operator_account} does not have a {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource.                                               |
      * | {@code Errors::NOT_PUBLISHED}    | {@code ValidatorConfig::EVALIDATOR_CONFIG}                  | A {@code ValidatorConfig::ValidatorConfig} is not published under {@code account}.                                                                                       |
@@ -1571,16 +1546,19 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category                | Error Reason                                 | Description                                                                                                                  |
      * | ----------------              | --------------                               | -------------                                                                                                                |
+     * | {@code Errors::NOT_PUBLISHED}       | {@code SlidingNonce::ESLIDING_NONCE}               | A {@code SlidingNonce} resource is not published under {@code tc_account}.                                                               |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_TOO_OLD}               | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not.                                   |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_TOO_NEW}               | The {@code sliding_nonce} is too far in the future.                                                                                |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}      | The {@code sliding_nonce} has been previously recorded.                                                                            |
      * | {@code Errors::REQUIRES_ADDRESS}    | {@code CoreAddresses::ETREASURY_COMPLIANCE}        | {@code tc_account} is not the Treasury Compliance account.                                                                         |
+     * | {@code Errors::REQUIRES_ROLE}       | {@code Roles::ETREASURY_COMPLIANCE}                | {@code tc_account} is not the Treasury Compliance account.                                                                         |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code DesignatedDealer::EINVALID_MINT_AMOUNT}     | {@code mint_amount} is zero.                                                                                                       |
      * | {@code Errors::NOT_PUBLISHED}       | {@code DesignatedDealer::EDEALER}                  | {@code DesignatedDealer::Dealer} or {@code DesignatedDealer::TierInfo<CoinType>} resource does not exist at {@code designated_dealer_address}. |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code DesignatedDealer::EINVALID_TIER_INDEX}      | The {@code tier_index} is out of bounds.                                                                                           |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code DesignatedDealer::EINVALID_AMOUNT_FOR_TIER} | {@code mint_amount} exceeds the maximum allowed amount for {@code tier_index}.                                                           |
      * | {@code Errors::REQUIRES_CAPABILITY} | {@code Libra::EMINT_CAPABILITY}                    | {@code tc_account} does not have a {@code Libra::MintCapability<CoinType>} resource published under it.                                  |
      * | {@code Errors::INVALID_STATE}       | {@code Libra::EMINTING_NOT_ALLOWED}                | Minting is not currently allowed for {@code CoinType} coins.                                                                       |
+     * | {@code Errors::LIMIT_EXCEEDED}      | {@code LibraAccount::EDEPOSIT_EXCEEDS_LIMITS}      | The depositing of the funds would exceed the {@code account}'s account limits.                                                     |
      *
      * <p><b>Related Scripts</b>
      * <ul><li>{@code Script::create_designated_dealer}</li></ul>
@@ -1628,6 +1606,7 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                            | Description                                                                                |
      * | ----------------           | --------------                          | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code account}.                                |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                          |
@@ -1645,55 +1624,6 @@ public final class Helpers {
         builder.code = new Bytes(UNFREEZE_ACCOUNT_CODE);
         builder.ty_args = java.util.Arrays.asList();
         builder.args = java.util.Arrays.asList(new TransactionArgument.U64(sliding_nonce), new TransactionArgument.Address(to_unfreeze_account));
-        return builder.build();
-    }
-
-    /**
-     * <p><b>Summary</b>
-     * Withdraws a specified amount of LBR from the transaction sender's account, and unstaples the
-     * withdrawn LBR into its constituent coins. Deposits each of the constituent coins to the
-     * transaction sender's balances. Any account that can hold balances that has the correct balances
-     * may send this transaction.
-     *
-     * <p><b>Technical Description</b>
-     * Withdraws {@code amount_lbr} LBR coins from the {@code LibraAccount::Balance<LBR::LBR>} balance held under
-     * {@code account}. Withdraws the backing coins for the LBR coins from the on-chain reserve in the
-     * {@code LBR::Reserve} resource published under {@code 0xA550C18}. It then deposits each of the backing coins
-     * into balance resources published under {@code account}.
-     *
-     * <p><b>Events</b>
-     * Successful execution of this transaction will emit two {@code LibraAccount::SentPaymentEvent}s. One
-     * for each constituent currency that is unstapled and returned to the sending {@code account}'s
-     * balances.
-     *
-     * <p><b>Parameters</b>
-     * | Name         | Type      | Description                                                     |
-     * | ------       | ------    | -------------                                                   |
-     * | {@code account}    | {@code &signer} | The signer reference of the sending account of the transaction. |
-     * | {@code amount_lbr} | {@code u64}     | The amount of microlibra to unstaple.                           |
-     *
-     * <p><b>Common Abort Conditions</b>
-     * | Error Category             | Error Reason                                             | Description                                                                               |
-     * | ----------------           | --------------                                           | -------------                                                                             |
-     * | {@code Errors::INVALID_STATE}    | {@code LibraAccount::EWITHDRAWAL_CAPABILITY_ALREADY_EXTRACTED} | The {@code LibraAccount::WithdrawCapability} for {@code account} has previously been extracted.       |
-     * | {@code Errors::NOT_PUBLISHED}    | {@code LibraAccount::EPAYER_DOESNT_HOLD_CURRENCY}              | {@code account} doesn't have a balance in LBR.                                                  |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code LibraAccount::EINSUFFICIENT_BALANCE}                    | {@code amount_lbr} is greater than the balance of LBR in {@code account}.                             |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code Libra::ECOIN}                                           | {@code amount_lbr} is zero.                                                                     |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code LibraAccount::EWITHDRAWAL_EXCEEDS_LIMITS}               | {@code account} has exceeded its daily withdrawal limits for LBR.                               |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code LibraAccount::EDEPOSIT_EXCEEDS_LIMITS}                  | {@code account} has exceeded its daily deposit limits for one of the backing currencies of LBR. |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code LibraAccount::EPAYEE_CANT_ACCEPT_CURRENCY_TYPE}         | {@code account} doesn't hold a balance in one or both of the backing currencies of LBR.         |
-     *
-     * <p><b>Related Scripts</b>
-     * <ul><li>{@code Script::mint_lbr}</li></ul>
-     *
-     * @param amount_lbr {@code @Unsigned Long} value
-     * @return Encoded {@link org.libra.types.Script} value.
-     */
-    public static Script encode_unmint_lbr_script(@Unsigned Long amount_lbr) {
-        Script.Builder builder = new Script.Builder();
-        builder.code = new Bytes(UNMINT_LBR_CODE);
-        builder.ty_args = java.util.Arrays.asList();
-        builder.args = java.util.Arrays.asList(new TransactionArgument.U64(amount_lbr));
         return builder.build();
     }
 
@@ -1717,6 +1647,7 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                            | Description                                                                                |
      * | ----------------           | --------------                          | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code tc_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                          |
@@ -1761,10 +1692,12 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                            | Description                                                                                |
      * | ----------------           | --------------                          | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code tc_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                          |
      * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ETREASURY_COMPLIANCE}   | {@code tc_account} is not the Treasury Compliance account.                                       |
+     * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::ETREASURY_COMPLIANCE}           | {@code tc_account} is not the Treasury Compliance account.                                       |
      * | {@code Errors::INVALID_ARGUMENT} | {@code FixedPoint32::EDENOMINATOR}            | {@code new_exchange_rate_denominator} is zero.                                                   |
      * | {@code Errors::INVALID_ARGUMENT} | {@code FixedPoint32::ERATIO_OUT_OF_RANGE}     | The quotient is unrepresentable as a {@code FixedPoint32}.                                       |
      * | {@code Errors::LIMIT_EXCEEDED}   | {@code FixedPoint32::ERATIO_OUT_OF_RANGE}     | The quotient is unrepresentable as a {@code FixedPoint32}.                                       |
@@ -1808,6 +1741,7 @@ public final class Helpers {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                                  | Description                                                                                |
      * | ----------------           | --------------                                | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                | A {@code SlidingNonce} resource is not published under {@code account}.                                |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}       | The {@code sliding_nonce} has been previously recorded.                                          |
@@ -1977,12 +1911,6 @@ public final class Helpers {
         return builder.build();
     }
 
-    private static ScriptCall decode_mint_lbr_script(Script script) throws IllegalArgumentException, IndexOutOfBoundsException {
-        ScriptCall.MintLbr.Builder builder = new ScriptCall.MintLbr.Builder();
-        builder.amount_lbr = Helpers.decode_u64_argument(script.args.get(0));
-        return builder.build();
-    }
-
     private static ScriptCall decode_peer_to_peer_with_metadata_script(Script script) throws IllegalArgumentException, IndexOutOfBoundsException {
         ScriptCall.PeerToPeerWithMetadata.Builder builder = new ScriptCall.PeerToPeerWithMetadata.Builder();
         builder.currency = script.ty_args.get(0);
@@ -2105,12 +2033,6 @@ public final class Helpers {
         return builder.build();
     }
 
-    private static ScriptCall decode_unmint_lbr_script(Script script) throws IllegalArgumentException, IndexOutOfBoundsException {
-        ScriptCall.UnmintLbr.Builder builder = new ScriptCall.UnmintLbr.Builder();
-        builder.amount_lbr = Helpers.decode_u64_argument(script.args.get(0));
-        return builder.build();
-    }
-
     private static ScriptCall decode_update_dual_attestation_limit_script(Script script) throws IllegalArgumentException, IndexOutOfBoundsException {
         ScriptCall.UpdateDualAttestationLimit.Builder builder = new ScriptCall.UpdateDualAttestationLimit.Builder();
         builder.sliding_nonce = Helpers.decode_u64_argument(script.args.get(0));
@@ -2205,10 +2127,6 @@ public final class Helpers {
             ScriptCall.FreezeAccount obj = (ScriptCall.FreezeAccount)call;
             return Helpers.encode_freeze_account_script(obj.sliding_nonce, obj.to_freeze_account);
         }));
-        map.put(ScriptCall.MintLbr.class, (EncodingHelper)((call) -> {
-            ScriptCall.MintLbr obj = (ScriptCall.MintLbr)call;
-            return Helpers.encode_mint_lbr_script(obj.amount_lbr);
-        }));
         map.put(ScriptCall.PeerToPeerWithMetadata.class, (EncodingHelper)((call) -> {
             ScriptCall.PeerToPeerWithMetadata obj = (ScriptCall.PeerToPeerWithMetadata)call;
             return Helpers.encode_peer_to_peer_with_metadata_script(obj.currency, obj.payee, obj.amount, obj.metadata, obj.metadata_signature);
@@ -2273,10 +2191,6 @@ public final class Helpers {
             ScriptCall.UnfreezeAccount obj = (ScriptCall.UnfreezeAccount)call;
             return Helpers.encode_unfreeze_account_script(obj.sliding_nonce, obj.to_unfreeze_account);
         }));
-        map.put(ScriptCall.UnmintLbr.class, (EncodingHelper)((call) -> {
-            ScriptCall.UnmintLbr obj = (ScriptCall.UnmintLbr)call;
-            return Helpers.encode_unmint_lbr_script(obj.amount_lbr);
-        }));
         map.put(ScriptCall.UpdateDualAttestationLimit.class, (EncodingHelper)((call) -> {
             ScriptCall.UpdateDualAttestationLimit obj = (ScriptCall.UpdateDualAttestationLimit)call;
             return Helpers.encode_update_dual_attestation_limit_script(obj.sliding_nonce, obj.new_micro_lbr_limit);
@@ -2324,8 +2238,6 @@ public final class Helpers {
 
     private static byte[] FREEZE_ACCOUNT_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 14, 7, 28, 66, 8, 94, 16, 0, 0, 0, 1, 0, 2, 0, 1, 0, 1, 3, 2, 1, 0, 2, 6, 12, 5, 0, 2, 6, 12, 3, 3, 6, 12, 3, 5, 15, 65, 99, 99, 111, 117, 110, 116, 70, 114, 101, 101, 122, 105, 110, 103, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 14, 102, 114, 101, 101, 122, 101, 95, 97, 99, 99, 111, 117, 110, 116, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3, 1, 7, 10, 0, 10, 1, 17, 1, 11, 0, 10, 2, 17, 0, 2};
 
-    private static byte[] MINT_LBR_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 6, 1, 0, 2, 2, 2, 4, 3, 6, 15, 5, 21, 16, 7, 37, 99, 8, -120, 1, 16, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 0, 0, 3, 1, 2, 0, 0, 4, 3, 2, 0, 1, 6, 12, 1, 8, 0, 0, 2, 6, 8, 0, 3, 2, 6, 12, 3, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 18, 87, 105, 116, 104, 100, 114, 97, 119, 67, 97, 112, 97, 98, 105, 108, 105, 116, 121, 27, 101, 120, 116, 114, 97, 99, 116, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 27, 114, 101, 115, 116, 111, 114, 101, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 10, 115, 116, 97, 112, 108, 101, 95, 108, 98, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 4, 1, 9, 11, 0, 17, 0, 12, 2, 14, 2, 10, 1, 17, 2, 11, 2, 17, 1, 2};
-
     private static byte[] PEER_TO_PEER_WITH_METADATA_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 7, 1, 0, 2, 2, 2, 4, 3, 6, 16, 4, 22, 2, 5, 24, 29, 7, 53, 97, 8, -106, 1, 16, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 0, 0, 3, 2, 3, 1, 1, 0, 4, 1, 3, 0, 1, 5, 1, 6, 12, 1, 8, 0, 5, 6, 8, 0, 5, 3, 10, 2, 10, 2, 0, 5, 6, 12, 5, 3, 10, 2, 10, 2, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 18, 87, 105, 116, 104, 100, 114, 97, 119, 67, 97, 112, 97, 98, 105, 108, 105, 116, 121, 27, 101, 120, 116, 114, 97, 99, 116, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 8, 112, 97, 121, 95, 102, 114, 111, 109, 27, 114, 101, 115, 116, 111, 114, 101, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 4, 1, 12, 11, 0, 17, 0, 12, 5, 14, 5, 10, 1, 10, 2, 11, 3, 11, 4, 56, 0, 11, 5, 17, 2, 2};
 
     private static byte[] PREBURN_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 7, 1, 0, 2, 2, 2, 4, 3, 6, 16, 4, 22, 2, 5, 24, 21, 7, 45, 96, 8, -115, 1, 16, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 0, 0, 3, 2, 3, 1, 1, 0, 4, 1, 3, 0, 1, 5, 1, 6, 12, 1, 8, 0, 3, 6, 12, 6, 8, 0, 3, 0, 2, 6, 12, 3, 1, 9, 0, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 18, 87, 105, 116, 104, 100, 114, 97, 119, 67, 97, 112, 97, 98, 105, 108, 105, 116, 121, 27, 101, 120, 116, 114, 97, 99, 116, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 7, 112, 114, 101, 98, 117, 114, 110, 27, 114, 101, 115, 116, 111, 114, 101, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 4, 1, 10, 10, 0, 17, 0, 12, 2, 11, 0, 14, 2, 10, 1, 56, 0, 11, 2, 17, 2, 2};
@@ -2358,8 +2270,6 @@ public final class Helpers {
 
     private static byte[] UNFREEZE_ACCOUNT_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 14, 7, 28, 68, 8, 96, 16, 0, 0, 0, 1, 0, 2, 0, 1, 0, 1, 3, 2, 1, 0, 2, 6, 12, 5, 0, 2, 6, 12, 3, 3, 6, 12, 3, 5, 15, 65, 99, 99, 111, 117, 110, 116, 70, 114, 101, 101, 122, 105, 110, 103, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 16, 117, 110, 102, 114, 101, 101, 122, 101, 95, 97, 99, 99, 111, 117, 110, 116, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3, 1, 7, 10, 0, 10, 1, 17, 1, 11, 0, 10, 2, 17, 0, 2};
 
-    private static byte[] UNMINT_LBR_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 6, 1, 0, 2, 2, 2, 4, 3, 6, 15, 5, 21, 16, 7, 37, 101, 8, -118, 1, 16, 0, 0, 0, 1, 1, 0, 0, 2, 0, 1, 0, 0, 3, 1, 2, 0, 0, 4, 3, 2, 0, 1, 6, 12, 1, 8, 0, 0, 2, 6, 8, 0, 3, 2, 6, 12, 3, 12, 76, 105, 98, 114, 97, 65, 99, 99, 111, 117, 110, 116, 18, 87, 105, 116, 104, 100, 114, 97, 119, 67, 97, 112, 97, 98, 105, 108, 105, 116, 121, 27, 101, 120, 116, 114, 97, 99, 116, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 27, 114, 101, 115, 116, 111, 114, 101, 95, 119, 105, 116, 104, 100, 114, 97, 119, 95, 99, 97, 112, 97, 98, 105, 108, 105, 116, 121, 12, 117, 110, 115, 116, 97, 112, 108, 101, 95, 108, 98, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 4, 1, 9, 11, 0, 17, 0, 12, 2, 14, 2, 10, 1, 17, 2, 11, 2, 17, 1, 2};
-
     private static byte[] UPDATE_DUAL_ATTESTATION_LIMIT_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 5, 1, 0, 4, 3, 4, 10, 5, 14, 10, 7, 24, 72, 8, 96, 16, 0, 0, 0, 1, 0, 2, 0, 1, 0, 1, 3, 0, 1, 0, 2, 6, 12, 3, 0, 3, 6, 12, 3, 3, 15, 68, 117, 97, 108, 65, 116, 116, 101, 115, 116, 97, 116, 105, 111, 110, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 20, 115, 101, 116, 95, 109, 105, 99, 114, 111, 108, 105, 98, 114, 97, 95, 108, 105, 109, 105, 116, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1, 7, 10, 0, 10, 1, 17, 1, 11, 0, 10, 2, 17, 0, 2};
 
     private static byte[] UPDATE_EXCHANGE_RATE_CODE = {-95, 28, -21, 11, 1, 0, 0, 0, 7, 1, 0, 6, 2, 6, 4, 3, 10, 16, 4, 26, 2, 5, 28, 25, 7, 53, 100, 8, -103, 1, 16, 0, 0, 0, 1, 0, 2, 0, 0, 2, 0, 0, 3, 0, 1, 0, 2, 4, 2, 3, 0, 1, 5, 4, 3, 1, 1, 2, 6, 2, 3, 3, 1, 8, 0, 2, 6, 12, 3, 0, 2, 6, 12, 8, 0, 4, 6, 12, 3, 3, 3, 1, 9, 0, 12, 70, 105, 120, 101, 100, 80, 111, 105, 110, 116, 51, 50, 5, 76, 105, 98, 114, 97, 12, 83, 108, 105, 100, 105, 110, 103, 78, 111, 110, 99, 101, 20, 99, 114, 101, 97, 116, 101, 95, 102, 114, 111, 109, 95, 114, 97, 116, 105, 111, 110, 97, 108, 21, 114, 101, 99, 111, 114, 100, 95, 110, 111, 110, 99, 101, 95, 111, 114, 95, 97, 98, 111, 114, 116, 24, 117, 112, 100, 97, 116, 101, 95, 108, 98, 114, 95, 101, 120, 99, 104, 97, 110, 103, 101, 95, 114, 97, 116, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 5, 1, 11, 10, 0, 10, 1, 17, 1, 10, 2, 10, 3, 17, 0, 12, 4, 11, 0, 11, 4, 56, 0, 2};
@@ -2390,7 +2300,6 @@ public final class Helpers {
         map.put(new Bytes(CREATE_VALIDATOR_ACCOUNT_CODE), (DecodingHelper)((script) -> Helpers.decode_create_validator_account_script(script)));
         map.put(new Bytes(CREATE_VALIDATOR_OPERATOR_ACCOUNT_CODE), (DecodingHelper)((script) -> Helpers.decode_create_validator_operator_account_script(script)));
         map.put(new Bytes(FREEZE_ACCOUNT_CODE), (DecodingHelper)((script) -> Helpers.decode_freeze_account_script(script)));
-        map.put(new Bytes(MINT_LBR_CODE), (DecodingHelper)((script) -> Helpers.decode_mint_lbr_script(script)));
         map.put(new Bytes(PEER_TO_PEER_WITH_METADATA_CODE), (DecodingHelper)((script) -> Helpers.decode_peer_to_peer_with_metadata_script(script)));
         map.put(new Bytes(PREBURN_CODE), (DecodingHelper)((script) -> Helpers.decode_preburn_script(script)));
         map.put(new Bytes(PUBLISH_SHARED_ED25519_PUBLIC_KEY_CODE), (DecodingHelper)((script) -> Helpers.decode_publish_shared_ed25519_public_key_script(script)));
@@ -2407,7 +2316,6 @@ public final class Helpers {
         map.put(new Bytes(SET_VALIDATOR_OPERATOR_WITH_NONCE_ADMIN_CODE), (DecodingHelper)((script) -> Helpers.decode_set_validator_operator_with_nonce_admin_script(script)));
         map.put(new Bytes(TIERED_MINT_CODE), (DecodingHelper)((script) -> Helpers.decode_tiered_mint_script(script)));
         map.put(new Bytes(UNFREEZE_ACCOUNT_CODE), (DecodingHelper)((script) -> Helpers.decode_unfreeze_account_script(script)));
-        map.put(new Bytes(UNMINT_LBR_CODE), (DecodingHelper)((script) -> Helpers.decode_unmint_lbr_script(script)));
         map.put(new Bytes(UPDATE_DUAL_ATTESTATION_LIMIT_CODE), (DecodingHelper)((script) -> Helpers.decode_update_dual_attestation_limit_script(script)));
         map.put(new Bytes(UPDATE_EXCHANGE_RATE_CODE), (DecodingHelper)((script) -> Helpers.decode_update_exchange_rate_script(script)));
         map.put(new Bytes(UPDATE_LIBRA_VERSION_CODE), (DecodingHelper)((script) -> Helpers.decode_update_libra_version_script(script)));

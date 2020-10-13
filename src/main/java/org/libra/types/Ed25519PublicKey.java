@@ -7,7 +7,7 @@ public final class Ed25519PublicKey {
     public final com.novi.serde.Bytes value;
 
     public Ed25519PublicKey(com.novi.serde.Bytes value) {
-        assert value != null;
+        java.util.Objects.requireNonNull(value, "value must not be null");
         this.value = value;
     }
 

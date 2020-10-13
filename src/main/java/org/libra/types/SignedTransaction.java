@@ -8,8 +8,8 @@ public final class SignedTransaction {
     public final TransactionAuthenticator authenticator;
 
     public SignedTransaction(RawTransaction raw_txn, TransactionAuthenticator authenticator) {
-        assert raw_txn != null;
-        assert authenticator != null;
+        java.util.Objects.requireNonNull(raw_txn, "raw_txn must not be null");
+        java.util.Objects.requireNonNull(authenticator, "authenticator must not be null");
         this.raw_txn = raw_txn;
         this.authenticator = authenticator;
     }

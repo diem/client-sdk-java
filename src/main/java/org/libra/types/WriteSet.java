@@ -7,7 +7,7 @@ public final class WriteSet {
     public final WriteSetMut value;
 
     public WriteSet(WriteSetMut value) {
-        assert value != null;
+        java.util.Objects.requireNonNull(value, "value must not be null");
         this.value = value;
     }
 

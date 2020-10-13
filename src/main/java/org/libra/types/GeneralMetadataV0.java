@@ -9,9 +9,9 @@ public final class GeneralMetadataV0 {
     public final java.util.Optional<@com.novi.serde.Unsigned Long> referenced_event;
 
     public GeneralMetadataV0(java.util.Optional<com.novi.serde.Bytes> to_subaddress, java.util.Optional<com.novi.serde.Bytes> from_subaddress, java.util.Optional<@com.novi.serde.Unsigned Long> referenced_event) {
-        assert to_subaddress != null;
-        assert from_subaddress != null;
-        assert referenced_event != null;
+        java.util.Objects.requireNonNull(to_subaddress, "to_subaddress must not be null");
+        java.util.Objects.requireNonNull(from_subaddress, "from_subaddress must not be null");
+        java.util.Objects.requireNonNull(referenced_event, "referenced_event must not be null");
         this.to_subaddress = to_subaddress;
         this.from_subaddress = from_subaddress;
         this.referenced_event = referenced_event;

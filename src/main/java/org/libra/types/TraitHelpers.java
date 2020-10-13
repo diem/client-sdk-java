@@ -4,7 +4,9 @@ import java.math.BigInteger;
 
 final class TraitHelpers {
     static void serialize_array16_u8_array(@com.novi.serde.Unsigned Byte @com.novi.serde.ArrayLen(length=16) [] value, com.novi.serde.Serializer serializer) throws com.novi.serde.SerializationError {
-        assert value.length == 16;
+        if (value.length != 16) {
+            throw new java.lang.IllegalArgumentException("Invalid length for fixed-size array: " + value.length + " instead of "+ 16);
+        }
         for (@com.novi.serde.Unsigned Byte item : value) {
             serializer.serialize_u8(item);
         }

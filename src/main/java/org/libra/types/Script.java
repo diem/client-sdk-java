@@ -9,9 +9,9 @@ public final class Script {
     public final java.util.List<TransactionArgument> args;
 
     public Script(com.novi.serde.Bytes code, java.util.List<TypeTag> ty_args, java.util.List<TransactionArgument> args) {
-        assert code != null;
-        assert ty_args != null;
-        assert args != null;
+        java.util.Objects.requireNonNull(code, "code must not be null");
+        java.util.Objects.requireNonNull(ty_args, "ty_args must not be null");
+        java.util.Objects.requireNonNull(args, "args must not be null");
         this.code = code;
         this.ty_args = ty_args;
         this.args = args;

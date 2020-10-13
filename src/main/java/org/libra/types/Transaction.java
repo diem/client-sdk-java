@@ -39,7 +39,7 @@ public abstract class Transaction {
         public final SignedTransaction value;
 
         public UserTransaction(SignedTransaction value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 
@@ -88,7 +88,7 @@ public abstract class Transaction {
         public final WriteSetPayload value;
 
         public GenesisTransaction(WriteSetPayload value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 
@@ -137,7 +137,7 @@ public abstract class Transaction {
         public final org.libra.types.BlockMetadata value;
 
         public BlockMetadata(org.libra.types.BlockMetadata value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 

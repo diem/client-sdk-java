@@ -7,7 +7,7 @@ public final class WriteSetMut {
     public final java.util.List<com.novi.serde.Tuple2<AccessPath, WriteOp>> write_set;
 
     public WriteSetMut(java.util.List<com.novi.serde.Tuple2<AccessPath, WriteOp>> write_set) {
-        assert write_set != null;
+        java.util.Objects.requireNonNull(write_set, "write_set must not be null");
         this.write_set = write_set;
     }
 

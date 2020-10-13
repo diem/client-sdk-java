@@ -5532,26 +5532,6 @@ public final class JsonRpc {
 
     /**
      * <pre>
-     * upgrade event only
-     * hex-encoded bytes
-     * </pre>
-     *
-     * <code>optional string write_set = 9;</code>
-     */
-    java.lang.String getWriteSet();
-    /**
-     * <pre>
-     * upgrade event only
-     * hex-encoded bytes
-     * </pre>
-     *
-     * <code>optional string write_set = 9;</code>
-     */
-    com.google.protobuf.ByteString
-        getWriteSetBytes();
-
-    /**
-     * <pre>
      * newepoch event only
      * </pre>
      *
@@ -5636,7 +5616,7 @@ public final class JsonRpc {
      * baseurlrotation event only
      * </pre>
      *
-     * <code>optional string new_base_url = 17;</code>
+     * <code>optional string new_base_url = 16;</code>
      */
     java.lang.String getNewBaseUrl();
     /**
@@ -5644,7 +5624,7 @@ public final class JsonRpc {
      * baseurlrotation event only
      * </pre>
      *
-     * <code>optional string new_base_url = 17;</code>
+     * <code>optional string new_base_url = 16;</code>
      */
     com.google.protobuf.ByteString
         getNewBaseUrlBytes();
@@ -5654,9 +5634,55 @@ public final class JsonRpc {
      * compliancekeyrotation and baseurlrotation events
      * </pre>
      *
-     * <code>optional uint64 time_rotated_seconds = 16;</code>
+     * <code>optional uint64 time_rotated_seconds = 17;</code>
      */
     long getTimeRotatedSeconds();
+
+    /**
+     * <pre>
+     **
+     * createaccount event field.
+     * Hex-encoded account address bytes of the created account.
+     * </pre>
+     *
+     * <code>optional string created_address = 18;</code>
+     */
+    java.lang.String getCreatedAddress();
+    /**
+     * <pre>
+     **
+     * createaccount event field.
+     * Hex-encoded account address bytes of the created account.
+     * </pre>
+     *
+     * <code>optional string created_address = 18;</code>
+     */
+    com.google.protobuf.ByteString
+        getCreatedAddressBytes();
+
+    /**
+     * <pre>
+     **
+     * createaccount event field.
+     * Role id of the created account, see [LIP-2](https://lip.libra.org/lip-2/#move-implementation)
+     * for more details
+     * </pre>
+     *
+     * <code>optional uint64 role_id = 19;</code>
+     */
+    long getRoleId();
+
+    /**
+     * <pre>
+     **
+     * admintransaction event field.
+     * The block time when this transaction is committed.
+     * It is created by validators.
+     * </pre>
+     *
+     * <code>optional uint64 committed_timestamp_secs = 20;</code>
+     */
+    long getCommittedTimestampSecs();
   }
   /**
    * Protobuf type {@code librajsonrpctypes.EventData}
@@ -5677,7 +5703,6 @@ public final class JsonRpc {
       sender_ = "";
       receiver_ = "";
       metadata_ = "";
-      writeSet_ = "";
       epoch_ = 0L;
       round_ = 0L;
       proposer_ = "";
@@ -5686,6 +5711,9 @@ public final class JsonRpc {
       newCompliancePublicKey_ = "";
       newBaseUrl_ = "";
       timeRotatedSeconds_ = 0L;
+      createdAddress_ = "";
+      roleId_ = 0L;
+      committedTimestampSecs_ = 0L;
     }
 
     @java.lang.Override
@@ -5767,12 +5795,6 @@ public final class JsonRpc {
               metadata_ = s;
               break;
             }
-            case 74: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              writeSet_ = s;
-              break;
-            }
             case 80: {
 
               epoch_ = input.readUInt64();
@@ -5806,15 +5828,31 @@ public final class JsonRpc {
               newCompliancePublicKey_ = s;
               break;
             }
-            case 128: {
+            case 130: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              newBaseUrl_ = s;
+              break;
+            }
+            case 136: {
 
               timeRotatedSeconds_ = input.readUInt64();
               break;
             }
-            case 138: {
+            case 146: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              newBaseUrl_ = s;
+              createdAddress_ = s;
+              break;
+            }
+            case 152: {
+
+              roleId_ = input.readUInt64();
+              break;
+            }
+            case 160: {
+
+              committedTimestampSecs_ = input.readUInt64();
               break;
             }
           }
@@ -6130,50 +6168,6 @@ public final class JsonRpc {
       }
     }
 
-    public static final int WRITE_SET_FIELD_NUMBER = 9;
-    private volatile java.lang.Object writeSet_;
-    /**
-     * <pre>
-     * upgrade event only
-     * hex-encoded bytes
-     * </pre>
-     *
-     * <code>optional string write_set = 9;</code>
-     */
-    public java.lang.String getWriteSet() {
-      java.lang.Object ref = writeSet_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        writeSet_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     * upgrade event only
-     * hex-encoded bytes
-     * </pre>
-     *
-     * <code>optional string write_set = 9;</code>
-     */
-    public com.google.protobuf.ByteString
-        getWriteSetBytes() {
-      java.lang.Object ref = writeSet_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        writeSet_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
     public static final int EPOCH_FIELD_NUMBER = 10;
     private long epoch_;
     /**
@@ -6339,14 +6333,14 @@ public final class JsonRpc {
       }
     }
 
-    public static final int NEW_BASE_URL_FIELD_NUMBER = 17;
+    public static final int NEW_BASE_URL_FIELD_NUMBER = 16;
     private volatile java.lang.Object newBaseUrl_;
     /**
      * <pre>
      * baseurlrotation event only
      * </pre>
      *
-     * <code>optional string new_base_url = 17;</code>
+     * <code>optional string new_base_url = 16;</code>
      */
     public java.lang.String getNewBaseUrl() {
       java.lang.Object ref = newBaseUrl_;
@@ -6365,7 +6359,7 @@ public final class JsonRpc {
      * baseurlrotation event only
      * </pre>
      *
-     * <code>optional string new_base_url = 17;</code>
+     * <code>optional string new_base_url = 16;</code>
      */
     public com.google.protobuf.ByteString
         getNewBaseUrlBytes() {
@@ -6381,17 +6375,95 @@ public final class JsonRpc {
       }
     }
 
-    public static final int TIME_ROTATED_SECONDS_FIELD_NUMBER = 16;
+    public static final int TIME_ROTATED_SECONDS_FIELD_NUMBER = 17;
     private long timeRotatedSeconds_;
     /**
      * <pre>
      * compliancekeyrotation and baseurlrotation events
      * </pre>
      *
-     * <code>optional uint64 time_rotated_seconds = 16;</code>
+     * <code>optional uint64 time_rotated_seconds = 17;</code>
      */
     public long getTimeRotatedSeconds() {
       return timeRotatedSeconds_;
+    }
+
+    public static final int CREATED_ADDRESS_FIELD_NUMBER = 18;
+    private volatile java.lang.Object createdAddress_;
+    /**
+     * <pre>
+     **
+     * createaccount event field.
+     * Hex-encoded account address bytes of the created account.
+     * </pre>
+     *
+     * <code>optional string created_address = 18;</code>
+     */
+    public java.lang.String getCreatedAddress() {
+      java.lang.Object ref = createdAddress_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        createdAddress_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     **
+     * createaccount event field.
+     * Hex-encoded account address bytes of the created account.
+     * </pre>
+     *
+     * <code>optional string created_address = 18;</code>
+     */
+    public com.google.protobuf.ByteString
+        getCreatedAddressBytes() {
+      java.lang.Object ref = createdAddress_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        createdAddress_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ROLE_ID_FIELD_NUMBER = 19;
+    private long roleId_;
+    /**
+     * <pre>
+     **
+     * createaccount event field.
+     * Role id of the created account, see [LIP-2](https://lip.libra.org/lip-2/#move-implementation)
+     * for more details
+     * </pre>
+     *
+     * <code>optional uint64 role_id = 19;</code>
+     */
+    public long getRoleId() {
+      return roleId_;
+    }
+
+    public static final int COMMITTED_TIMESTAMP_SECS_FIELD_NUMBER = 20;
+    private long committedTimestampSecs_;
+    /**
+     * <pre>
+     **
+     * admintransaction event field.
+     * The block time when this transaction is committed.
+     * It is created by validators.
+     * </pre>
+     *
+     * <code>optional uint64 committed_timestamp_secs = 20;</code>
+     */
+    public long getCommittedTimestampSecs() {
+      return committedTimestampSecs_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -6430,9 +6502,6 @@ public final class JsonRpc {
       if (!getMetadataBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 8, metadata_);
       }
-      if (!getWriteSetBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 9, writeSet_);
-      }
       if (epoch_ != 0L) {
         output.writeUInt64(10, epoch_);
       }
@@ -6451,11 +6520,20 @@ public final class JsonRpc {
       if (!getNewCompliancePublicKeyBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 15, newCompliancePublicKey_);
       }
-      if (timeRotatedSeconds_ != 0L) {
-        output.writeUInt64(16, timeRotatedSeconds_);
-      }
       if (!getNewBaseUrlBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 17, newBaseUrl_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 16, newBaseUrl_);
+      }
+      if (timeRotatedSeconds_ != 0L) {
+        output.writeUInt64(17, timeRotatedSeconds_);
+      }
+      if (!getCreatedAddressBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 18, createdAddress_);
+      }
+      if (roleId_ != 0L) {
+        output.writeUInt64(19, roleId_);
+      }
+      if (committedTimestampSecs_ != 0L) {
+        output.writeUInt64(20, committedTimestampSecs_);
       }
     }
 
@@ -6490,9 +6568,6 @@ public final class JsonRpc {
       if (!getMetadataBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, metadata_);
       }
-      if (!getWriteSetBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, writeSet_);
-      }
       if (epoch_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(10, epoch_);
@@ -6514,12 +6589,23 @@ public final class JsonRpc {
       if (!getNewCompliancePublicKeyBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(15, newCompliancePublicKey_);
       }
+      if (!getNewBaseUrlBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(16, newBaseUrl_);
+      }
       if (timeRotatedSeconds_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(16, timeRotatedSeconds_);
+          .computeUInt64Size(17, timeRotatedSeconds_);
       }
-      if (!getNewBaseUrlBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(17, newBaseUrl_);
+      if (!getCreatedAddressBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(18, createdAddress_);
+      }
+      if (roleId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(19, roleId_);
+      }
+      if (committedTimestampSecs_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(20, committedTimestampSecs_);
       }
       memoizedSize = size;
       return size;
@@ -6558,8 +6644,6 @@ public final class JsonRpc {
           .equals(other.getReceiver());
       result = result && getMetadata()
           .equals(other.getMetadata());
-      result = result && getWriteSet()
-          .equals(other.getWriteSet());
       result = result && (getEpoch()
           == other.getEpoch());
       result = result && (getRound()
@@ -6576,6 +6660,12 @@ public final class JsonRpc {
           .equals(other.getNewBaseUrl());
       result = result && (getTimeRotatedSeconds()
           == other.getTimeRotatedSeconds());
+      result = result && getCreatedAddress()
+          .equals(other.getCreatedAddress());
+      result = result && (getRoleId()
+          == other.getRoleId());
+      result = result && (getCommittedTimestampSecs()
+          == other.getCommittedTimestampSecs());
       return result;
     }
 
@@ -6605,8 +6695,6 @@ public final class JsonRpc {
       hash = (53 * hash) + getReceiver().hashCode();
       hash = (37 * hash) + METADATA_FIELD_NUMBER;
       hash = (53 * hash) + getMetadata().hashCode();
-      hash = (37 * hash) + WRITE_SET_FIELD_NUMBER;
-      hash = (53 * hash) + getWriteSet().hashCode();
       hash = (37 * hash) + EPOCH_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getEpoch());
@@ -6627,6 +6715,14 @@ public final class JsonRpc {
       hash = (37 * hash) + TIME_ROTATED_SECONDS_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getTimeRotatedSeconds());
+      hash = (37 * hash) + CREATED_ADDRESS_FIELD_NUMBER;
+      hash = (53 * hash) + getCreatedAddress().hashCode();
+      hash = (37 * hash) + ROLE_ID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getRoleId());
+      hash = (37 * hash) + COMMITTED_TIMESTAMP_SECS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getCommittedTimestampSecs());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -6765,8 +6861,6 @@ public final class JsonRpc {
 
         metadata_ = "";
 
-        writeSet_ = "";
-
         epoch_ = 0L;
 
         round_ = 0L;
@@ -6782,6 +6876,12 @@ public final class JsonRpc {
         newBaseUrl_ = "";
 
         timeRotatedSeconds_ = 0L;
+
+        createdAddress_ = "";
+
+        roleId_ = 0L;
+
+        committedTimestampSecs_ = 0L;
 
         return this;
       }
@@ -6817,7 +6917,6 @@ public final class JsonRpc {
         result.sender_ = sender_;
         result.receiver_ = receiver_;
         result.metadata_ = metadata_;
-        result.writeSet_ = writeSet_;
         result.epoch_ = epoch_;
         result.round_ = round_;
         result.proposer_ = proposer_;
@@ -6826,6 +6925,9 @@ public final class JsonRpc {
         result.newCompliancePublicKey_ = newCompliancePublicKey_;
         result.newBaseUrl_ = newBaseUrl_;
         result.timeRotatedSeconds_ = timeRotatedSeconds_;
+        result.createdAddress_ = createdAddress_;
+        result.roleId_ = roleId_;
+        result.committedTimestampSecs_ = committedTimestampSecs_;
         onBuilt();
         return result;
       }
@@ -6897,10 +6999,6 @@ public final class JsonRpc {
           metadata_ = other.metadata_;
           onChanged();
         }
-        if (!other.getWriteSet().isEmpty()) {
-          writeSet_ = other.writeSet_;
-          onChanged();
-        }
         if (other.getEpoch() != 0L) {
           setEpoch(other.getEpoch());
         }
@@ -6928,6 +7026,16 @@ public final class JsonRpc {
         }
         if (other.getTimeRotatedSeconds() != 0L) {
           setTimeRotatedSeconds(other.getTimeRotatedSeconds());
+        }
+        if (!other.getCreatedAddress().isEmpty()) {
+          createdAddress_ = other.createdAddress_;
+          onChanged();
+        }
+        if (other.getRoleId() != 0L) {
+          setRoleId(other.getRoleId());
+        }
+        if (other.getCommittedTimestampSecs() != 0L) {
+          setCommittedTimestampSecs(other.getCommittedTimestampSecs());
         }
         onChanged();
         return this;
@@ -7658,100 +7766,6 @@ public final class JsonRpc {
         return this;
       }
 
-      private java.lang.Object writeSet_ = "";
-      /**
-       * <pre>
-       * upgrade event only
-       * hex-encoded bytes
-       * </pre>
-       *
-       * <code>optional string write_set = 9;</code>
-       */
-      public java.lang.String getWriteSet() {
-        java.lang.Object ref = writeSet_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          writeSet_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       * upgrade event only
-       * hex-encoded bytes
-       * </pre>
-       *
-       * <code>optional string write_set = 9;</code>
-       */
-      public com.google.protobuf.ByteString
-          getWriteSetBytes() {
-        java.lang.Object ref = writeSet_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          writeSet_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       * upgrade event only
-       * hex-encoded bytes
-       * </pre>
-       *
-       * <code>optional string write_set = 9;</code>
-       */
-      public Builder setWriteSet(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        writeSet_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * upgrade event only
-       * hex-encoded bytes
-       * </pre>
-       *
-       * <code>optional string write_set = 9;</code>
-       */
-      public Builder clearWriteSet() {
-        
-        writeSet_ = getDefaultInstance().getWriteSet();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * upgrade event only
-       * hex-encoded bytes
-       * </pre>
-       *
-       * <code>optional string write_set = 9;</code>
-       */
-      public Builder setWriteSetBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        writeSet_ = value;
-        onChanged();
-        return this;
-      }
-
       private long epoch_ ;
       /**
        * <pre>
@@ -8137,7 +8151,7 @@ public final class JsonRpc {
        * baseurlrotation event only
        * </pre>
        *
-       * <code>optional string new_base_url = 17;</code>
+       * <code>optional string new_base_url = 16;</code>
        */
       public java.lang.String getNewBaseUrl() {
         java.lang.Object ref = newBaseUrl_;
@@ -8156,7 +8170,7 @@ public final class JsonRpc {
        * baseurlrotation event only
        * </pre>
        *
-       * <code>optional string new_base_url = 17;</code>
+       * <code>optional string new_base_url = 16;</code>
        */
       public com.google.protobuf.ByteString
           getNewBaseUrlBytes() {
@@ -8176,7 +8190,7 @@ public final class JsonRpc {
        * baseurlrotation event only
        * </pre>
        *
-       * <code>optional string new_base_url = 17;</code>
+       * <code>optional string new_base_url = 16;</code>
        */
       public Builder setNewBaseUrl(
           java.lang.String value) {
@@ -8193,7 +8207,7 @@ public final class JsonRpc {
        * baseurlrotation event only
        * </pre>
        *
-       * <code>optional string new_base_url = 17;</code>
+       * <code>optional string new_base_url = 16;</code>
        */
       public Builder clearNewBaseUrl() {
         
@@ -8206,7 +8220,7 @@ public final class JsonRpc {
        * baseurlrotation event only
        * </pre>
        *
-       * <code>optional string new_base_url = 17;</code>
+       * <code>optional string new_base_url = 16;</code>
        */
       public Builder setNewBaseUrlBytes(
           com.google.protobuf.ByteString value) {
@@ -8226,7 +8240,7 @@ public final class JsonRpc {
        * compliancekeyrotation and baseurlrotation events
        * </pre>
        *
-       * <code>optional uint64 time_rotated_seconds = 16;</code>
+       * <code>optional uint64 time_rotated_seconds = 17;</code>
        */
       public long getTimeRotatedSeconds() {
         return timeRotatedSeconds_;
@@ -8236,7 +8250,7 @@ public final class JsonRpc {
        * compliancekeyrotation and baseurlrotation events
        * </pre>
        *
-       * <code>optional uint64 time_rotated_seconds = 16;</code>
+       * <code>optional uint64 time_rotated_seconds = 17;</code>
        */
       public Builder setTimeRotatedSeconds(long value) {
         
@@ -8249,11 +8263,204 @@ public final class JsonRpc {
        * compliancekeyrotation and baseurlrotation events
        * </pre>
        *
-       * <code>optional uint64 time_rotated_seconds = 16;</code>
+       * <code>optional uint64 time_rotated_seconds = 17;</code>
        */
       public Builder clearTimeRotatedSeconds() {
         
         timeRotatedSeconds_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object createdAddress_ = "";
+      /**
+       * <pre>
+       **
+       * createaccount event field.
+       * Hex-encoded account address bytes of the created account.
+       * </pre>
+       *
+       * <code>optional string created_address = 18;</code>
+       */
+      public java.lang.String getCreatedAddress() {
+        java.lang.Object ref = createdAddress_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          createdAddress_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * createaccount event field.
+       * Hex-encoded account address bytes of the created account.
+       * </pre>
+       *
+       * <code>optional string created_address = 18;</code>
+       */
+      public com.google.protobuf.ByteString
+          getCreatedAddressBytes() {
+        java.lang.Object ref = createdAddress_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          createdAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * createaccount event field.
+       * Hex-encoded account address bytes of the created account.
+       * </pre>
+       *
+       * <code>optional string created_address = 18;</code>
+       */
+      public Builder setCreatedAddress(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        createdAddress_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * createaccount event field.
+       * Hex-encoded account address bytes of the created account.
+       * </pre>
+       *
+       * <code>optional string created_address = 18;</code>
+       */
+      public Builder clearCreatedAddress() {
+        
+        createdAddress_ = getDefaultInstance().getCreatedAddress();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * createaccount event field.
+       * Hex-encoded account address bytes of the created account.
+       * </pre>
+       *
+       * <code>optional string created_address = 18;</code>
+       */
+      public Builder setCreatedAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        createdAddress_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long roleId_ ;
+      /**
+       * <pre>
+       **
+       * createaccount event field.
+       * Role id of the created account, see [LIP-2](https://lip.libra.org/lip-2/#move-implementation)
+       * for more details
+       * </pre>
+       *
+       * <code>optional uint64 role_id = 19;</code>
+       */
+      public long getRoleId() {
+        return roleId_;
+      }
+      /**
+       * <pre>
+       **
+       * createaccount event field.
+       * Role id of the created account, see [LIP-2](https://lip.libra.org/lip-2/#move-implementation)
+       * for more details
+       * </pre>
+       *
+       * <code>optional uint64 role_id = 19;</code>
+       */
+      public Builder setRoleId(long value) {
+        
+        roleId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * createaccount event field.
+       * Role id of the created account, see [LIP-2](https://lip.libra.org/lip-2/#move-implementation)
+       * for more details
+       * </pre>
+       *
+       * <code>optional uint64 role_id = 19;</code>
+       */
+      public Builder clearRoleId() {
+        
+        roleId_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long committedTimestampSecs_ ;
+      /**
+       * <pre>
+       **
+       * admintransaction event field.
+       * The block time when this transaction is committed.
+       * It is created by validators.
+       * </pre>
+       *
+       * <code>optional uint64 committed_timestamp_secs = 20;</code>
+       */
+      public long getCommittedTimestampSecs() {
+        return committedTimestampSecs_;
+      }
+      /**
+       * <pre>
+       **
+       * admintransaction event field.
+       * The block time when this transaction is committed.
+       * It is created by validators.
+       * </pre>
+       *
+       * <code>optional uint64 committed_timestamp_secs = 20;</code>
+       */
+      public Builder setCommittedTimestampSecs(long value) {
+        
+        committedTimestampSecs_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * admintransaction event field.
+       * The block time when this transaction is committed.
+       * It is created by validators.
+       * </pre>
+       *
+       * <code>optional uint64 committed_timestamp_secs = 20;</code>
+       */
+      public Builder clearCommittedTimestampSecs() {
+        
+        committedTimestampSecs_ = 0L;
         onChanged();
         return this;
       }
@@ -8306,40 +8513,122 @@ public final class JsonRpc {
 
   }
 
-  public interface BlockMetadataOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:librajsonrpctypes.BlockMetadata)
+  public interface MetadataOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:librajsonrpctypes.Metadata)
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <pre>
+     **
+     * The block (ledger) version
+     * </pre>
+     *
      * <code>optional uint64 version = 1;</code>
      */
     long getVersion();
 
     /**
+     * <pre>
+     **
+     * The block (ledger) timestamp, unit is microsecond
+     * </pre>
+     *
      * <code>optional uint64 timestamp = 2;</code>
      */
     long getTimestamp();
 
     /**
+     * <pre>
+     **
+     * Chain ID of the Libra network
+     * </pre>
+     *
      * <code>optional uint32 chain_id = 3;</code>
      */
     int getChainId();
+
+    /**
+     * <pre>
+     **
+     * List of allowed scripts hex-encoded hash bytes, server may not return this field
+     * if the allow list not found in on chain configuration.
+     * </pre>
+     *
+     * <code>repeated string script_hash_allow_list = 4;</code>
+     */
+    java.util.List<java.lang.String>
+        getScriptHashAllowListList();
+    /**
+     * <pre>
+     **
+     * List of allowed scripts hex-encoded hash bytes, server may not return this field
+     * if the allow list not found in on chain configuration.
+     * </pre>
+     *
+     * <code>repeated string script_hash_allow_list = 4;</code>
+     */
+    int getScriptHashAllowListCount();
+    /**
+     * <pre>
+     **
+     * List of allowed scripts hex-encoded hash bytes, server may not return this field
+     * if the allow list not found in on chain configuration.
+     * </pre>
+     *
+     * <code>repeated string script_hash_allow_list = 4;</code>
+     */
+    java.lang.String getScriptHashAllowList(int index);
+    /**
+     * <pre>
+     **
+     * List of allowed scripts hex-encoded hash bytes, server may not return this field
+     * if the allow list not found in on chain configuration.
+     * </pre>
+     *
+     * <code>repeated string script_hash_allow_list = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getScriptHashAllowListBytes(int index);
+
+    /**
+     * <pre>
+     **
+     * True for allowing publishing customized script, server may not return this field
+     * if the flag not found in on chain configuration.
+     * </pre>
+     *
+     * <code>optional bool module_publishing_allowed = 5;</code>
+     */
+    boolean getModulePublishingAllowed();
+
+    /**
+     * <pre>
+     **
+     * Libra chain major version number.
+     * </pre>
+     *
+     * <code>optional uint64 libra_version = 6;</code>
+     */
+    long getLibraVersion();
   }
   /**
-   * Protobuf type {@code librajsonrpctypes.BlockMetadata}
+   * Protobuf type {@code librajsonrpctypes.Metadata}
    */
-  public  static final class BlockMetadata extends
+  public  static final class Metadata extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:librajsonrpctypes.BlockMetadata)
-      BlockMetadataOrBuilder {
-    // Use BlockMetadata.newBuilder() to construct.
-    private BlockMetadata(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      // @@protoc_insertion_point(message_implements:librajsonrpctypes.Metadata)
+      MetadataOrBuilder {
+    // Use Metadata.newBuilder() to construct.
+    private Metadata(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private BlockMetadata() {
+    private Metadata() {
       version_ = 0L;
       timestamp_ = 0L;
       chainId_ = 0;
+      scriptHashAllowList_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      modulePublishingAllowed_ = false;
+      libraVersion_ = 0L;
     }
 
     @java.lang.Override
@@ -8347,7 +8636,7 @@ public final class JsonRpc {
     getUnknownFields() {
       return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
-    private BlockMetadata(
+    private Metadata(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -8382,6 +8671,25 @@ public final class JsonRpc {
               chainId_ = input.readUInt32();
               break;
             }
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+                scriptHashAllowList_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              scriptHashAllowList_.add(s);
+              break;
+            }
+            case 40: {
+
+              modulePublishingAllowed_ = input.readBool();
+              break;
+            }
+            case 48: {
+
+              libraVersion_ = input.readUInt64();
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -8390,24 +8698,33 @@ public final class JsonRpc {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+          scriptHashAllowList_ = scriptHashAllowList_.getUnmodifiableView();
+        }
         makeExtensionsImmutable();
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.libra.jsonrpctypes.JsonRpc.internal_static_librajsonrpctypes_BlockMetadata_descriptor;
+      return org.libra.jsonrpctypes.JsonRpc.internal_static_librajsonrpctypes_Metadata_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.libra.jsonrpctypes.JsonRpc.internal_static_librajsonrpctypes_BlockMetadata_fieldAccessorTable
+      return org.libra.jsonrpctypes.JsonRpc.internal_static_librajsonrpctypes_Metadata_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.libra.jsonrpctypes.JsonRpc.BlockMetadata.class, org.libra.jsonrpctypes.JsonRpc.BlockMetadata.Builder.class);
+              org.libra.jsonrpctypes.JsonRpc.Metadata.class, org.libra.jsonrpctypes.JsonRpc.Metadata.Builder.class);
     }
 
+    private int bitField0_;
     public static final int VERSION_FIELD_NUMBER = 1;
     private long version_;
     /**
+     * <pre>
+     **
+     * The block (ledger) version
+     * </pre>
+     *
      * <code>optional uint64 version = 1;</code>
      */
     public long getVersion() {
@@ -8417,6 +8734,11 @@ public final class JsonRpc {
     public static final int TIMESTAMP_FIELD_NUMBER = 2;
     private long timestamp_;
     /**
+     * <pre>
+     **
+     * The block (ledger) timestamp, unit is microsecond
+     * </pre>
+     *
      * <code>optional uint64 timestamp = 2;</code>
      */
     public long getTimestamp() {
@@ -8426,10 +8748,97 @@ public final class JsonRpc {
     public static final int CHAIN_ID_FIELD_NUMBER = 3;
     private int chainId_;
     /**
+     * <pre>
+     **
+     * Chain ID of the Libra network
+     * </pre>
+     *
      * <code>optional uint32 chain_id = 3;</code>
      */
     public int getChainId() {
       return chainId_;
+    }
+
+    public static final int SCRIPT_HASH_ALLOW_LIST_FIELD_NUMBER = 4;
+    private com.google.protobuf.LazyStringList scriptHashAllowList_;
+    /**
+     * <pre>
+     **
+     * List of allowed scripts hex-encoded hash bytes, server may not return this field
+     * if the allow list not found in on chain configuration.
+     * </pre>
+     *
+     * <code>repeated string script_hash_allow_list = 4;</code>
+     */
+    public com.google.protobuf.ProtocolStringList
+        getScriptHashAllowListList() {
+      return scriptHashAllowList_;
+    }
+    /**
+     * <pre>
+     **
+     * List of allowed scripts hex-encoded hash bytes, server may not return this field
+     * if the allow list not found in on chain configuration.
+     * </pre>
+     *
+     * <code>repeated string script_hash_allow_list = 4;</code>
+     */
+    public int getScriptHashAllowListCount() {
+      return scriptHashAllowList_.size();
+    }
+    /**
+     * <pre>
+     **
+     * List of allowed scripts hex-encoded hash bytes, server may not return this field
+     * if the allow list not found in on chain configuration.
+     * </pre>
+     *
+     * <code>repeated string script_hash_allow_list = 4;</code>
+     */
+    public java.lang.String getScriptHashAllowList(int index) {
+      return scriptHashAllowList_.get(index);
+    }
+    /**
+     * <pre>
+     **
+     * List of allowed scripts hex-encoded hash bytes, server may not return this field
+     * if the allow list not found in on chain configuration.
+     * </pre>
+     *
+     * <code>repeated string script_hash_allow_list = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getScriptHashAllowListBytes(int index) {
+      return scriptHashAllowList_.getByteString(index);
+    }
+
+    public static final int MODULE_PUBLISHING_ALLOWED_FIELD_NUMBER = 5;
+    private boolean modulePublishingAllowed_;
+    /**
+     * <pre>
+     **
+     * True for allowing publishing customized script, server may not return this field
+     * if the flag not found in on chain configuration.
+     * </pre>
+     *
+     * <code>optional bool module_publishing_allowed = 5;</code>
+     */
+    public boolean getModulePublishingAllowed() {
+      return modulePublishingAllowed_;
+    }
+
+    public static final int LIBRA_VERSION_FIELD_NUMBER = 6;
+    private long libraVersion_;
+    /**
+     * <pre>
+     **
+     * Libra chain major version number.
+     * </pre>
+     *
+     * <code>optional uint64 libra_version = 6;</code>
+     */
+    public long getLibraVersion() {
+      return libraVersion_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -8453,6 +8862,15 @@ public final class JsonRpc {
       if (chainId_ != 0) {
         output.writeUInt32(3, chainId_);
       }
+      for (int i = 0; i < scriptHashAllowList_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, scriptHashAllowList_.getRaw(i));
+      }
+      if (modulePublishingAllowed_ != false) {
+        output.writeBool(5, modulePublishingAllowed_);
+      }
+      if (libraVersion_ != 0L) {
+        output.writeUInt64(6, libraVersion_);
+      }
     }
 
     public int getSerializedSize() {
@@ -8472,6 +8890,22 @@ public final class JsonRpc {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(3, chainId_);
       }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < scriptHashAllowList_.size(); i++) {
+          dataSize += computeStringSizeNoTag(scriptHashAllowList_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getScriptHashAllowListList().size();
+      }
+      if (modulePublishingAllowed_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(5, modulePublishingAllowed_);
+      }
+      if (libraVersion_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(6, libraVersion_);
+      }
       memoizedSize = size;
       return size;
     }
@@ -8482,10 +8916,10 @@ public final class JsonRpc {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof org.libra.jsonrpctypes.JsonRpc.BlockMetadata)) {
+      if (!(obj instanceof org.libra.jsonrpctypes.JsonRpc.Metadata)) {
         return super.equals(obj);
       }
-      org.libra.jsonrpctypes.JsonRpc.BlockMetadata other = (org.libra.jsonrpctypes.JsonRpc.BlockMetadata) obj;
+      org.libra.jsonrpctypes.JsonRpc.Metadata other = (org.libra.jsonrpctypes.JsonRpc.Metadata) obj;
 
       boolean result = true;
       result = result && (getVersion()
@@ -8494,6 +8928,12 @@ public final class JsonRpc {
           == other.getTimestamp());
       result = result && (getChainId()
           == other.getChainId());
+      result = result && getScriptHashAllowListList()
+          .equals(other.getScriptHashAllowListList());
+      result = result && (getModulePublishingAllowed()
+          == other.getModulePublishingAllowed());
+      result = result && (getLibraVersion()
+          == other.getLibraVersion());
       return result;
     }
 
@@ -8512,63 +8952,73 @@ public final class JsonRpc {
           getTimestamp());
       hash = (37 * hash) + CHAIN_ID_FIELD_NUMBER;
       hash = (53 * hash) + getChainId();
+      if (getScriptHashAllowListCount() > 0) {
+        hash = (37 * hash) + SCRIPT_HASH_ALLOW_LIST_FIELD_NUMBER;
+        hash = (53 * hash) + getScriptHashAllowListList().hashCode();
+      }
+      hash = (37 * hash) + MODULE_PUBLISHING_ALLOWED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getModulePublishingAllowed());
+      hash = (37 * hash) + LIBRA_VERSION_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getLibraVersion());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static org.libra.jsonrpctypes.JsonRpc.BlockMetadata parseFrom(
+    public static org.libra.jsonrpctypes.JsonRpc.Metadata parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.libra.jsonrpctypes.JsonRpc.BlockMetadata parseFrom(
+    public static org.libra.jsonrpctypes.JsonRpc.Metadata parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.libra.jsonrpctypes.JsonRpc.BlockMetadata parseFrom(byte[] data)
+    public static org.libra.jsonrpctypes.JsonRpc.Metadata parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.libra.jsonrpctypes.JsonRpc.BlockMetadata parseFrom(
+    public static org.libra.jsonrpctypes.JsonRpc.Metadata parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.libra.jsonrpctypes.JsonRpc.BlockMetadata parseFrom(java.io.InputStream input)
+    public static org.libra.jsonrpctypes.JsonRpc.Metadata parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static org.libra.jsonrpctypes.JsonRpc.BlockMetadata parseFrom(
+    public static org.libra.jsonrpctypes.JsonRpc.Metadata parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static org.libra.jsonrpctypes.JsonRpc.BlockMetadata parseDelimitedFrom(java.io.InputStream input)
+    public static org.libra.jsonrpctypes.JsonRpc.Metadata parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static org.libra.jsonrpctypes.JsonRpc.BlockMetadata parseDelimitedFrom(
+    public static org.libra.jsonrpctypes.JsonRpc.Metadata parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static org.libra.jsonrpctypes.JsonRpc.BlockMetadata parseFrom(
+    public static org.libra.jsonrpctypes.JsonRpc.Metadata parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static org.libra.jsonrpctypes.JsonRpc.BlockMetadata parseFrom(
+    public static org.libra.jsonrpctypes.JsonRpc.Metadata parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -8580,7 +9030,7 @@ public final class JsonRpc {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.libra.jsonrpctypes.JsonRpc.BlockMetadata prototype) {
+    public static Builder newBuilder(org.libra.jsonrpctypes.JsonRpc.Metadata prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -8595,25 +9045,25 @@ public final class JsonRpc {
       return builder;
     }
     /**
-     * Protobuf type {@code librajsonrpctypes.BlockMetadata}
+     * Protobuf type {@code librajsonrpctypes.Metadata}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:librajsonrpctypes.BlockMetadata)
-        org.libra.jsonrpctypes.JsonRpc.BlockMetadataOrBuilder {
+        // @@protoc_insertion_point(builder_implements:librajsonrpctypes.Metadata)
+        org.libra.jsonrpctypes.JsonRpc.MetadataOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.libra.jsonrpctypes.JsonRpc.internal_static_librajsonrpctypes_BlockMetadata_descriptor;
+        return org.libra.jsonrpctypes.JsonRpc.internal_static_librajsonrpctypes_Metadata_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.libra.jsonrpctypes.JsonRpc.internal_static_librajsonrpctypes_BlockMetadata_fieldAccessorTable
+        return org.libra.jsonrpctypes.JsonRpc.internal_static_librajsonrpctypes_Metadata_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.libra.jsonrpctypes.JsonRpc.BlockMetadata.class, org.libra.jsonrpctypes.JsonRpc.BlockMetadata.Builder.class);
+                org.libra.jsonrpctypes.JsonRpc.Metadata.class, org.libra.jsonrpctypes.JsonRpc.Metadata.Builder.class);
       }
 
-      // Construct using org.libra.jsonrpctypes.JsonRpc.BlockMetadata.newBuilder()
+      // Construct using org.libra.jsonrpctypes.JsonRpc.Metadata.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -8636,31 +9086,47 @@ public final class JsonRpc {
 
         chainId_ = 0;
 
+        scriptHashAllowList_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        modulePublishingAllowed_ = false;
+
+        libraVersion_ = 0L;
+
         return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.libra.jsonrpctypes.JsonRpc.internal_static_librajsonrpctypes_BlockMetadata_descriptor;
+        return org.libra.jsonrpctypes.JsonRpc.internal_static_librajsonrpctypes_Metadata_descriptor;
       }
 
-      public org.libra.jsonrpctypes.JsonRpc.BlockMetadata getDefaultInstanceForType() {
-        return org.libra.jsonrpctypes.JsonRpc.BlockMetadata.getDefaultInstance();
+      public org.libra.jsonrpctypes.JsonRpc.Metadata getDefaultInstanceForType() {
+        return org.libra.jsonrpctypes.JsonRpc.Metadata.getDefaultInstance();
       }
 
-      public org.libra.jsonrpctypes.JsonRpc.BlockMetadata build() {
-        org.libra.jsonrpctypes.JsonRpc.BlockMetadata result = buildPartial();
+      public org.libra.jsonrpctypes.JsonRpc.Metadata build() {
+        org.libra.jsonrpctypes.JsonRpc.Metadata result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public org.libra.jsonrpctypes.JsonRpc.BlockMetadata buildPartial() {
-        org.libra.jsonrpctypes.JsonRpc.BlockMetadata result = new org.libra.jsonrpctypes.JsonRpc.BlockMetadata(this);
+      public org.libra.jsonrpctypes.JsonRpc.Metadata buildPartial() {
+        org.libra.jsonrpctypes.JsonRpc.Metadata result = new org.libra.jsonrpctypes.JsonRpc.Metadata(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
         result.version_ = version_;
         result.timestamp_ = timestamp_;
         result.chainId_ = chainId_;
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          scriptHashAllowList_ = scriptHashAllowList_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00000008);
+        }
+        result.scriptHashAllowList_ = scriptHashAllowList_;
+        result.modulePublishingAllowed_ = modulePublishingAllowed_;
+        result.libraVersion_ = libraVersion_;
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -8692,16 +9158,16 @@ public final class JsonRpc {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.libra.jsonrpctypes.JsonRpc.BlockMetadata) {
-          return mergeFrom((org.libra.jsonrpctypes.JsonRpc.BlockMetadata)other);
+        if (other instanceof org.libra.jsonrpctypes.JsonRpc.Metadata) {
+          return mergeFrom((org.libra.jsonrpctypes.JsonRpc.Metadata)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.libra.jsonrpctypes.JsonRpc.BlockMetadata other) {
-        if (other == org.libra.jsonrpctypes.JsonRpc.BlockMetadata.getDefaultInstance()) return this;
+      public Builder mergeFrom(org.libra.jsonrpctypes.JsonRpc.Metadata other) {
+        if (other == org.libra.jsonrpctypes.JsonRpc.Metadata.getDefaultInstance()) return this;
         if (other.getVersion() != 0L) {
           setVersion(other.getVersion());
         }
@@ -8710,6 +9176,22 @@ public final class JsonRpc {
         }
         if (other.getChainId() != 0) {
           setChainId(other.getChainId());
+        }
+        if (!other.scriptHashAllowList_.isEmpty()) {
+          if (scriptHashAllowList_.isEmpty()) {
+            scriptHashAllowList_ = other.scriptHashAllowList_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+          } else {
+            ensureScriptHashAllowListIsMutable();
+            scriptHashAllowList_.addAll(other.scriptHashAllowList_);
+          }
+          onChanged();
+        }
+        if (other.getModulePublishingAllowed() != false) {
+          setModulePublishingAllowed(other.getModulePublishingAllowed());
+        }
+        if (other.getLibraVersion() != 0L) {
+          setLibraVersion(other.getLibraVersion());
         }
         onChanged();
         return this;
@@ -8723,11 +9205,11 @@ public final class JsonRpc {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.libra.jsonrpctypes.JsonRpc.BlockMetadata parsedMessage = null;
+        org.libra.jsonrpctypes.JsonRpc.Metadata parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (org.libra.jsonrpctypes.JsonRpc.BlockMetadata) e.getUnfinishedMessage();
+          parsedMessage = (org.libra.jsonrpctypes.JsonRpc.Metadata) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -8736,15 +9218,26 @@ public final class JsonRpc {
         }
         return this;
       }
+      private int bitField0_;
 
       private long version_ ;
       /**
+       * <pre>
+       **
+       * The block (ledger) version
+       * </pre>
+       *
        * <code>optional uint64 version = 1;</code>
        */
       public long getVersion() {
         return version_;
       }
       /**
+       * <pre>
+       **
+       * The block (ledger) version
+       * </pre>
+       *
        * <code>optional uint64 version = 1;</code>
        */
       public Builder setVersion(long value) {
@@ -8754,6 +9247,11 @@ public final class JsonRpc {
         return this;
       }
       /**
+       * <pre>
+       **
+       * The block (ledger) version
+       * </pre>
+       *
        * <code>optional uint64 version = 1;</code>
        */
       public Builder clearVersion() {
@@ -8765,12 +9263,22 @@ public final class JsonRpc {
 
       private long timestamp_ ;
       /**
+       * <pre>
+       **
+       * The block (ledger) timestamp, unit is microsecond
+       * </pre>
+       *
        * <code>optional uint64 timestamp = 2;</code>
        */
       public long getTimestamp() {
         return timestamp_;
       }
       /**
+       * <pre>
+       **
+       * The block (ledger) timestamp, unit is microsecond
+       * </pre>
+       *
        * <code>optional uint64 timestamp = 2;</code>
        */
       public Builder setTimestamp(long value) {
@@ -8780,6 +9288,11 @@ public final class JsonRpc {
         return this;
       }
       /**
+       * <pre>
+       **
+       * The block (ledger) timestamp, unit is microsecond
+       * </pre>
+       *
        * <code>optional uint64 timestamp = 2;</code>
        */
       public Builder clearTimestamp() {
@@ -8791,12 +9304,22 @@ public final class JsonRpc {
 
       private int chainId_ ;
       /**
+       * <pre>
+       **
+       * Chain ID of the Libra network
+       * </pre>
+       *
        * <code>optional uint32 chain_id = 3;</code>
        */
       public int getChainId() {
         return chainId_;
       }
       /**
+       * <pre>
+       **
+       * Chain ID of the Libra network
+       * </pre>
+       *
        * <code>optional uint32 chain_id = 3;</code>
        */
       public Builder setChainId(int value) {
@@ -8806,11 +9329,249 @@ public final class JsonRpc {
         return this;
       }
       /**
+       * <pre>
+       **
+       * Chain ID of the Libra network
+       * </pre>
+       *
        * <code>optional uint32 chain_id = 3;</code>
        */
       public Builder clearChainId() {
         
         chainId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringList scriptHashAllowList_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureScriptHashAllowListIsMutable() {
+        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+          scriptHashAllowList_ = new com.google.protobuf.LazyStringArrayList(scriptHashAllowList_);
+          bitField0_ |= 0x00000008;
+         }
+      }
+      /**
+       * <pre>
+       **
+       * List of allowed scripts hex-encoded hash bytes, server may not return this field
+       * if the allow list not found in on chain configuration.
+       * </pre>
+       *
+       * <code>repeated string script_hash_allow_list = 4;</code>
+       */
+      public com.google.protobuf.ProtocolStringList
+          getScriptHashAllowListList() {
+        return scriptHashAllowList_.getUnmodifiableView();
+      }
+      /**
+       * <pre>
+       **
+       * List of allowed scripts hex-encoded hash bytes, server may not return this field
+       * if the allow list not found in on chain configuration.
+       * </pre>
+       *
+       * <code>repeated string script_hash_allow_list = 4;</code>
+       */
+      public int getScriptHashAllowListCount() {
+        return scriptHashAllowList_.size();
+      }
+      /**
+       * <pre>
+       **
+       * List of allowed scripts hex-encoded hash bytes, server may not return this field
+       * if the allow list not found in on chain configuration.
+       * </pre>
+       *
+       * <code>repeated string script_hash_allow_list = 4;</code>
+       */
+      public java.lang.String getScriptHashAllowList(int index) {
+        return scriptHashAllowList_.get(index);
+      }
+      /**
+       * <pre>
+       **
+       * List of allowed scripts hex-encoded hash bytes, server may not return this field
+       * if the allow list not found in on chain configuration.
+       * </pre>
+       *
+       * <code>repeated string script_hash_allow_list = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getScriptHashAllowListBytes(int index) {
+        return scriptHashAllowList_.getByteString(index);
+      }
+      /**
+       * <pre>
+       **
+       * List of allowed scripts hex-encoded hash bytes, server may not return this field
+       * if the allow list not found in on chain configuration.
+       * </pre>
+       *
+       * <code>repeated string script_hash_allow_list = 4;</code>
+       */
+      public Builder setScriptHashAllowList(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureScriptHashAllowListIsMutable();
+        scriptHashAllowList_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of allowed scripts hex-encoded hash bytes, server may not return this field
+       * if the allow list not found in on chain configuration.
+       * </pre>
+       *
+       * <code>repeated string script_hash_allow_list = 4;</code>
+       */
+      public Builder addScriptHashAllowList(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureScriptHashAllowListIsMutable();
+        scriptHashAllowList_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of allowed scripts hex-encoded hash bytes, server may not return this field
+       * if the allow list not found in on chain configuration.
+       * </pre>
+       *
+       * <code>repeated string script_hash_allow_list = 4;</code>
+       */
+      public Builder addAllScriptHashAllowList(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureScriptHashAllowListIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, scriptHashAllowList_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of allowed scripts hex-encoded hash bytes, server may not return this field
+       * if the allow list not found in on chain configuration.
+       * </pre>
+       *
+       * <code>repeated string script_hash_allow_list = 4;</code>
+       */
+      public Builder clearScriptHashAllowList() {
+        scriptHashAllowList_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of allowed scripts hex-encoded hash bytes, server may not return this field
+       * if the allow list not found in on chain configuration.
+       * </pre>
+       *
+       * <code>repeated string script_hash_allow_list = 4;</code>
+       */
+      public Builder addScriptHashAllowListBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        ensureScriptHashAllowListIsMutable();
+        scriptHashAllowList_.add(value);
+        onChanged();
+        return this;
+      }
+
+      private boolean modulePublishingAllowed_ ;
+      /**
+       * <pre>
+       **
+       * True for allowing publishing customized script, server may not return this field
+       * if the flag not found in on chain configuration.
+       * </pre>
+       *
+       * <code>optional bool module_publishing_allowed = 5;</code>
+       */
+      public boolean getModulePublishingAllowed() {
+        return modulePublishingAllowed_;
+      }
+      /**
+       * <pre>
+       **
+       * True for allowing publishing customized script, server may not return this field
+       * if the flag not found in on chain configuration.
+       * </pre>
+       *
+       * <code>optional bool module_publishing_allowed = 5;</code>
+       */
+      public Builder setModulePublishingAllowed(boolean value) {
+        
+        modulePublishingAllowed_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * True for allowing publishing customized script, server may not return this field
+       * if the flag not found in on chain configuration.
+       * </pre>
+       *
+       * <code>optional bool module_publishing_allowed = 5;</code>
+       */
+      public Builder clearModulePublishingAllowed() {
+        
+        modulePublishingAllowed_ = false;
+        onChanged();
+        return this;
+      }
+
+      private long libraVersion_ ;
+      /**
+       * <pre>
+       **
+       * Libra chain major version number.
+       * </pre>
+       *
+       * <code>optional uint64 libra_version = 6;</code>
+       */
+      public long getLibraVersion() {
+        return libraVersion_;
+      }
+      /**
+       * <pre>
+       **
+       * Libra chain major version number.
+       * </pre>
+       *
+       * <code>optional uint64 libra_version = 6;</code>
+       */
+      public Builder setLibraVersion(long value) {
+        
+        libraVersion_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * Libra chain major version number.
+       * </pre>
+       *
+       * <code>optional uint64 libra_version = 6;</code>
+       */
+      public Builder clearLibraVersion() {
+        
+        libraVersion_ = 0L;
         onChanged();
         return this;
       }
@@ -8825,39 +9586,39 @@ public final class JsonRpc {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:librajsonrpctypes.BlockMetadata)
+      // @@protoc_insertion_point(builder_scope:librajsonrpctypes.Metadata)
     }
 
-    // @@protoc_insertion_point(class_scope:librajsonrpctypes.BlockMetadata)
-    private static final org.libra.jsonrpctypes.JsonRpc.BlockMetadata DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:librajsonrpctypes.Metadata)
+    private static final org.libra.jsonrpctypes.JsonRpc.Metadata DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new org.libra.jsonrpctypes.JsonRpc.BlockMetadata();
+      DEFAULT_INSTANCE = new org.libra.jsonrpctypes.JsonRpc.Metadata();
     }
 
-    public static org.libra.jsonrpctypes.JsonRpc.BlockMetadata getDefaultInstance() {
+    public static org.libra.jsonrpctypes.JsonRpc.Metadata getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<BlockMetadata>
-        PARSER = new com.google.protobuf.AbstractParser<BlockMetadata>() {
-      public BlockMetadata parsePartialFrom(
+    private static final com.google.protobuf.Parser<Metadata>
+        PARSER = new com.google.protobuf.AbstractParser<Metadata>() {
+      public Metadata parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-          return new BlockMetadata(input, extensionRegistry);
+          return new Metadata(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<BlockMetadata> parser() {
+    public static com.google.protobuf.Parser<Metadata> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<BlockMetadata> getParserForType() {
+    public com.google.protobuf.Parser<Metadata> getParserForType() {
       return PARSER;
     }
 
-    public org.libra.jsonrpctypes.JsonRpc.BlockMetadata getDefaultInstanceForType() {
+    public org.libra.jsonrpctypes.JsonRpc.Metadata getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -13505,10 +14266,24 @@ public final class JsonRpc {
       com.google.protobuf.MessageOrBuilder {
 
     /**
+     * <pre>
+     **
+     * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+     * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+     * It is possible server side does not know the code and the code is valid.
+     * </pre>
+     *
      * <code>optional string type = 1;</code>
      */
     java.lang.String getType();
     /**
+     * <pre>
+     **
+     * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+     * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+     * It is possible server side does not know the code and the code is valid.
+     * </pre>
+     *
      * <code>optional string type = 1;</code>
      */
     com.google.protobuf.ByteString
@@ -13516,96 +14291,223 @@ public final class JsonRpc {
 
     /**
      * <pre>
-     * peer_to_peer_transaction and mint_transaction
-     * hex-encoded bytes
+     **
+     * Hex-encoded compiled move script bytes.
      * </pre>
      *
-     * <code>optional string receiver = 2;</code>
+     * <code>optional string code = 2;</code>
+     */
+    java.lang.String getCode();
+    /**
+     * <pre>
+     **
+     * Hex-encoded compiled move script bytes.
+     * </pre>
+     *
+     * <code>optional string code = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getCodeBytes();
+
+    /**
+     * <pre>
+     **
+     * List of string value of the script arguments. Contains type information.
+     * Argument value to string formatting:
+     * - u8 value `12` =&gt; "{U8: 12}"
+     * - u64 value `12244` =&gt; "{U64: 12244}"
+     * - u128 value `12244` =&gt; "{U128: 12244}"
+     * - boolean value `true` =&gt; "{BOOL: true}"
+     * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+     * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+     * </pre>
+     *
+     * <code>repeated string arguments = 3;</code>
+     */
+    java.util.List<java.lang.String>
+        getArgumentsList();
+    /**
+     * <pre>
+     **
+     * List of string value of the script arguments. Contains type information.
+     * Argument value to string formatting:
+     * - u8 value `12` =&gt; "{U8: 12}"
+     * - u64 value `12244` =&gt; "{U64: 12244}"
+     * - u128 value `12244` =&gt; "{U128: 12244}"
+     * - boolean value `true` =&gt; "{BOOL: true}"
+     * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+     * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+     * </pre>
+     *
+     * <code>repeated string arguments = 3;</code>
+     */
+    int getArgumentsCount();
+    /**
+     * <pre>
+     **
+     * List of string value of the script arguments. Contains type information.
+     * Argument value to string formatting:
+     * - u8 value `12` =&gt; "{U8: 12}"
+     * - u64 value `12244` =&gt; "{U64: 12244}"
+     * - u128 value `12244` =&gt; "{U128: 12244}"
+     * - boolean value `true` =&gt; "{BOOL: true}"
+     * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+     * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+     * </pre>
+     *
+     * <code>repeated string arguments = 3;</code>
+     */
+    java.lang.String getArguments(int index);
+    /**
+     * <pre>
+     **
+     * List of string value of the script arguments. Contains type information.
+     * Argument value to string formatting:
+     * - u8 value `12` =&gt; "{U8: 12}"
+     * - u64 value `12244` =&gt; "{U64: 12244}"
+     * - u128 value `12244` =&gt; "{U128: 12244}"
+     * - boolean value `true` =&gt; "{BOOL: true}"
+     * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+     * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+     * </pre>
+     *
+     * <code>repeated string arguments = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getArgumentsBytes(int index);
+
+    /**
+     * <pre>
+     **
+     * List of type arguments, converted into string.
+     * </pre>
+     *
+     * <code>repeated string type_arguments = 4;</code>
+     */
+    java.util.List<java.lang.String>
+        getTypeArgumentsList();
+    /**
+     * <pre>
+     **
+     * List of type arguments, converted into string.
+     * </pre>
+     *
+     * <code>repeated string type_arguments = 4;</code>
+     */
+    int getTypeArgumentsCount();
+    /**
+     * <pre>
+     **
+     * List of type arguments, converted into string.
+     * </pre>
+     *
+     * <code>repeated string type_arguments = 4;</code>
+     */
+    java.lang.String getTypeArguments(int index);
+    /**
+     * <pre>
+     **
+     * List of type arguments, converted into string.
+     * </pre>
+     *
+     * <code>repeated string type_arguments = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getTypeArgumentsBytes(int index);
+
+    /**
+     * <pre>
+     **
+     * hex-encoded receiver account address bytes
+     * </pre>
+     *
+     * <code>optional string receiver = 5;</code>
      */
     java.lang.String getReceiver();
     /**
      * <pre>
-     * peer_to_peer_transaction and mint_transaction
-     * hex-encoded bytes
+     **
+     * hex-encoded receiver account address bytes
      * </pre>
      *
-     * <code>optional string receiver = 2;</code>
+     * <code>optional string receiver = 5;</code>
      */
     com.google.protobuf.ByteString
         getReceiverBytes();
 
     /**
-     * <code>optional uint64 amount = 3;</code>
+     * <pre>
+     **
+     * peer to peer transfer amount.
+     * </pre>
+     *
+     * <code>optional uint64 amount = 6;</code>
      */
     long getAmount();
 
     /**
-     * <code>optional string currency = 4;</code>
+     * <pre>
+     **
+     * peer to peer transfer currency code.
+     * </pre>
+     *
+     * <code>optional string currency = 7;</code>
      */
     java.lang.String getCurrency();
     /**
-     * <code>optional string currency = 4;</code>
+     * <pre>
+     **
+     * peer to peer transfer currency code.
+     * </pre>
+     *
+     * <code>optional string currency = 7;</code>
      */
     com.google.protobuf.ByteString
         getCurrencyBytes();
 
     /**
      * <pre>
-     * peer_to_peer_transaction only
-     * hex-encoded bytes
+     **
+     * Metadata of the transaction, LCS serialized hex-encoded string.
+     * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
      * </pre>
      *
-     * <code>optional string metadata = 5;</code>
+     * <code>optional string metadata = 8;</code>
      */
     java.lang.String getMetadata();
     /**
      * <pre>
-     * peer_to_peer_transaction only
-     * hex-encoded bytes
+     **
+     * Metadata of the transaction, LCS serialized hex-encoded string.
+     * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
      * </pre>
      *
-     * <code>optional string metadata = 5;</code>
+     * <code>optional string metadata = 8;</code>
      */
     com.google.protobuf.ByteString
         getMetadataBytes();
 
     /**
      * <pre>
-     * hex-encoded bytes
+     **
+     * Hex-encoded metadata signature, use this to validate metadata.
+     * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
      * </pre>
      *
-     * <code>optional string metadata_signature = 6;</code>
+     * <code>optional string metadata_signature = 9;</code>
      */
     java.lang.String getMetadataSignature();
     /**
      * <pre>
-     * hex-encoded bytes
+     **
+     * Hex-encoded metadata signature, use this to validate metadata.
+     * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
      * </pre>
      *
-     * <code>optional string metadata_signature = 6;</code>
+     * <code>optional string metadata_signature = 9;</code>
      */
     com.google.protobuf.ByteString
         getMetadataSignatureBytes();
-
-    /**
-     * <pre>
-     * mint_transaction only
-     * hex-encoded bytes
-     * </pre>
-     *
-     * <code>optional string auth_key_prefix = 7;</code>
-     */
-    java.lang.String getAuthKeyPrefix();
-    /**
-     * <pre>
-     * mint_transaction only
-     * hex-encoded bytes
-     * </pre>
-     *
-     * <code>optional string auth_key_prefix = 7;</code>
-     */
-    com.google.protobuf.ByteString
-        getAuthKeyPrefixBytes();
   }
   /**
    * Protobuf type {@code librajsonrpctypes.Script}
@@ -13620,12 +14522,14 @@ public final class JsonRpc {
     }
     private Script() {
       type_ = "";
+      code_ = "";
+      arguments_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      typeArguments_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       receiver_ = "";
       amount_ = 0L;
       currency_ = "";
       metadata_ = "";
       metadataSignature_ = "";
-      authKeyPrefix_ = "";
     }
 
     @java.lang.Override
@@ -13662,36 +14566,54 @@ public final class JsonRpc {
             case 18: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              receiver_ = s;
+              code_ = s;
               break;
             }
-            case 24: {
-
-              amount_ = input.readUInt64();
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                arguments_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              arguments_.add(s);
               break;
             }
             case 34: {
               java.lang.String s = input.readStringRequireUtf8();
-
-              currency_ = s;
+              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+                typeArguments_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              typeArguments_.add(s);
               break;
             }
             case 42: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              metadata_ = s;
+              receiver_ = s;
               break;
             }
-            case 50: {
-              java.lang.String s = input.readStringRequireUtf8();
+            case 48: {
 
-              metadataSignature_ = s;
+              amount_ = input.readUInt64();
               break;
             }
             case 58: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              authKeyPrefix_ = s;
+              currency_ = s;
+              break;
+            }
+            case 66: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              metadata_ = s;
+              break;
+            }
+            case 74: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              metadataSignature_ = s;
               break;
             }
           }
@@ -13702,6 +14624,12 @@ public final class JsonRpc {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          arguments_ = arguments_.getUnmodifiableView();
+        }
+        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+          typeArguments_ = typeArguments_.getUnmodifiableView();
+        }
         makeExtensionsImmutable();
       }
     }
@@ -13717,9 +14645,17 @@ public final class JsonRpc {
               org.libra.jsonrpctypes.JsonRpc.Script.class, org.libra.jsonrpctypes.JsonRpc.Script.Builder.class);
     }
 
+    private int bitField0_;
     public static final int TYPE_FIELD_NUMBER = 1;
     private volatile java.lang.Object type_;
     /**
+     * <pre>
+     **
+     * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+     * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+     * It is possible server side does not know the code and the code is valid.
+     * </pre>
+     *
      * <code>optional string type = 1;</code>
      */
     public java.lang.String getType() {
@@ -13735,6 +14671,13 @@ public final class JsonRpc {
       }
     }
     /**
+     * <pre>
+     **
+     * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+     * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+     * It is possible server side does not know the code and the code is valid.
+     * </pre>
+     *
      * <code>optional string type = 1;</code>
      */
     public com.google.protobuf.ByteString
@@ -13751,15 +14694,185 @@ public final class JsonRpc {
       }
     }
 
-    public static final int RECEIVER_FIELD_NUMBER = 2;
+    public static final int CODE_FIELD_NUMBER = 2;
+    private volatile java.lang.Object code_;
+    /**
+     * <pre>
+     **
+     * Hex-encoded compiled move script bytes.
+     * </pre>
+     *
+     * <code>optional string code = 2;</code>
+     */
+    public java.lang.String getCode() {
+      java.lang.Object ref = code_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        code_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     **
+     * Hex-encoded compiled move script bytes.
+     * </pre>
+     *
+     * <code>optional string code = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getCodeBytes() {
+      java.lang.Object ref = code_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        code_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ARGUMENTS_FIELD_NUMBER = 3;
+    private com.google.protobuf.LazyStringList arguments_;
+    /**
+     * <pre>
+     **
+     * List of string value of the script arguments. Contains type information.
+     * Argument value to string formatting:
+     * - u8 value `12` =&gt; "{U8: 12}"
+     * - u64 value `12244` =&gt; "{U64: 12244}"
+     * - u128 value `12244` =&gt; "{U128: 12244}"
+     * - boolean value `true` =&gt; "{BOOL: true}"
+     * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+     * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+     * </pre>
+     *
+     * <code>repeated string arguments = 3;</code>
+     */
+    public com.google.protobuf.ProtocolStringList
+        getArgumentsList() {
+      return arguments_;
+    }
+    /**
+     * <pre>
+     **
+     * List of string value of the script arguments. Contains type information.
+     * Argument value to string formatting:
+     * - u8 value `12` =&gt; "{U8: 12}"
+     * - u64 value `12244` =&gt; "{U64: 12244}"
+     * - u128 value `12244` =&gt; "{U128: 12244}"
+     * - boolean value `true` =&gt; "{BOOL: true}"
+     * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+     * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+     * </pre>
+     *
+     * <code>repeated string arguments = 3;</code>
+     */
+    public int getArgumentsCount() {
+      return arguments_.size();
+    }
+    /**
+     * <pre>
+     **
+     * List of string value of the script arguments. Contains type information.
+     * Argument value to string formatting:
+     * - u8 value `12` =&gt; "{U8: 12}"
+     * - u64 value `12244` =&gt; "{U64: 12244}"
+     * - u128 value `12244` =&gt; "{U128: 12244}"
+     * - boolean value `true` =&gt; "{BOOL: true}"
+     * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+     * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+     * </pre>
+     *
+     * <code>repeated string arguments = 3;</code>
+     */
+    public java.lang.String getArguments(int index) {
+      return arguments_.get(index);
+    }
+    /**
+     * <pre>
+     **
+     * List of string value of the script arguments. Contains type information.
+     * Argument value to string formatting:
+     * - u8 value `12` =&gt; "{U8: 12}"
+     * - u64 value `12244` =&gt; "{U64: 12244}"
+     * - u128 value `12244` =&gt; "{U128: 12244}"
+     * - boolean value `true` =&gt; "{BOOL: true}"
+     * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+     * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+     * </pre>
+     *
+     * <code>repeated string arguments = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getArgumentsBytes(int index) {
+      return arguments_.getByteString(index);
+    }
+
+    public static final int TYPE_ARGUMENTS_FIELD_NUMBER = 4;
+    private com.google.protobuf.LazyStringList typeArguments_;
+    /**
+     * <pre>
+     **
+     * List of type arguments, converted into string.
+     * </pre>
+     *
+     * <code>repeated string type_arguments = 4;</code>
+     */
+    public com.google.protobuf.ProtocolStringList
+        getTypeArgumentsList() {
+      return typeArguments_;
+    }
+    /**
+     * <pre>
+     **
+     * List of type arguments, converted into string.
+     * </pre>
+     *
+     * <code>repeated string type_arguments = 4;</code>
+     */
+    public int getTypeArgumentsCount() {
+      return typeArguments_.size();
+    }
+    /**
+     * <pre>
+     **
+     * List of type arguments, converted into string.
+     * </pre>
+     *
+     * <code>repeated string type_arguments = 4;</code>
+     */
+    public java.lang.String getTypeArguments(int index) {
+      return typeArguments_.get(index);
+    }
+    /**
+     * <pre>
+     **
+     * List of type arguments, converted into string.
+     * </pre>
+     *
+     * <code>repeated string type_arguments = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getTypeArgumentsBytes(int index) {
+      return typeArguments_.getByteString(index);
+    }
+
+    public static final int RECEIVER_FIELD_NUMBER = 5;
     private volatile java.lang.Object receiver_;
     /**
      * <pre>
-     * peer_to_peer_transaction and mint_transaction
-     * hex-encoded bytes
+     **
+     * hex-encoded receiver account address bytes
      * </pre>
      *
-     * <code>optional string receiver = 2;</code>
+     * <code>optional string receiver = 5;</code>
      */
     public java.lang.String getReceiver() {
       java.lang.Object ref = receiver_;
@@ -13775,11 +14888,11 @@ public final class JsonRpc {
     }
     /**
      * <pre>
-     * peer_to_peer_transaction and mint_transaction
-     * hex-encoded bytes
+     **
+     * hex-encoded receiver account address bytes
      * </pre>
      *
-     * <code>optional string receiver = 2;</code>
+     * <code>optional string receiver = 5;</code>
      */
     public com.google.protobuf.ByteString
         getReceiverBytes() {
@@ -13795,19 +14908,29 @@ public final class JsonRpc {
       }
     }
 
-    public static final int AMOUNT_FIELD_NUMBER = 3;
+    public static final int AMOUNT_FIELD_NUMBER = 6;
     private long amount_;
     /**
-     * <code>optional uint64 amount = 3;</code>
+     * <pre>
+     **
+     * peer to peer transfer amount.
+     * </pre>
+     *
+     * <code>optional uint64 amount = 6;</code>
      */
     public long getAmount() {
       return amount_;
     }
 
-    public static final int CURRENCY_FIELD_NUMBER = 4;
+    public static final int CURRENCY_FIELD_NUMBER = 7;
     private volatile java.lang.Object currency_;
     /**
-     * <code>optional string currency = 4;</code>
+     * <pre>
+     **
+     * peer to peer transfer currency code.
+     * </pre>
+     *
+     * <code>optional string currency = 7;</code>
      */
     public java.lang.String getCurrency() {
       java.lang.Object ref = currency_;
@@ -13822,7 +14945,12 @@ public final class JsonRpc {
       }
     }
     /**
-     * <code>optional string currency = 4;</code>
+     * <pre>
+     **
+     * peer to peer transfer currency code.
+     * </pre>
+     *
+     * <code>optional string currency = 7;</code>
      */
     public com.google.protobuf.ByteString
         getCurrencyBytes() {
@@ -13838,15 +14966,16 @@ public final class JsonRpc {
       }
     }
 
-    public static final int METADATA_FIELD_NUMBER = 5;
+    public static final int METADATA_FIELD_NUMBER = 8;
     private volatile java.lang.Object metadata_;
     /**
      * <pre>
-     * peer_to_peer_transaction only
-     * hex-encoded bytes
+     **
+     * Metadata of the transaction, LCS serialized hex-encoded string.
+     * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
      * </pre>
      *
-     * <code>optional string metadata = 5;</code>
+     * <code>optional string metadata = 8;</code>
      */
     public java.lang.String getMetadata() {
       java.lang.Object ref = metadata_;
@@ -13862,11 +14991,12 @@ public final class JsonRpc {
     }
     /**
      * <pre>
-     * peer_to_peer_transaction only
-     * hex-encoded bytes
+     **
+     * Metadata of the transaction, LCS serialized hex-encoded string.
+     * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
      * </pre>
      *
-     * <code>optional string metadata = 5;</code>
+     * <code>optional string metadata = 8;</code>
      */
     public com.google.protobuf.ByteString
         getMetadataBytes() {
@@ -13882,14 +15012,16 @@ public final class JsonRpc {
       }
     }
 
-    public static final int METADATA_SIGNATURE_FIELD_NUMBER = 6;
+    public static final int METADATA_SIGNATURE_FIELD_NUMBER = 9;
     private volatile java.lang.Object metadataSignature_;
     /**
      * <pre>
-     * hex-encoded bytes
+     **
+     * Hex-encoded metadata signature, use this to validate metadata.
+     * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
      * </pre>
      *
-     * <code>optional string metadata_signature = 6;</code>
+     * <code>optional string metadata_signature = 9;</code>
      */
     public java.lang.String getMetadataSignature() {
       java.lang.Object ref = metadataSignature_;
@@ -13905,10 +15037,12 @@ public final class JsonRpc {
     }
     /**
      * <pre>
-     * hex-encoded bytes
+     **
+     * Hex-encoded metadata signature, use this to validate metadata.
+     * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
      * </pre>
      *
-     * <code>optional string metadata_signature = 6;</code>
+     * <code>optional string metadata_signature = 9;</code>
      */
     public com.google.protobuf.ByteString
         getMetadataSignatureBytes() {
@@ -13918,50 +15052,6 @@ public final class JsonRpc {
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         metadataSignature_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int AUTH_KEY_PREFIX_FIELD_NUMBER = 7;
-    private volatile java.lang.Object authKeyPrefix_;
-    /**
-     * <pre>
-     * mint_transaction only
-     * hex-encoded bytes
-     * </pre>
-     *
-     * <code>optional string auth_key_prefix = 7;</code>
-     */
-    public java.lang.String getAuthKeyPrefix() {
-      java.lang.Object ref = authKeyPrefix_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        authKeyPrefix_ = s;
-        return s;
-      }
-    }
-    /**
-     * <pre>
-     * mint_transaction only
-     * hex-encoded bytes
-     * </pre>
-     *
-     * <code>optional string auth_key_prefix = 7;</code>
-     */
-    public com.google.protobuf.ByteString
-        getAuthKeyPrefixBytes() {
-      java.lang.Object ref = authKeyPrefix_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        authKeyPrefix_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -13983,23 +15073,29 @@ public final class JsonRpc {
       if (!getTypeBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, type_);
       }
+      if (!getCodeBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, code_);
+      }
+      for (int i = 0; i < arguments_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, arguments_.getRaw(i));
+      }
+      for (int i = 0; i < typeArguments_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, typeArguments_.getRaw(i));
+      }
       if (!getReceiverBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, receiver_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, receiver_);
       }
       if (amount_ != 0L) {
-        output.writeUInt64(3, amount_);
+        output.writeUInt64(6, amount_);
       }
       if (!getCurrencyBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, currency_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, currency_);
       }
       if (!getMetadataBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, metadata_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 8, metadata_);
       }
       if (!getMetadataSignatureBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, metadataSignature_);
-      }
-      if (!getAuthKeyPrefixBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, authKeyPrefix_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 9, metadataSignature_);
       }
     }
 
@@ -14011,24 +15107,40 @@ public final class JsonRpc {
       if (!getTypeBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, type_);
       }
+      if (!getCodeBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, code_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < arguments_.size(); i++) {
+          dataSize += computeStringSizeNoTag(arguments_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getArgumentsList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < typeArguments_.size(); i++) {
+          dataSize += computeStringSizeNoTag(typeArguments_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getTypeArgumentsList().size();
+      }
       if (!getReceiverBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, receiver_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, receiver_);
       }
       if (amount_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(3, amount_);
+          .computeUInt64Size(6, amount_);
       }
       if (!getCurrencyBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, currency_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, currency_);
       }
       if (!getMetadataBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, metadata_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, metadata_);
       }
       if (!getMetadataSignatureBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, metadataSignature_);
-      }
-      if (!getAuthKeyPrefixBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, authKeyPrefix_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, metadataSignature_);
       }
       memoizedSize = size;
       return size;
@@ -14048,6 +15160,12 @@ public final class JsonRpc {
       boolean result = true;
       result = result && getType()
           .equals(other.getType());
+      result = result && getCode()
+          .equals(other.getCode());
+      result = result && getArgumentsList()
+          .equals(other.getArgumentsList());
+      result = result && getTypeArgumentsList()
+          .equals(other.getTypeArgumentsList());
       result = result && getReceiver()
           .equals(other.getReceiver());
       result = result && (getAmount()
@@ -14058,8 +15176,6 @@ public final class JsonRpc {
           .equals(other.getMetadata());
       result = result && getMetadataSignature()
           .equals(other.getMetadataSignature());
-      result = result && getAuthKeyPrefix()
-          .equals(other.getAuthKeyPrefix());
       return result;
     }
 
@@ -14072,6 +15188,16 @@ public final class JsonRpc {
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + getType().hashCode();
+      hash = (37 * hash) + CODE_FIELD_NUMBER;
+      hash = (53 * hash) + getCode().hashCode();
+      if (getArgumentsCount() > 0) {
+        hash = (37 * hash) + ARGUMENTS_FIELD_NUMBER;
+        hash = (53 * hash) + getArgumentsList().hashCode();
+      }
+      if (getTypeArgumentsCount() > 0) {
+        hash = (37 * hash) + TYPE_ARGUMENTS_FIELD_NUMBER;
+        hash = (53 * hash) + getTypeArgumentsList().hashCode();
+      }
       hash = (37 * hash) + RECEIVER_FIELD_NUMBER;
       hash = (53 * hash) + getReceiver().hashCode();
       hash = (37 * hash) + AMOUNT_FIELD_NUMBER;
@@ -14083,8 +15209,6 @@ public final class JsonRpc {
       hash = (53 * hash) + getMetadata().hashCode();
       hash = (37 * hash) + METADATA_SIGNATURE_FIELD_NUMBER;
       hash = (53 * hash) + getMetadataSignature().hashCode();
-      hash = (37 * hash) + AUTH_KEY_PREFIX_FIELD_NUMBER;
-      hash = (53 * hash) + getAuthKeyPrefix().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -14205,6 +15329,12 @@ public final class JsonRpc {
         super.clear();
         type_ = "";
 
+        code_ = "";
+
+        arguments_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        typeArguments_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000008);
         receiver_ = "";
 
         amount_ = 0L;
@@ -14214,8 +15344,6 @@ public final class JsonRpc {
         metadata_ = "";
 
         metadataSignature_ = "";
-
-        authKeyPrefix_ = "";
 
         return this;
       }
@@ -14239,13 +15367,26 @@ public final class JsonRpc {
 
       public org.libra.jsonrpctypes.JsonRpc.Script buildPartial() {
         org.libra.jsonrpctypes.JsonRpc.Script result = new org.libra.jsonrpctypes.JsonRpc.Script(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
         result.type_ = type_;
+        result.code_ = code_;
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          arguments_ = arguments_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.arguments_ = arguments_;
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          typeArguments_ = typeArguments_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00000008);
+        }
+        result.typeArguments_ = typeArguments_;
         result.receiver_ = receiver_;
         result.amount_ = amount_;
         result.currency_ = currency_;
         result.metadata_ = metadata_;
         result.metadataSignature_ = metadataSignature_;
-        result.authKeyPrefix_ = authKeyPrefix_;
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -14291,6 +15432,30 @@ public final class JsonRpc {
           type_ = other.type_;
           onChanged();
         }
+        if (!other.getCode().isEmpty()) {
+          code_ = other.code_;
+          onChanged();
+        }
+        if (!other.arguments_.isEmpty()) {
+          if (arguments_.isEmpty()) {
+            arguments_ = other.arguments_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureArgumentsIsMutable();
+            arguments_.addAll(other.arguments_);
+          }
+          onChanged();
+        }
+        if (!other.typeArguments_.isEmpty()) {
+          if (typeArguments_.isEmpty()) {
+            typeArguments_ = other.typeArguments_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+          } else {
+            ensureTypeArgumentsIsMutable();
+            typeArguments_.addAll(other.typeArguments_);
+          }
+          onChanged();
+        }
         if (!other.getReceiver().isEmpty()) {
           receiver_ = other.receiver_;
           onChanged();
@@ -14308,10 +15473,6 @@ public final class JsonRpc {
         }
         if (!other.getMetadataSignature().isEmpty()) {
           metadataSignature_ = other.metadataSignature_;
-          onChanged();
-        }
-        if (!other.getAuthKeyPrefix().isEmpty()) {
-          authKeyPrefix_ = other.authKeyPrefix_;
           onChanged();
         }
         onChanged();
@@ -14339,9 +15500,17 @@ public final class JsonRpc {
         }
         return this;
       }
+      private int bitField0_;
 
       private java.lang.Object type_ = "";
       /**
+       * <pre>
+       **
+       * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+       * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+       * It is possible server side does not know the code and the code is valid.
+       * </pre>
+       *
        * <code>optional string type = 1;</code>
        */
       public java.lang.String getType() {
@@ -14357,6 +15526,13 @@ public final class JsonRpc {
         }
       }
       /**
+       * <pre>
+       **
+       * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+       * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+       * It is possible server side does not know the code and the code is valid.
+       * </pre>
+       *
        * <code>optional string type = 1;</code>
        */
       public com.google.protobuf.ByteString
@@ -14373,6 +15549,13 @@ public final class JsonRpc {
         }
       }
       /**
+       * <pre>
+       **
+       * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+       * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+       * It is possible server side does not know the code and the code is valid.
+       * </pre>
+       *
        * <code>optional string type = 1;</code>
        */
       public Builder setType(
@@ -14386,6 +15569,13 @@ public final class JsonRpc {
         return this;
       }
       /**
+       * <pre>
+       **
+       * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+       * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+       * It is possible server side does not know the code and the code is valid.
+       * </pre>
+       *
        * <code>optional string type = 1;</code>
        */
       public Builder clearType() {
@@ -14395,6 +15585,13 @@ public final class JsonRpc {
         return this;
       }
       /**
+       * <pre>
+       **
+       * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+       * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+       * It is possible server side does not know the code and the code is valid.
+       * </pre>
+       *
        * <code>optional string type = 1;</code>
        */
       public Builder setTypeBytes(
@@ -14409,14 +15606,449 @@ public final class JsonRpc {
         return this;
       }
 
+      private java.lang.Object code_ = "";
+      /**
+       * <pre>
+       **
+       * Hex-encoded compiled move script bytes.
+       * </pre>
+       *
+       * <code>optional string code = 2;</code>
+       */
+      public java.lang.String getCode() {
+        java.lang.Object ref = code_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          code_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * Hex-encoded compiled move script bytes.
+       * </pre>
+       *
+       * <code>optional string code = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getCodeBytes() {
+        java.lang.Object ref = code_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          code_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * Hex-encoded compiled move script bytes.
+       * </pre>
+       *
+       * <code>optional string code = 2;</code>
+       */
+      public Builder setCode(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        code_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * Hex-encoded compiled move script bytes.
+       * </pre>
+       *
+       * <code>optional string code = 2;</code>
+       */
+      public Builder clearCode() {
+        
+        code_ = getDefaultInstance().getCode();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * Hex-encoded compiled move script bytes.
+       * </pre>
+       *
+       * <code>optional string code = 2;</code>
+       */
+      public Builder setCodeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        code_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringList arguments_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureArgumentsIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          arguments_ = new com.google.protobuf.LazyStringArrayList(arguments_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+      /**
+       * <pre>
+       **
+       * List of string value of the script arguments. Contains type information.
+       * Argument value to string formatting:
+       * - u8 value `12` =&gt; "{U8: 12}"
+       * - u64 value `12244` =&gt; "{U64: 12244}"
+       * - u128 value `12244` =&gt; "{U128: 12244}"
+       * - boolean value `true` =&gt; "{BOOL: true}"
+       * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+       * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+       * </pre>
+       *
+       * <code>repeated string arguments = 3;</code>
+       */
+      public com.google.protobuf.ProtocolStringList
+          getArgumentsList() {
+        return arguments_.getUnmodifiableView();
+      }
+      /**
+       * <pre>
+       **
+       * List of string value of the script arguments. Contains type information.
+       * Argument value to string formatting:
+       * - u8 value `12` =&gt; "{U8: 12}"
+       * - u64 value `12244` =&gt; "{U64: 12244}"
+       * - u128 value `12244` =&gt; "{U128: 12244}"
+       * - boolean value `true` =&gt; "{BOOL: true}"
+       * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+       * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+       * </pre>
+       *
+       * <code>repeated string arguments = 3;</code>
+       */
+      public int getArgumentsCount() {
+        return arguments_.size();
+      }
+      /**
+       * <pre>
+       **
+       * List of string value of the script arguments. Contains type information.
+       * Argument value to string formatting:
+       * - u8 value `12` =&gt; "{U8: 12}"
+       * - u64 value `12244` =&gt; "{U64: 12244}"
+       * - u128 value `12244` =&gt; "{U128: 12244}"
+       * - boolean value `true` =&gt; "{BOOL: true}"
+       * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+       * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+       * </pre>
+       *
+       * <code>repeated string arguments = 3;</code>
+       */
+      public java.lang.String getArguments(int index) {
+        return arguments_.get(index);
+      }
+      /**
+       * <pre>
+       **
+       * List of string value of the script arguments. Contains type information.
+       * Argument value to string formatting:
+       * - u8 value `12` =&gt; "{U8: 12}"
+       * - u64 value `12244` =&gt; "{U64: 12244}"
+       * - u128 value `12244` =&gt; "{U128: 12244}"
+       * - boolean value `true` =&gt; "{BOOL: true}"
+       * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+       * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+       * </pre>
+       *
+       * <code>repeated string arguments = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getArgumentsBytes(int index) {
+        return arguments_.getByteString(index);
+      }
+      /**
+       * <pre>
+       **
+       * List of string value of the script arguments. Contains type information.
+       * Argument value to string formatting:
+       * - u8 value `12` =&gt; "{U8: 12}"
+       * - u64 value `12244` =&gt; "{U64: 12244}"
+       * - u128 value `12244` =&gt; "{U128: 12244}"
+       * - boolean value `true` =&gt; "{BOOL: true}"
+       * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+       * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+       * </pre>
+       *
+       * <code>repeated string arguments = 3;</code>
+       */
+      public Builder setArguments(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureArgumentsIsMutable();
+        arguments_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of string value of the script arguments. Contains type information.
+       * Argument value to string formatting:
+       * - u8 value `12` =&gt; "{U8: 12}"
+       * - u64 value `12244` =&gt; "{U64: 12244}"
+       * - u128 value `12244` =&gt; "{U128: 12244}"
+       * - boolean value `true` =&gt; "{BOOL: true}"
+       * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+       * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+       * </pre>
+       *
+       * <code>repeated string arguments = 3;</code>
+       */
+      public Builder addArguments(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureArgumentsIsMutable();
+        arguments_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of string value of the script arguments. Contains type information.
+       * Argument value to string formatting:
+       * - u8 value `12` =&gt; "{U8: 12}"
+       * - u64 value `12244` =&gt; "{U64: 12244}"
+       * - u128 value `12244` =&gt; "{U128: 12244}"
+       * - boolean value `true` =&gt; "{BOOL: true}"
+       * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+       * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+       * </pre>
+       *
+       * <code>repeated string arguments = 3;</code>
+       */
+      public Builder addAllArguments(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureArgumentsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, arguments_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of string value of the script arguments. Contains type information.
+       * Argument value to string formatting:
+       * - u8 value `12` =&gt; "{U8: 12}"
+       * - u64 value `12244` =&gt; "{U64: 12244}"
+       * - u128 value `12244` =&gt; "{U128: 12244}"
+       * - boolean value `true` =&gt; "{BOOL: true}"
+       * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+       * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+       * </pre>
+       *
+       * <code>repeated string arguments = 3;</code>
+       */
+      public Builder clearArguments() {
+        arguments_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of string value of the script arguments. Contains type information.
+       * Argument value to string formatting:
+       * - u8 value `12` =&gt; "{U8: 12}"
+       * - u64 value `12244` =&gt; "{U64: 12244}"
+       * - u128 value `12244` =&gt; "{U128: 12244}"
+       * - boolean value `true` =&gt; "{BOOL: true}"
+       * - Account address value =&gt; "{ADDRESS: &lt;hex-encoded account address bytes&gt;}"
+       * - List&lt;u8&gt; value =&gt; "{U8Vector:: 0x&lt;hex-encoded bytes&gt;}"
+       * </pre>
+       *
+       * <code>repeated string arguments = 3;</code>
+       */
+      public Builder addArgumentsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        ensureArgumentsIsMutable();
+        arguments_.add(value);
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringList typeArguments_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureTypeArgumentsIsMutable() {
+        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+          typeArguments_ = new com.google.protobuf.LazyStringArrayList(typeArguments_);
+          bitField0_ |= 0x00000008;
+         }
+      }
+      /**
+       * <pre>
+       **
+       * List of type arguments, converted into string.
+       * </pre>
+       *
+       * <code>repeated string type_arguments = 4;</code>
+       */
+      public com.google.protobuf.ProtocolStringList
+          getTypeArgumentsList() {
+        return typeArguments_.getUnmodifiableView();
+      }
+      /**
+       * <pre>
+       **
+       * List of type arguments, converted into string.
+       * </pre>
+       *
+       * <code>repeated string type_arguments = 4;</code>
+       */
+      public int getTypeArgumentsCount() {
+        return typeArguments_.size();
+      }
+      /**
+       * <pre>
+       **
+       * List of type arguments, converted into string.
+       * </pre>
+       *
+       * <code>repeated string type_arguments = 4;</code>
+       */
+      public java.lang.String getTypeArguments(int index) {
+        return typeArguments_.get(index);
+      }
+      /**
+       * <pre>
+       **
+       * List of type arguments, converted into string.
+       * </pre>
+       *
+       * <code>repeated string type_arguments = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getTypeArgumentsBytes(int index) {
+        return typeArguments_.getByteString(index);
+      }
+      /**
+       * <pre>
+       **
+       * List of type arguments, converted into string.
+       * </pre>
+       *
+       * <code>repeated string type_arguments = 4;</code>
+       */
+      public Builder setTypeArguments(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTypeArgumentsIsMutable();
+        typeArguments_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of type arguments, converted into string.
+       * </pre>
+       *
+       * <code>repeated string type_arguments = 4;</code>
+       */
+      public Builder addTypeArguments(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTypeArgumentsIsMutable();
+        typeArguments_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of type arguments, converted into string.
+       * </pre>
+       *
+       * <code>repeated string type_arguments = 4;</code>
+       */
+      public Builder addAllTypeArguments(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureTypeArgumentsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, typeArguments_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of type arguments, converted into string.
+       * </pre>
+       *
+       * <code>repeated string type_arguments = 4;</code>
+       */
+      public Builder clearTypeArguments() {
+        typeArguments_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of type arguments, converted into string.
+       * </pre>
+       *
+       * <code>repeated string type_arguments = 4;</code>
+       */
+      public Builder addTypeArgumentsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        ensureTypeArgumentsIsMutable();
+        typeArguments_.add(value);
+        onChanged();
+        return this;
+      }
+
       private java.lang.Object receiver_ = "";
       /**
        * <pre>
-       * peer_to_peer_transaction and mint_transaction
-       * hex-encoded bytes
+       **
+       * hex-encoded receiver account address bytes
        * </pre>
        *
-       * <code>optional string receiver = 2;</code>
+       * <code>optional string receiver = 5;</code>
        */
       public java.lang.String getReceiver() {
         java.lang.Object ref = receiver_;
@@ -14432,11 +16064,11 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * peer_to_peer_transaction and mint_transaction
-       * hex-encoded bytes
+       **
+       * hex-encoded receiver account address bytes
        * </pre>
        *
-       * <code>optional string receiver = 2;</code>
+       * <code>optional string receiver = 5;</code>
        */
       public com.google.protobuf.ByteString
           getReceiverBytes() {
@@ -14453,11 +16085,11 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * peer_to_peer_transaction and mint_transaction
-       * hex-encoded bytes
+       **
+       * hex-encoded receiver account address bytes
        * </pre>
        *
-       * <code>optional string receiver = 2;</code>
+       * <code>optional string receiver = 5;</code>
        */
       public Builder setReceiver(
           java.lang.String value) {
@@ -14471,11 +16103,11 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * peer_to_peer_transaction and mint_transaction
-       * hex-encoded bytes
+       **
+       * hex-encoded receiver account address bytes
        * </pre>
        *
-       * <code>optional string receiver = 2;</code>
+       * <code>optional string receiver = 5;</code>
        */
       public Builder clearReceiver() {
         
@@ -14485,11 +16117,11 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * peer_to_peer_transaction and mint_transaction
-       * hex-encoded bytes
+       **
+       * hex-encoded receiver account address bytes
        * </pre>
        *
-       * <code>optional string receiver = 2;</code>
+       * <code>optional string receiver = 5;</code>
        */
       public Builder setReceiverBytes(
           com.google.protobuf.ByteString value) {
@@ -14505,13 +16137,23 @@ public final class JsonRpc {
 
       private long amount_ ;
       /**
-       * <code>optional uint64 amount = 3;</code>
+       * <pre>
+       **
+       * peer to peer transfer amount.
+       * </pre>
+       *
+       * <code>optional uint64 amount = 6;</code>
        */
       public long getAmount() {
         return amount_;
       }
       /**
-       * <code>optional uint64 amount = 3;</code>
+       * <pre>
+       **
+       * peer to peer transfer amount.
+       * </pre>
+       *
+       * <code>optional uint64 amount = 6;</code>
        */
       public Builder setAmount(long value) {
         
@@ -14520,7 +16162,12 @@ public final class JsonRpc {
         return this;
       }
       /**
-       * <code>optional uint64 amount = 3;</code>
+       * <pre>
+       **
+       * peer to peer transfer amount.
+       * </pre>
+       *
+       * <code>optional uint64 amount = 6;</code>
        */
       public Builder clearAmount() {
         
@@ -14531,7 +16178,12 @@ public final class JsonRpc {
 
       private java.lang.Object currency_ = "";
       /**
-       * <code>optional string currency = 4;</code>
+       * <pre>
+       **
+       * peer to peer transfer currency code.
+       * </pre>
+       *
+       * <code>optional string currency = 7;</code>
        */
       public java.lang.String getCurrency() {
         java.lang.Object ref = currency_;
@@ -14546,7 +16198,12 @@ public final class JsonRpc {
         }
       }
       /**
-       * <code>optional string currency = 4;</code>
+       * <pre>
+       **
+       * peer to peer transfer currency code.
+       * </pre>
+       *
+       * <code>optional string currency = 7;</code>
        */
       public com.google.protobuf.ByteString
           getCurrencyBytes() {
@@ -14562,7 +16219,12 @@ public final class JsonRpc {
         }
       }
       /**
-       * <code>optional string currency = 4;</code>
+       * <pre>
+       **
+       * peer to peer transfer currency code.
+       * </pre>
+       *
+       * <code>optional string currency = 7;</code>
        */
       public Builder setCurrency(
           java.lang.String value) {
@@ -14575,7 +16237,12 @@ public final class JsonRpc {
         return this;
       }
       /**
-       * <code>optional string currency = 4;</code>
+       * <pre>
+       **
+       * peer to peer transfer currency code.
+       * </pre>
+       *
+       * <code>optional string currency = 7;</code>
        */
       public Builder clearCurrency() {
         
@@ -14584,7 +16251,12 @@ public final class JsonRpc {
         return this;
       }
       /**
-       * <code>optional string currency = 4;</code>
+       * <pre>
+       **
+       * peer to peer transfer currency code.
+       * </pre>
+       *
+       * <code>optional string currency = 7;</code>
        */
       public Builder setCurrencyBytes(
           com.google.protobuf.ByteString value) {
@@ -14601,11 +16273,12 @@ public final class JsonRpc {
       private java.lang.Object metadata_ = "";
       /**
        * <pre>
-       * peer_to_peer_transaction only
-       * hex-encoded bytes
+       **
+       * Metadata of the transaction, LCS serialized hex-encoded string.
+       * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
        * </pre>
        *
-       * <code>optional string metadata = 5;</code>
+       * <code>optional string metadata = 8;</code>
        */
       public java.lang.String getMetadata() {
         java.lang.Object ref = metadata_;
@@ -14621,11 +16294,12 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * peer_to_peer_transaction only
-       * hex-encoded bytes
+       **
+       * Metadata of the transaction, LCS serialized hex-encoded string.
+       * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
        * </pre>
        *
-       * <code>optional string metadata = 5;</code>
+       * <code>optional string metadata = 8;</code>
        */
       public com.google.protobuf.ByteString
           getMetadataBytes() {
@@ -14642,11 +16316,12 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * peer_to_peer_transaction only
-       * hex-encoded bytes
+       **
+       * Metadata of the transaction, LCS serialized hex-encoded string.
+       * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
        * </pre>
        *
-       * <code>optional string metadata = 5;</code>
+       * <code>optional string metadata = 8;</code>
        */
       public Builder setMetadata(
           java.lang.String value) {
@@ -14660,11 +16335,12 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * peer_to_peer_transaction only
-       * hex-encoded bytes
+       **
+       * Metadata of the transaction, LCS serialized hex-encoded string.
+       * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
        * </pre>
        *
-       * <code>optional string metadata = 5;</code>
+       * <code>optional string metadata = 8;</code>
        */
       public Builder clearMetadata() {
         
@@ -14674,11 +16350,12 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * peer_to_peer_transaction only
-       * hex-encoded bytes
+       **
+       * Metadata of the transaction, LCS serialized hex-encoded string.
+       * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
        * </pre>
        *
-       * <code>optional string metadata = 5;</code>
+       * <code>optional string metadata = 8;</code>
        */
       public Builder setMetadataBytes(
           com.google.protobuf.ByteString value) {
@@ -14695,10 +16372,12 @@ public final class JsonRpc {
       private java.lang.Object metadataSignature_ = "";
       /**
        * <pre>
-       * hex-encoded bytes
+       **
+       * Hex-encoded metadata signature, use this to validate metadata.
+       * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
        * </pre>
        *
-       * <code>optional string metadata_signature = 6;</code>
+       * <code>optional string metadata_signature = 9;</code>
        */
       public java.lang.String getMetadataSignature() {
         java.lang.Object ref = metadataSignature_;
@@ -14714,10 +16393,12 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded bytes
+       **
+       * Hex-encoded metadata signature, use this to validate metadata.
+       * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
        * </pre>
        *
-       * <code>optional string metadata_signature = 6;</code>
+       * <code>optional string metadata_signature = 9;</code>
        */
       public com.google.protobuf.ByteString
           getMetadataSignatureBytes() {
@@ -14734,10 +16415,12 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded bytes
+       **
+       * Hex-encoded metadata signature, use this to validate metadata.
+       * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
        * </pre>
        *
-       * <code>optional string metadata_signature = 6;</code>
+       * <code>optional string metadata_signature = 9;</code>
        */
       public Builder setMetadataSignature(
           java.lang.String value) {
@@ -14751,10 +16434,12 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded bytes
+       **
+       * Hex-encoded metadata signature, use this to validate metadata.
+       * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
        * </pre>
        *
-       * <code>optional string metadata_signature = 6;</code>
+       * <code>optional string metadata_signature = 9;</code>
        */
       public Builder clearMetadataSignature() {
         
@@ -14764,10 +16449,12 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded bytes
+       **
+       * Hex-encoded metadata signature, use this to validate metadata.
+       * See [LIP-4](https://lip.libra.org/lip-4/) for more details.
        * </pre>
        *
-       * <code>optional string metadata_signature = 6;</code>
+       * <code>optional string metadata_signature = 9;</code>
        */
       public Builder setMetadataSignatureBytes(
           com.google.protobuf.ByteString value) {
@@ -14777,100 +16464,6 @@ public final class JsonRpc {
   checkByteStringIsUtf8(value);
         
         metadataSignature_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object authKeyPrefix_ = "";
-      /**
-       * <pre>
-       * mint_transaction only
-       * hex-encoded bytes
-       * </pre>
-       *
-       * <code>optional string auth_key_prefix = 7;</code>
-       */
-      public java.lang.String getAuthKeyPrefix() {
-        java.lang.Object ref = authKeyPrefix_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          authKeyPrefix_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <pre>
-       * mint_transaction only
-       * hex-encoded bytes
-       * </pre>
-       *
-       * <code>optional string auth_key_prefix = 7;</code>
-       */
-      public com.google.protobuf.ByteString
-          getAuthKeyPrefixBytes() {
-        java.lang.Object ref = authKeyPrefix_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          authKeyPrefix_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       * mint_transaction only
-       * hex-encoded bytes
-       * </pre>
-       *
-       * <code>optional string auth_key_prefix = 7;</code>
-       */
-      public Builder setAuthKeyPrefix(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        authKeyPrefix_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * mint_transaction only
-       * hex-encoded bytes
-       * </pre>
-       *
-       * <code>optional string auth_key_prefix = 7;</code>
-       */
-      public Builder clearAuthKeyPrefix() {
-        
-        authKeyPrefix_ = getDefaultInstance().getAuthKeyPrefix();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * mint_transaction only
-       * hex-encoded bytes
-       * </pre>
-       *
-       * <code>optional string auth_key_prefix = 7;</code>
-       */
-      public Builder setAuthKeyPrefixBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        authKeyPrefix_ = value;
         onChanged();
         return this;
       }
@@ -19138,10 +20731,10 @@ public final class JsonRpc {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_librajsonrpctypes_EventData_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_librajsonrpctypes_BlockMetadata_descriptor;
+    internal_static_librajsonrpctypes_Metadata_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_librajsonrpctypes_BlockMetadata_fieldAccessorTable;
+      internal_static_librajsonrpctypes_Metadata_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_librajsonrpctypes_Transaction_descriptor;
   private static final 
@@ -19223,77 +20816,84 @@ public final class JsonRpc {
       "sequence_number\030\002 \001(\004R\017sequence_number\0220",
       "\n\023transaction_version\030\003 \001(\004R\023transaction" +
       "_version\022*\n\004data\030\004 \001(\0132\034.librajsonrpctyp" +
-      "es.EventData\"\300\004\n\tEventData\022\014\n\004type\030\001 \001(\t" +
+      "es.EventData\"\242\005\n\tEventData\022\014\n\004type\030\001 \001(\t" +
       "\022)\n\006amount\030\002 \001(\0132\031.librajsonrpctypes.Amo" +
       "unt\022(\n\017preburn_address\030\003 \001(\tR\017preburn_ad" +
       "dress\022$\n\rcurrency_code\030\004 \001(\tR\rcurrency_c" +
       "ode\022:\n\030new_to_lbr_exchange_rate\030\005 \001(\002R\030n" +
       "ew_to_lbr_exchange_rate\022\016\n\006sender\030\006 \001(\t\022" +
-      "\020\n\010receiver\030\007 \001(\t\022\020\n\010metadata\030\010 \001(\t\022\034\n\tw" +
-      "rite_set\030\t \001(\tR\twrite_set\022\r\n\005epoch\030\n \001(\004",
-      "\022\r\n\005round\030\013 \001(\004\022\020\n\010proposer\030\014 \001(\t\022$\n\rpro" +
-      "posed_time\030\r \001(\004R\rproposed_time\0220\n\023desti" +
-      "nation_address\030\016 \001(\tR\023destination_addres" +
-      "s\022<\n\031new_compliance_public_key\030\017 \001(\tR\031ne" +
-      "w_compliance_public_key\022\"\n\014new_base_url\030" +
-      "\021 \001(\tR\014new_base_url\0222\n\024time_rotated_seco" +
-      "nds\030\020 \001(\004R\024time_rotated_seconds\"E\n\rBlock" +
-      "Metadata\022\017\n\007version\030\001 \001(\004\022\021\n\ttimestamp\030\002" +
-      " \001(\004\022\020\n\010chain_id\030\003 \001(\r\"\365\001\n\013Transaction\022\017" +
-      "\n\007version\030\001 \001(\004\0227\n\013transaction\030\002 \001(\0132\".l",
-      "ibrajsonrpctypes.TransactionData\022\014\n\004hash" +
-      "\030\003 \001(\t\022\r\n\005bytes\030\004 \001(\t\022(\n\006events\030\005 \003(\0132\030." +
-      "librajsonrpctypes.Event\0229\n\tvm_status\030\006 \001" +
-      "(\0132\033.librajsonrpctypes.VMStatusR\tvm_stat" +
-      "us\022\032\n\010gas_used\030\007 \001(\004R\010gas_used\"\224\001\n\010VMSta" +
-      "tus\022\014\n\004type\030\001 \001(\t\022\020\n\010location\030\002 \001(\t\022\036\n\na" +
-      "bort_code\030\003 \001(\004R\nabort_code\022&\n\016function_" +
-      "index\030\004 \001(\rR\016function_index\022 \n\013code_offs" +
-      "et\030\005 \001(\rR\013code_offset\"\241\004\n\017TransactionDat" +
-      "a\022\014\n\004type\030\001 \001(\t\022(\n\017timestamp_usecs\030\002 \001(\004",
-      "R\017timestamp_usecs\022\016\n\006sender\030\003 \001(\t\022*\n\020sig" +
-      "nature_scheme\030\004 \001(\tR\020signature_scheme\022\021\n" +
-      "\tsignature\030\005 \001(\t\022\036\n\npublic_key\030\006 \001(\tR\npu" +
-      "blic_key\022(\n\017sequence_number\030\007 \001(\004R\017seque" +
-      "nce_number\022\032\n\010chain_id\030\010 \001(\rR\010chain_id\022&" +
-      "\n\016max_gas_amount\030\t \001(\004R\016max_gas_amount\022&" +
-      "\n\016gas_unit_price\030\n \001(\004R\016gas_unit_price\022\"" +
-      "\n\014gas_currency\030\013 \001(\tR\014gas_currency\022<\n\031ex" +
-      "piration_timestamp_secs\030\014 \001(\004R\031expiratio" +
-      "n_timestamp_secs\022 \n\013script_hash\030\r \001(\tR\013s",
-      "cript_hash\022\"\n\014script_bytes\030\016 \001(\tR\014script" +
-      "_bytes\022)\n\006script\030\017 \001(\0132\031.librajsonrpctyp" +
-      "es.Script\"\266\001\n\006Script\022\014\n\004type\030\001 \001(\t\022\020\n\010re" +
-      "ceiver\030\002 \001(\t\022\016\n\006amount\030\003 \001(\004\022\020\n\010currency" +
-      "\030\004 \001(\t\022\020\n\010metadata\030\005 \001(\t\022.\n\022metadata_sig" +
-      "nature\030\006 \001(\tR\022metadata_signature\022(\n\017auth" +
-      "_key_prefix\030\007 \001(\tR\017auth_key_prefix\"\250\003\n\014C" +
-      "urrencyInfo\022\014\n\004code\030\001 \001(\t\022&\n\016scaling_fac" +
-      "tor\030\002 \001(\004R\016scaling_factor\022(\n\017fractional_" +
-      "part\030\003 \001(\004R\017fractional_part\0222\n\024to_lbr_ex",
-      "change_rate\030\004 \001(\002R\024to_lbr_exchange_rate\022" +
-      "(\n\017mint_events_key\030\005 \001(\tR\017mint_events_ke" +
-      "y\022(\n\017burn_events_key\030\006 \001(\tR\017burn_events_" +
-      "key\022.\n\022preburn_events_key\030\007 \001(\tR\022preburn" +
-      "_events_key\0226\n\026cancel_burn_events_key\030\010 " +
-      "\001(\tR\026cancel_burn_events_key\022H\n\037exchange_" +
-      "rate_update_events_key\030\t \001(\tR\037exchange_r" +
-      "ate_update_events_key\"\272\001\n\nStateProof\022@\n\033" +
-      "ledger_info_with_signatures\030\001 \001(\tR\033ledge" +
-      "r_info_with_signatures\022.\n\022epoch_change_p",
-      "roof\030\002 \001(\tR\022epoch_change_proof\022:\n\030ledger" +
-      "_consistency_proof\030\003 \001(\tR\030ledger_consist" +
-      "ency_proof\"k\n\025AccountStateWithProof\022\017\n\007v" +
-      "ersion\030\001 \001(\004\022\014\n\004blob\030\002 \001(\t\0223\n\005proof\030\003 \001(" +
-      "\0132$.librajsonrpctypes.AccountStateProof\"" +
-      "\343\001\n\021AccountStateProof\022T\n%ledger_info_to_" +
-      "transaction_info_proof\030\001 \001(\tR%ledger_inf" +
-      "o_to_transaction_info_proof\022*\n\020transacti" +
-      "on_info\030\002 \001(\tR\020transaction_info\022L\n!trans" +
-      "action_info_to_account_proof\030\003 \001(\tR!tran",
-      "saction_info_to_account_proofBE\n\026org.lib" +
-      "ra.jsonrpctypesB\007JsonRpcZ\"github.com/lib" +
-      "ra/librajsonrpctypesb\006proto3"
+      "\020\n\010receiver\030\007 \001(\t\022\020\n\010metadata\030\010 \001(\t\022\r\n\005e" +
+      "poch\030\n \001(\004\022\r\n\005round\030\013 \001(\004\022\020\n\010proposer\030\014 ",
+      "\001(\t\022$\n\rproposed_time\030\r \001(\004R\rproposed_tim" +
+      "e\0220\n\023destination_address\030\016 \001(\tR\023destinat" +
+      "ion_address\022<\n\031new_compliance_public_key" +
+      "\030\017 \001(\tR\031new_compliance_public_key\022\"\n\014new" +
+      "_base_url\030\020 \001(\tR\014new_base_url\0222\n\024time_ro" +
+      "tated_seconds\030\021 \001(\004R\024time_rotated_second" +
+      "s\022(\n\017created_address\030\022 \001(\tR\017created_addr" +
+      "ess\022\030\n\007role_id\030\023 \001(\004R\007role_id\022:\n\030committ" +
+      "ed_timestamp_secs\030\024 \001(\004R\030committed_times" +
+      "tamp_secs\"\346\001\n\010Metadata\022\017\n\007version\030\001 \001(\004\022",
+      "\021\n\ttimestamp\030\002 \001(\004\022\032\n\010chain_id\030\003 \001(\rR\010ch" +
+      "ain_id\0226\n\026script_hash_allow_list\030\004 \003(\tR\026" +
+      "script_hash_allow_list\022<\n\031module_publish" +
+      "ing_allowed\030\005 \001(\010R\031module_publishing_all" +
+      "owed\022$\n\rlibra_version\030\006 \001(\004R\rlibra_versi" +
+      "on\"\365\001\n\013Transaction\022\017\n\007version\030\001 \001(\004\0227\n\013t" +
+      "ransaction\030\002 \001(\0132\".librajsonrpctypes.Tra" +
+      "nsactionData\022\014\n\004hash\030\003 \001(\t\022\r\n\005bytes\030\004 \001(" +
+      "\t\022(\n\006events\030\005 \003(\0132\030.librajsonrpctypes.Ev" +
+      "ent\0229\n\tvm_status\030\006 \001(\0132\033.librajsonrpctyp",
+      "es.VMStatusR\tvm_status\022\032\n\010gas_used\030\007 \001(\004" +
+      "R\010gas_used\"\224\001\n\010VMStatus\022\014\n\004type\030\001 \001(\t\022\020\n" +
+      "\010location\030\002 \001(\t\022\036\n\nabort_code\030\003 \001(\004R\nabo" +
+      "rt_code\022&\n\016function_index\030\004 \001(\rR\016functio" +
+      "n_index\022 \n\013code_offset\030\005 \001(\rR\013code_offse" +
+      "t\"\241\004\n\017TransactionData\022\014\n\004type\030\001 \001(\t\022(\n\017t" +
+      "imestamp_usecs\030\002 \001(\004R\017timestamp_usecs\022\016\n" +
+      "\006sender\030\003 \001(\t\022*\n\020signature_scheme\030\004 \001(\tR" +
+      "\020signature_scheme\022\021\n\tsignature\030\005 \001(\t\022\036\n\n" +
+      "public_key\030\006 \001(\tR\npublic_key\022(\n\017sequence",
+      "_number\030\007 \001(\004R\017sequence_number\022\032\n\010chain_" +
+      "id\030\010 \001(\rR\010chain_id\022&\n\016max_gas_amount\030\t \001" +
+      "(\004R\016max_gas_amount\022&\n\016gas_unit_price\030\n \001" +
+      "(\004R\016gas_unit_price\022\"\n\014gas_currency\030\013 \001(\t" +
+      "R\014gas_currency\022<\n\031expiration_timestamp_s" +
+      "ecs\030\014 \001(\004R\031expiration_timestamp_secs\022 \n\013" +
+      "script_hash\030\r \001(\tR\013script_hash\022\"\n\014script" +
+      "_bytes\030\016 \001(\tR\014script_bytes\022)\n\006script\030\017 \001" +
+      "(\0132\031.librajsonrpctypes.Script\"\325\001\n\006Script" +
+      "\022\014\n\004type\030\001 \001(\t\022\014\n\004code\030\002 \001(\t\022\021\n\targument",
+      "s\030\003 \003(\t\022&\n\016type_arguments\030\004 \003(\tR\016type_ar" +
+      "guments\022\020\n\010receiver\030\005 \001(\t\022\016\n\006amount\030\006 \001(" +
+      "\004\022\020\n\010currency\030\007 \001(\t\022\020\n\010metadata\030\010 \001(\t\022.\n" +
+      "\022metadata_signature\030\t \001(\tR\022metadata_sign" +
+      "ature\"\250\003\n\014CurrencyInfo\022\014\n\004code\030\001 \001(\t\022&\n\016" +
+      "scaling_factor\030\002 \001(\004R\016scaling_factor\022(\n\017" +
+      "fractional_part\030\003 \001(\004R\017fractional_part\0222" +
+      "\n\024to_lbr_exchange_rate\030\004 \001(\002R\024to_lbr_exc" +
+      "hange_rate\022(\n\017mint_events_key\030\005 \001(\tR\017min" +
+      "t_events_key\022(\n\017burn_events_key\030\006 \001(\tR\017b",
+      "urn_events_key\022.\n\022preburn_events_key\030\007 \001" +
+      "(\tR\022preburn_events_key\0226\n\026cancel_burn_ev" +
+      "ents_key\030\010 \001(\tR\026cancel_burn_events_key\022H" +
+      "\n\037exchange_rate_update_events_key\030\t \001(\tR" +
+      "\037exchange_rate_update_events_key\"\272\001\n\nSta" +
+      "teProof\022@\n\033ledger_info_with_signatures\030\001" +
+      " \001(\tR\033ledger_info_with_signatures\022.\n\022epo" +
+      "ch_change_proof\030\002 \001(\tR\022epoch_change_proo" +
+      "f\022:\n\030ledger_consistency_proof\030\003 \001(\tR\030led" +
+      "ger_consistency_proof\"k\n\025AccountStateWit",
+      "hProof\022\017\n\007version\030\001 \001(\004\022\014\n\004blob\030\002 \001(\t\0223\n" +
+      "\005proof\030\003 \001(\0132$.librajsonrpctypes.Account" +
+      "StateProof\"\343\001\n\021AccountStateProof\022T\n%ledg" +
+      "er_info_to_transaction_info_proof\030\001 \001(\tR" +
+      "%ledger_info_to_transaction_info_proof\022*" +
+      "\n\020transaction_info\030\002 \001(\tR\020transaction_in" +
+      "fo\022L\n!transaction_info_to_account_proof\030" +
+      "\003 \001(\tR!transaction_info_to_account_proof" +
+      "BE\n\026org.libra.jsonrpctypesB\007JsonRpcZ\"git" +
+      "hub.com/libra/librajsonrpctypesb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -19336,13 +20936,13 @@ public final class JsonRpc {
     internal_static_librajsonrpctypes_EventData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_librajsonrpctypes_EventData_descriptor,
-        new java.lang.String[] { "Type", "Amount", "PreburnAddress", "CurrencyCode", "NewToLbrExchangeRate", "Sender", "Receiver", "Metadata", "WriteSet", "Epoch", "Round", "Proposer", "ProposedTime", "DestinationAddress", "NewCompliancePublicKey", "NewBaseUrl", "TimeRotatedSeconds", });
-    internal_static_librajsonrpctypes_BlockMetadata_descriptor =
+        new java.lang.String[] { "Type", "Amount", "PreburnAddress", "CurrencyCode", "NewToLbrExchangeRate", "Sender", "Receiver", "Metadata", "Epoch", "Round", "Proposer", "ProposedTime", "DestinationAddress", "NewCompliancePublicKey", "NewBaseUrl", "TimeRotatedSeconds", "CreatedAddress", "RoleId", "CommittedTimestampSecs", });
+    internal_static_librajsonrpctypes_Metadata_descriptor =
       getDescriptor().getMessageTypes().get(5);
-    internal_static_librajsonrpctypes_BlockMetadata_fieldAccessorTable = new
+    internal_static_librajsonrpctypes_Metadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_librajsonrpctypes_BlockMetadata_descriptor,
-        new java.lang.String[] { "Version", "Timestamp", "ChainId", });
+        internal_static_librajsonrpctypes_Metadata_descriptor,
+        new java.lang.String[] { "Version", "Timestamp", "ChainId", "ScriptHashAllowList", "ModulePublishingAllowed", "LibraVersion", });
     internal_static_librajsonrpctypes_Transaction_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_librajsonrpctypes_Transaction_fieldAccessorTable = new
@@ -19366,7 +20966,7 @@ public final class JsonRpc {
     internal_static_librajsonrpctypes_Script_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_librajsonrpctypes_Script_descriptor,
-        new java.lang.String[] { "Type", "Receiver", "Amount", "Currency", "Metadata", "MetadataSignature", "AuthKeyPrefix", });
+        new java.lang.String[] { "Type", "Code", "Arguments", "TypeArguments", "Receiver", "Amount", "Currency", "Metadata", "MetadataSignature", });
     internal_static_librajsonrpctypes_CurrencyInfo_descriptor =
       getDescriptor().getMessageTypes().get(10);
     internal_static_librajsonrpctypes_CurrencyInfo_fieldAccessorTable = new

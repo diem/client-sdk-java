@@ -42,7 +42,7 @@ public abstract class TransactionArgument {
         public final @com.novi.serde.Unsigned Byte value;
 
         public U8(@com.novi.serde.Unsigned Byte value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 
@@ -91,7 +91,7 @@ public abstract class TransactionArgument {
         public final @com.novi.serde.Unsigned Long value;
 
         public U64(@com.novi.serde.Unsigned Long value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 
@@ -140,7 +140,7 @@ public abstract class TransactionArgument {
         public final @com.novi.serde.Unsigned @com.novi.serde.Int128 BigInteger value;
 
         public U128(@com.novi.serde.Unsigned @com.novi.serde.Int128 BigInteger value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 
@@ -189,7 +189,7 @@ public abstract class TransactionArgument {
         public final AccountAddress value;
 
         public Address(AccountAddress value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 
@@ -238,7 +238,7 @@ public abstract class TransactionArgument {
         public final com.novi.serde.Bytes value;
 
         public U8Vector(com.novi.serde.Bytes value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 
@@ -287,7 +287,7 @@ public abstract class TransactionArgument {
         public final Boolean value;
 
         public Bool(Boolean value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 

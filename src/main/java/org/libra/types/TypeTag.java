@@ -272,7 +272,7 @@ public abstract class TypeTag {
         public final TypeTag value;
 
         public Vector(TypeTag value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 
@@ -321,7 +321,7 @@ public abstract class TypeTag {
         public final StructTag value;
 
         public Struct(StructTag value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 

@@ -7,7 +7,7 @@ public final class UnstructuredBytesMetadata {
     public final java.util.Optional<com.novi.serde.Bytes> metadata;
 
     public UnstructuredBytesMetadata(java.util.Optional<com.novi.serde.Bytes> metadata) {
-        assert metadata != null;
+        java.util.Objects.requireNonNull(metadata, "metadata must not be null");
         this.metadata = metadata;
     }
 

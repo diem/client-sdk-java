@@ -23,9 +23,9 @@ import java.util.List;
  * </code>
  */
 public interface LibraClient {
-    JsonRpc.BlockMetadata getMetadata() throws LibraException;
+    JsonRpc.Metadata getMetadata() throws LibraException;
 
-    JsonRpc.BlockMetadata getMetadata(@Unsigned long version) throws LibraException;
+    JsonRpc.Metadata getMetadata(@Unsigned long version) throws LibraException;
 
     List<JsonRpc.CurrencyInfo> getCurrencies() throws LibraException;
 

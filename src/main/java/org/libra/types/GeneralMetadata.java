@@ -37,7 +37,7 @@ public abstract class GeneralMetadata {
         public final GeneralMetadataV0 value;
 
         public GeneralMetadataVersion0(GeneralMetadataV0 value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 
