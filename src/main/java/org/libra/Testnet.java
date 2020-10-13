@@ -3,7 +3,7 @@
 
 package org.libra;
 
-import com.novi.serde.Unsigned;
+import com.novi.lcs.LcsDeserializer;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
@@ -13,14 +13,13 @@ import org.apache.http.util.EntityUtils;
 import org.libra.jsonrpc.InvalidResponseException;
 import org.libra.jsonrpc.LibraJsonRpcClient;
 import org.libra.jsonrpc.Retry;
-import org.libra.jsonrpctypes.JsonRpc;
 import org.libra.types.ChainId;
-import org.libra.utils.TransactionUtils;
+import org.libra.types.SignedTransaction;
+import org.libra.utils.Hex;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.concurrent.Callable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Testnet is utility class for handing Testnet specific data and functions.
@@ -31,68 +30,69 @@ public class Testnet {
     public static ChainId CHAIN_ID = new ChainId((byte) 2);
     public static String DD_ADDRESS = "000000000000000000000000000000DD";
 
-    private static final long DEFAULT_TIMEOUT = 10 * 1000;
+    private static final int DEFAULT_TIMEOUT = 10 * 1000;
 
+    /**
+     * Create a LibraClient connects to Testnet.
+     *
+     * @return `LibraClient`
+     */
     public static LibraClient createClient() {
         return new LibraJsonRpcClient(JSON_RPC_URL, CHAIN_ID);
     }
 
+    /**
+     * Mint coins for given authentication key derived account address.
+     *
+     * @param client       a client connects to Testnet
+     * @param amount       amount of coins to mint
+     * @param authKey      authentication key of the account, if account does not exist onchain, a new onchain account will be created.
+     * @param currencyCode currency code of the minted coins
+     */
     public static void mintCoins(LibraClient client, long amount, String authKey, String currencyCode) {
-        long nextAccountSeq = mintCoinsAsync(amount, authKey.toLowerCase(), currencyCode);
-        JsonRpc.Transaction txn;
+        Retry<Integer> retry = new Retry<>(10, 500, Exception.class);
         try {
-            txn = waitForTransaction(DD_ADDRESS, nextAccountSeq - 1, false, DEFAULT_TIMEOUT, client);
+            retry.execute(() -> {
+                List<SignedTransaction> txns = mintCoinsAsync(amount, authKey.toLowerCase(), currencyCode);
+                for (SignedTransaction txn : txns) {
+                    client.waitForTransaction(txn, DEFAULT_TIMEOUT);
+                }
+                return 0;
+            });
         } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        if (txn == null) {
-            throw new RuntimeException("mint coins transaction does not exist / failed, sequence: " + nextAccountSeq);
-        }
-        if (!TransactionUtils.isExecuted(txn)) {
-            throw new RuntimeException("mint coins transaction failed: " + txn.toString());
+            throw new RuntimeException("Mint coins failed", e);
         }
     }
 
-    public static long mintCoinsAsync(long amount, String authKey, String currencyCode) {
-        URI build;
-        try {
-            URIBuilder builder = new URIBuilder(FAUCET_SERVER_URL);
-            builder.setParameter("amount", String.valueOf(amount)).setParameter("auth_key", authKey)
-                    .setParameter("currency_code", currencyCode);
-            build = builder.build();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+    /**
+     * This function calls to Faucet service for minting coins, but won't wait for the minting transactions executed.
+     * Caller should handle waiting for returned transactions executed successfully and retry if any of the transactions failed.
+     *
+     * @param amount       amount to mint.
+     * @param authKey      authentication key of the account receives minted coins.
+     * @param currencyCode currency code of the minted coins.
+     * @return List of SignedTransaction submitted by Faucet service for minting the coins
+     * @throws Exception retry if exception is thrown.
+     */
+    public static List<SignedTransaction> mintCoinsAsync(long amount, String authKey, String currencyCode) throws Exception {
+        URIBuilder builder = new URIBuilder(FAUCET_SERVER_URL);
+        builder.setParameter("amount", String.valueOf(amount)).setParameter("auth_key", authKey)
+                .setParameter("currency_code", currencyCode).setParameter("return_txns", "true");
+        URI build = builder.build();
 
         HttpPost post = new HttpPost(build);
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        Retry<Long> retry = new Retry<Long>(10, 500, Exception.class);
-        try {
-            return retry.execute(() -> {
-                CloseableHttpResponse response = httpClient.execute(post);
-                String body = EntityUtils.toString(response.getEntity());
-                if (response.getStatusLine().getStatusCode() != 200) {
-                    throw new InvalidResponseException(response.getStatusLine().getStatusCode(), body);
-                }
-
-                return Long.parseLong(body);
-            });
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        CloseableHttpResponse response = httpClient.execute(post);
+        String body = EntityUtils.toString(response.getEntity());
+        if (response.getStatusLine().getStatusCode() != 200) {
+            throw new InvalidResponseException(response.getStatusLine().getStatusCode(), body);
         }
-    }
-
-    private static JsonRpc.Transaction waitForTransaction(String address, @Unsigned long sequence, boolean includeEvents,
-                                                          @Unsigned long timeoutMillis, LibraClient client) throws InterruptedException, LibraException {
-        for (long millis = 0, step = 100; millis < timeoutMillis; millis += step) {
-            JsonRpc.Transaction transaction = client.getAccountTransaction(address, sequence, includeEvents);
-            if (transaction != null) {
-                return transaction;
-            }
-            Thread.sleep(step);
+        LcsDeserializer de = new LcsDeserializer(Hex.decode(body));
+        long length = de.deserialize_len();
+        List<SignedTransaction> txns = new ArrayList<>();
+        for (int i = 0; i < length; i++) {
+            txns.add(SignedTransaction.deserialize(de));
         }
-
-        return null;
+        return txns;
     }
 }
