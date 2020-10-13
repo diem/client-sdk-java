@@ -15,11 +15,14 @@ import org.libra.jsonrpc.LibraJsonRpcClient;
 import org.libra.jsonrpc.Retry;
 import org.libra.types.ChainId;
 import org.libra.types.SignedTransaction;
+import org.libra.types.TypeTag;
 import org.libra.utils.Hex;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.libra.utils.CurrencyCode.typeTag;
 
 /**
  * Testnet is utility class for handing Testnet specific data and functions.
@@ -29,6 +32,9 @@ public class Testnet {
     public static String FAUCET_SERVER_URL = "https://testnet.libra.org/mint";
     public static ChainId CHAIN_ID = new ChainId((byte) 2);
     public static String DD_ADDRESS = "000000000000000000000000000000DD";
+
+    public static final String COIN1 = "Coin1";
+    public static final TypeTag COIN1_TYPE = typeTag("Coin1");
 
     private static final int DEFAULT_TIMEOUT = 10 * 1000;
 

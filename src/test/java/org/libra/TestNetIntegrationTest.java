@@ -5,7 +5,7 @@ package org.libra;
 
 import com.novi.serde.Bytes;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.libra.jsonrpc.JsonRpcError;
 import org.libra.jsonrpc.StaleResponseException;
@@ -17,7 +17,9 @@ import org.libra.utils.Hex;
 import org.libra.utils.TransactionUtils;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.libra.Constants.ROOT_ACCOUNT_ADDRESS;
@@ -26,24 +28,18 @@ public class TestNetIntegrationTest {
 
     public static final int DEFAULT_TIMEOUT = 10 * 1000; // 10 seconds
 
-    private static LocalAccount account1;
-    private static LocalAccount account2;
-    private static LibraClient libraClient;
+    private LocalAccount account1;
+    private LocalAccount account2;
+    private LibraClient libraClient;
 
-    @BeforeClass
-    public static void globalSetup() {
-        // setup account globally for improving test performance,
-        // we also need setup client globally for making sure each
-        // test won't get stale response, which may cause we get stale
-        // account sequence number.
+    @Before
+    public void setup() {
         libraClient = Testnet.createClient();
-        account1 = LocalAccount.generate(
-                "76e3de861d516283dc285e12ddadc95245a9e98f351c910b0ad722f790bac273");
-        account2 = LocalAccount.generate(
-                "b13968ad5722ee203968f7deea565b2f4266f923b3292065b6e190c368f91036");
+        account1 = LocalAccount.generate();
+        account2 = LocalAccount.generate();
 
-        Testnet.mintCoins(libraClient, coins(10000), account1.authKey.hex(), CurrencyCode.LBR);
-        Testnet.mintCoins(libraClient, coins(10000), account2.authKey.hex(), CurrencyCode.LBR);
+        Testnet.mintCoins(libraClient, coins(10000), account1.authKey.hex(), Testnet.COIN1);
+        Testnet.mintCoins(libraClient, coins(10000), account2.authKey.hex(), Testnet.COIN1);
     }
 
     @Test
@@ -65,10 +61,12 @@ public class TestNetIntegrationTest {
     public void testGetCurrencies() throws Exception {
         List<JsonRpc.CurrencyInfo> response = libraClient.getCurrencies();
         Assert.assertNotNull(response);
-        Assert.assertEquals(3, response.size());
-        Assert.assertEquals("Coin1", response.get(0).getCode());
-        Assert.assertEquals("Coin2", response.get(1).getCode());
-        Assert.assertEquals("LBR", response.get(2).getCode());
+        Map<String, JsonRpc.CurrencyInfo> map = new HashMap<>();
+        for (JsonRpc.CurrencyInfo curr : response) {
+            map.put(curr.getCode(), curr);
+        }
+        Assert.assertTrue(map.containsKey("LBR"));
+        Assert.assertTrue(map.containsKey("Coin1"));
     }
 
     @Test
@@ -88,7 +86,7 @@ public class TestNetIntegrationTest {
     @Test
     public void testGetAccountTransaction() throws LibraException {
         long seq = libraClient.getAccount(account1.address).getSequenceNumber();
-        submitTransaction(account1, createP2PScript(account2.address, CurrencyCode.LBR, coins(1)));
+        submitTransaction(account1, createP2PScript(account2.address, Testnet.COIN1, coins(1)));
         JsonRpc.Transaction response = libraClient.getAccountTransaction(account1.address, seq, true);
         Assert.assertNotNull(response);
         Assert.assertTrue(response.getVersion() > 0);
@@ -101,7 +99,7 @@ public class TestNetIntegrationTest {
     @Test
     public void testGetAccountTransactions() throws LibraException {
         long seq = libraClient.getAccount(account1.address).getSequenceNumber();
-        submitTransaction(account1, createP2PScript(account2.address, CurrencyCode.LBR, coins(1)));
+        submitTransaction(account1, createP2PScript(account2.address, Testnet.COIN1, coins(1)));
         List<JsonRpc.Transaction> txns = libraClient.getAccountTransactions(account1.address, seq, 1, true);
         Assert.assertNotNull(txns);
         Assert.assertEquals(txns.size(), 1);
@@ -116,7 +114,7 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testSubmitTransaction() throws Exception {
-        TransactionAndSigned transactionAndSigned = submitTransaction(account1, createP2PScript(account2.address, CurrencyCode.LBR, coins(2)));
+        TransactionAndSigned transactionAndSigned = submitTransaction(account1, createP2PScript(account2.address, Testnet.COIN1, coins(2)));
         SignedTransaction st = transactionAndSigned.signedTransaction;
         JsonRpc.Transaction p2p = transactionAndSigned.transaction;
 
@@ -131,11 +129,11 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testSubmitExpiredTransaction() throws Exception {
-        TransactionPayload script = createP2PScript(account2.address, CurrencyCode.LBR, coins(1));
+        TransactionPayload script = createP2PScript(account2.address, Testnet.COIN1, coins(1));
         JsonRpc.Account account1Data = libraClient.getAccount(account1.address);
         SignedTransaction st = Signer.sign(account1.privateKey,
                 new RawTransaction(account1.address, account1Data.getSequenceNumber(), script, coins(1), 0L,
-                        CurrencyCode.LBR, 0L, Testnet.CHAIN_ID));
+                        Testnet.COIN1, 0L, Testnet.CHAIN_ID));
         assertThrows("Server error: VM Validation error: TRANSACTION_EXPIRED", JsonRpcError.class,
                 () -> libraClient.submit(st));
     }
@@ -143,11 +141,11 @@ public class TestNetIntegrationTest {
     @Test
     public void testSubmitTransactionAndExecuteFailed() throws Exception {
         LocalAccount account3 = LocalAccount.generate();
-        TransactionPayload script = createP2PScript(account3.address, CurrencyCode.LBR, coins(1));
+        TransactionPayload script = createP2PScript(account3.address, Testnet.COIN1, coins(1));
         JsonRpc.Account account1Data = libraClient.getAccount(account1.address);
         SignedTransaction st = Signer.sign(account1.privateKey,
                 new RawTransaction(account1.address, account1Data.getSequenceNumber(), script,
-                        coins(1), 0L, CurrencyCode.LBR, 100000000000L, Testnet.CHAIN_ID));
+                        coins(1), 0L, Testnet.COIN1, 100000000000L, Testnet.CHAIN_ID));
         libraClient.submit(st);
 
         assertThrows("transaction execution failed", LibraException.class,
@@ -180,7 +178,7 @@ public class TestNetIntegrationTest {
     @Test
     public void testWaitForTransaction_hashMismatch() throws LibraException {
         long expirationTimeSec = System.currentTimeMillis() / 1000 + 5;
-        submitTransaction(account1, createP2PScript(account2.address, CurrencyCode.LBR, coins(3)));
+        submitTransaction(account1, createP2PScript(account2.address, Testnet.COIN1, coins(3)));
         assertThrows("found transaction, but hash does not match", LibraException.class,
                 () -> {
                     libraClient.waitForTransaction(account1.address, 1,
@@ -215,7 +213,7 @@ public class TestNetIntegrationTest {
     private TransactionAndSigned submitTransaction(LocalAccount sender, TransactionPayload payload) throws LibraException {
         long seqNum = libraClient.getAccount(sender.address).getSequenceNumber();
         SignedTransaction st = Signer.sign(sender.privateKey,
-                new RawTransaction(sender.address, seqNum, payload, coins(1), 0L, CurrencyCode.LBR,
+                new RawTransaction(sender.address, seqNum, payload, coins(1), 0L, Testnet.COIN1,
                         100000000000L, Testnet.CHAIN_ID));
         try {
             libraClient.submit(st);

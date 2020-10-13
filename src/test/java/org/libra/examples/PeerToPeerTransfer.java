@@ -9,7 +9,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.libra.*;
 import org.libra.stdlib.Helpers;
-import org.libra.utils.CurrencyCode;
 
 import java.security.SecureRandom;
 
@@ -26,7 +25,7 @@ public class PeerToPeerTransfer {
 
         // Non custodial to non custodial has no requirement on metadata
         Utils.submitAndWait(client, nonCustodialAccount1, Helpers.encode_peer_to_peer_with_metadata_script(
-                CurrencyCode.LBR_TYPE, nonCustodialAccount2.address, 500_000L,
+                Testnet.COIN1_TYPE, nonCustodialAccount2.address, 500_000L,
                 new Bytes(new byte[0]), new Bytes(new byte[0])
         ));
 
@@ -49,7 +48,7 @@ public class PeerToPeerTransfer {
         // hence we need construct a general metadata includes to-subaddress
         TransactionMetadata metadata = TransactionMetadata.createGeneralMetadataToSubAddress(custodialUserSubAddress);
         Utils.submitAndWait(client, nonCustodialAccount, Helpers.encode_peer_to_peer_with_metadata_script(
-                CurrencyCode.LBR_TYPE, custodialChildAccount.address, 500_000L,
+                Testnet.COIN1_TYPE, custodialChildAccount.address, 500_000L,
                 metadata.getMetadata(),
                 new Bytes(new byte[0]) // no metadata signature for GeneralMetadata
         ));
@@ -74,7 +73,7 @@ public class PeerToPeerTransfer {
         // hence we need construct a general metadata includes to-subaddress
         TransactionMetadata metadata = TransactionMetadata.createGeneralMetadataToSubAddress(custodialUserSubAddress);
         Utils.submitAndWait(client, custodialChildAccount, Helpers.encode_peer_to_peer_with_metadata_script(
-                CurrencyCode.LBR_TYPE, nonCustodialAccount.address, 500_000L,
+                Testnet.COIN1_TYPE, nonCustodialAccount.address, 500_000L,
                 metadata.getMetadata(),
                 new Bytes(new byte[0]) // no metadata signature for GeneralMetadata
         ));
@@ -100,7 +99,7 @@ public class PeerToPeerTransfer {
         TransactionMetadata metadata = TransactionMetadata.createGeneralMetadataWithFromToSubAddresses(
                 senderCustodialUserSubAddress, receiverCustodialUserSubAddress);
         Utils.submitAndWait(client, senderChildVASPAccount, Helpers.encode_peer_to_peer_with_metadata_script(
-                CurrencyCode.LBR_TYPE, receiverChildVASPAccount.address, 500_000L,
+                Testnet.COIN1_TYPE, receiverChildVASPAccount.address, 500_000L,
                 metadata.getMetadata(),
                 new Bytes(new byte[0]) // no metadata signature for GeneralMetadata
         ));
@@ -139,7 +138,7 @@ public class PeerToPeerTransfer {
         byte[] metadataSignature = receiverComplianceKey.sign(metadata.getSignatureMessage());
 
         Utils.submitAndWait(client, senderChildVASPAccount, Helpers.encode_peer_to_peer_with_metadata_script(
-                CurrencyCode.LBR_TYPE, receiverChildVASPAccount.address, amount,
+                Testnet.COIN1_TYPE, receiverChildVASPAccount.address, amount,
                 metadata.getMetadata(),
                 new Bytes(metadataSignature)
         ));

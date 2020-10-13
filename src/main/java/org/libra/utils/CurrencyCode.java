@@ -11,9 +11,6 @@ import org.libra.types.TypeTag;
 import java.util.ArrayList;
 
 public class CurrencyCode {
-    public static String LBR = "LBR";
-    public static TypeTag LBR_TYPE = typeTag("LBR");
-
     public static StructTag structTag(String currencyCode) {
         return new StructTag(Constants.CORE_CODE_ADDRESS,
                 new Identifier(currencyCode), new Identifier(currencyCode), new ArrayList<>());
