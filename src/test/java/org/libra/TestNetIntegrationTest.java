@@ -5,7 +5,6 @@ package org.libra;
 
 import com.novi.serde.Bytes;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.libra.jsonrpc.JsonRpcError;
@@ -88,8 +87,9 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testGetAccountTransaction() throws LibraException {
+        long seq = libraClient.getAccount(account1.address).getSequenceNumber();
         submitTransaction(account1, createP2PScript(account2.address, CurrencyCode.LBR, coins(1)));
-        JsonRpc.Transaction response = libraClient.getAccountTransaction(account1.address, 1, true);
+        JsonRpc.Transaction response = libraClient.getAccountTransaction(account1.address, seq, true);
         Assert.assertNotNull(response);
         Assert.assertTrue(response.getVersion() > 0);
         Assert.assertTrue(response.getHash().length() > 0);
@@ -100,10 +100,11 @@ public class TestNetIntegrationTest {
 
     @Test
     public void testGetAccountTransactions() throws LibraException {
+        long seq = libraClient.getAccount(account1.address).getSequenceNumber();
         submitTransaction(account1, createP2PScript(account2.address, CurrencyCode.LBR, coins(1)));
-        List<JsonRpc.Transaction> txns = libraClient.getAccountTransactions(account1.address, 0, 5, true);
+        List<JsonRpc.Transaction> txns = libraClient.getAccountTransactions(account1.address, seq, 1, true);
         Assert.assertNotNull(txns);
-        Assert.assertNotEquals(txns.size(), 0);
+        Assert.assertEquals(txns.size(), 1);
 
         JsonRpc.Transaction txn = txns.get(0);
         Assert.assertTrue(txn.getVersion() > 0);
