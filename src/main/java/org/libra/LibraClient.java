@@ -34,8 +34,9 @@ public interface LibraClient {
     JsonRpc.Account getAccount(AccountAddress address) throws LibraException;
 
     JsonRpc.Transaction getAccountTransaction(String address, @Unsigned long sequence, boolean includeEvents) throws LibraException;
-
     JsonRpc.Transaction getAccountTransaction(AccountAddress address, @Unsigned long sequence, boolean includeEvents) throws LibraException;
+
+    List<JsonRpc.Transaction> getAccountTransactions(String address, @Unsigned long start, @Unsigned int limit, boolean includeEvents) throws LibraException;
     List<JsonRpc.Transaction> getAccountTransactions(AccountAddress address, @Unsigned long start, @Unsigned int limit, boolean includeEvents) throws LibraException;
 
     void submit(String txnHex) throws LibraException;
@@ -43,9 +44,8 @@ public interface LibraClient {
     void submit(SignedTransaction txn) throws LibraException;
 
     JsonRpc.Transaction waitForTransaction(String signedTxnHex, int timeout) throws LibraException;
-
     JsonRpc.Transaction waitForTransaction(SignedTransaction signedTransaction, int timeout) throws LibraException;
-
+    JsonRpc.Transaction waitForTransaction(String address, @Unsigned long sequence, String transactionHash, @Unsigned long expirationTimeSec, int timeout) throws LibraException;
     JsonRpc.Transaction waitForTransaction(AccountAddress address, @Unsigned long sequence, String transactionHash, @Unsigned long expirationTimeSec, int timeout) throws LibraException;
 
     List<JsonRpc.Transaction> getTransactions(@Unsigned long fromVersion, int limit, boolean includeEvents) throws LibraException;
