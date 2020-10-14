@@ -35,7 +35,7 @@ public class Refund {
 
         // make a transfer
         long transactionVersion = Utils.submitAndWait(client, senderChildVASPAccount, Helpers.encode_peer_to_peer_with_metadata_script(
-                CurrencyCode.LBR_TYPE, receiverChildVASPAccount.address, 500_000L,
+                Testnet.COIN1_TYPE, receiverChildVASPAccount.address, 500_000L,
                 TransactionMetadata.createGeneralMetadataWithFromToSubAddresses(
                         senderCustodialUserSubAddress, receiverCustodialUserSubAddress).getMetadata(),
                 new Bytes(new byte[0]) // no metadata signature for GeneralMetadata

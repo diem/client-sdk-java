@@ -142,6 +142,12 @@ public class LibraJsonRpcClient implements LibraClient {
     }
 
     @Override
+    public List<JsonRpc.Transaction> getAccountTransactions(String address, @Unsigned long start, int limit, boolean includeEvents)
+            throws LibraException {
+        return this.getAccountTransactions(AccountAddressUtils.create(address), start, limit, includeEvents);
+    }
+
+    @Override
     public List<JsonRpc.Transaction> getAccountTransactions(AccountAddress address, @Unsigned long start, int limit, boolean includeEvents)
             throws LibraException {
         List<Object> params = new ArrayList<>();
@@ -196,6 +202,12 @@ public class LibraJsonRpcClient implements LibraClient {
     }
 
     @Override
+    public JsonRpc.Transaction waitForTransaction(String address, @Unsigned long sequence, String transactionHash,
+                                                  @Unsigned long expirationTimeSec, int timeout) throws LibraException {
+        return this.waitForTransaction(AccountAddressUtils.create(address), sequence, transactionHash, expirationTimeSec, timeout);
+    }
+
+    @Override
     public JsonRpc.Transaction waitForTransaction(AccountAddress address, @Unsigned long sequence, String transactionHash,
                                                   @Unsigned long expirationTimeSec, int timeout) throws LibraException {
         Calendar calendar = Calendar.getInstance();
@@ -203,23 +215,20 @@ public class LibraJsonRpcClient implements LibraClient {
         Date maxTime = calendar.getTime();
 
         while (Calendar.getInstance().getTime().before(maxTime)) {
-            JsonRpc.Transaction accountTransaction = getAccountTransaction(address, sequence, true);
+            JsonRpc.Transaction txn = getAccountTransaction(address, sequence, true);
 
-            if (accountTransaction != null) {
-                if (!accountTransaction.getHash().equalsIgnoreCase(transactionHash)) {
-                    throw new LibraException(
-                            String.format("found transaction, but hash does not match, given %s, but got %s",
-                                    transactionHash, accountTransaction.getHash()));
+            if (txn != null) {
+                if (!txn.getHash().equalsIgnoreCase(transactionHash)) {
+                    throw new LibraTransactionHashMismatchException(txn, transactionHash);
                 }
-                if (!TransactionUtils.isExecuted(accountTransaction)) {
-                    throw new LibraException(
-                            String.format("transaction execution failed: %s", accountTransaction.getVmStatus()));
+                if (!TransactionUtils.isExecuted(txn)) {
+                    throw new LibraTransactionExecutionFailedException(txn);
                 }
 
-                return accountTransaction;
+                return txn;
             }
             if (expirationTimeSec * 1_000_000 <= state.getTimestampUsecs()) {
-                throw new LibraException("transaction expired");
+                throw new LibraTransactionExpiredException(expirationTimeSec, state.getTimestampUsecs());
             }
             try {
                 Thread.sleep(200);
@@ -228,8 +237,7 @@ public class LibraJsonRpcClient implements LibraClient {
             }
         }
 
-        throw new LibraException(
-                String.format("transaction not found within timeout period: %d (seconds)", timeout));
+        throw new LibraTransactionWaitTimeoutException(timeout);
     }
 
     @Override

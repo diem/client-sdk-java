@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.libra.AccountIdentifier;
 import org.libra.IntentIdentifier;
 import org.libra.LocalAccount;
+import org.libra.Testnet;
 import org.libra.utils.CurrencyCode;
 
 public class IntentId {
@@ -21,7 +22,7 @@ public class IntentId {
                 merchant.address
         );
 
-        IntentIdentifier intentId = new IntentIdentifier(merchantAccountId, CurrencyCode.LBR, amount);
+        IntentIdentifier intentId = new IntentIdentifier(merchantAccountId, Testnet.COIN1, amount);
         String encodeIntent = intentId.encode();
         System.out.println("encoded intent identifier: " + encodeIntent);
 
@@ -29,7 +30,7 @@ public class IntentId {
         IntentIdentifier decodedIntent = IntentIdentifier.decode(AccountIdentifier.NetworkPrefix.TestnetPrefix, encodeIntent);
 
         Assert.assertEquals(merchantAccountId, decodedIntent.getAccountIdentifier());
-        Assert.assertEquals(CurrencyCode.LBR, decodedIntent.getCurrency());
+        Assert.assertEquals(Testnet.COIN1, decodedIntent.getCurrency());
         Assert.assertEquals(amount, decodedIntent.getAmount());
     }
 }

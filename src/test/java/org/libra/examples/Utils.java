@@ -11,7 +11,6 @@ import org.libra.types.RawTransaction;
 import org.libra.types.Script;
 import org.libra.types.SignedTransaction;
 import org.libra.types.TransactionPayload;
-import org.libra.utils.CurrencyCode;
 
 import java.util.Calendar;
 
@@ -26,8 +25,7 @@ public class Utils {
      * This function returns back executed transaction.
      */
     public static long submitAndWait(LibraClient client, LocalAccount localAccount, Script script) throws LibraException {
-        JsonRpc.Account account = client.getAccount(localAccount.address);
-        long seq = account.getSequenceNumber();
+        long seq = client.getAccount(localAccount.address).getSequenceNumber();
         // it is recommended to set short expiration time for peer to peer transaction,
         // as Libra blockchain transaction execution is fast.
         Calendar expiration = Calendar.getInstance();
@@ -38,7 +36,7 @@ public class Utils {
                 new TransactionPayload.Script(script),
                 1000000l,
                 0l,
-                "LBR",
+                Testnet.COIN1,
                 expiration.getTimeInMillis(),
                 Testnet.CHAIN_ID
         ));
@@ -66,7 +64,7 @@ public class Utils {
 
     public static LocalAccount genAccount(LibraClient client, int amount) {
         LocalAccount parent = LocalAccount.generate();
-        Testnet.mintCoins(client, amount, parent.authKey.hex(), CurrencyCode.LBR);
+        Testnet.mintCoins(client, amount, parent.authKey.hex(), Testnet.COIN1);
         return parent;
     }
 
@@ -74,7 +72,7 @@ public class Utils {
         LocalAccount account = LocalAccount.generate();
         Utils.submitAndWait(client, senderParentVASPAccount,
                 Helpers.encode_create_child_vasp_account_script(
-                        CurrencyCode.LBR_TYPE, account.address, account.authKey.prefix(),
+                        Testnet.COIN1_TYPE, account.address, account.authKey.prefix(),
                         false, initAmount));
         return account;
     }
