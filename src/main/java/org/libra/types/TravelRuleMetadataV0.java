@@ -7,7 +7,7 @@ public final class TravelRuleMetadataV0 {
     public final java.util.Optional<String> off_chain_reference_id;
 
     public TravelRuleMetadataV0(java.util.Optional<String> off_chain_reference_id) {
-        assert off_chain_reference_id != null;
+        java.util.Objects.requireNonNull(off_chain_reference_id, "off_chain_reference_id must not be null");
         this.off_chain_reference_id = off_chain_reference_id;
     }
 

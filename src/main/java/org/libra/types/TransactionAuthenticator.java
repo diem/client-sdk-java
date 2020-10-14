@@ -39,8 +39,8 @@ public abstract class TransactionAuthenticator {
         public final Ed25519Signature signature;
 
         public Ed25519(Ed25519PublicKey public_key, Ed25519Signature signature) {
-            assert public_key != null;
-            assert signature != null;
+            java.util.Objects.requireNonNull(public_key, "public_key must not be null");
+            java.util.Objects.requireNonNull(signature, "signature must not be null");
             this.public_key = public_key;
             this.signature = signature;
         }
@@ -97,8 +97,8 @@ public abstract class TransactionAuthenticator {
         public final MultiEd25519Signature signature;
 
         public MultiEd25519(MultiEd25519PublicKey public_key, MultiEd25519Signature signature) {
-            assert public_key != null;
-            assert signature != null;
+            java.util.Objects.requireNonNull(public_key, "public_key must not be null");
+            java.util.Objects.requireNonNull(signature, "signature must not be null");
             this.public_key = public_key;
             this.signature = signature;
         }

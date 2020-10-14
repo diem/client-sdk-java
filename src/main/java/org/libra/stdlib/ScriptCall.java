@@ -40,7 +40,7 @@ public abstract class ScriptCall {
         public final org.libra.types.TypeTag currency;
 
         public AddCurrencyToAccount(org.libra.types.TypeTag currency) {
-            assert currency != null;
+            java.util.Objects.requireNonNull(currency, "currency must not be null");
             this.currency = currency;
         }
 
@@ -115,7 +115,7 @@ public abstract class ScriptCall {
         public final org.libra.types.AccountAddress recovery_address;
 
         public AddRecoveryRotationCapability(org.libra.types.AccountAddress recovery_address) {
-            assert recovery_address != null;
+            java.util.Objects.requireNonNull(recovery_address, "recovery_address must not be null");
             this.recovery_address = recovery_address;
         }
 
@@ -171,10 +171,12 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                                                           | Description                                                                                |
      * | ----------------           | --------------                                                         | -------------                                                                              |
-     * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ELIBRA_ROOT}                                           | The sending account is not the Libra Root account.                                         |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                                         | A {@code SlidingNonce} resource is not published under {@code lr_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                                         | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                                         | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}                                | The {@code sliding_nonce} has been previously recorded.                                          |
+     * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ELIBRA_ROOT}                                           | The sending account is not the Libra Root account.                                         |
+     * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::ELIBRA_ROOT}                                                   | The sending account is not the Libra Root account.                                         |
      * | {@code Errors::INVALID_ARGUMENT} | {@code LibraTransactionPublishingOption::EINVALID_SCRIPT_HASH}               | The script {@code hash} is an invalid length.                                                    |
      * | {@code Errors::INVALID_ARGUMENT} | {@code LibraTransactionPublishingOption::EALLOWLIST_ALREADY_CONTAINS_SCRIPT} | The on-chain allowlist already contains the script {@code hash}.                                 |
      */
@@ -183,8 +185,8 @@ public abstract class ScriptCall {
         public final @com.novi.serde.Unsigned Long sliding_nonce;
 
         public AddToScriptAllowList(com.novi.serde.Bytes hash, @com.novi.serde.Unsigned Long sliding_nonce) {
-            assert hash != null;
-            assert sliding_nonce != null;
+            java.util.Objects.requireNonNull(hash, "hash must not be null");
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
             this.hash = hash;
             this.sliding_nonce = sliding_nonce;
         }
@@ -246,11 +248,13 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                                  | Description                                                                                                                               |
      * | ----------------           | --------------                                | -------------                                                                                                                             |
-     * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ELIBRA_ROOT}                  | The sending account is not the Libra Root account.                                                                                        |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                | A {@code SlidingNonce} resource is not published under {@code lr_account}.                                                                            |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not.                                                |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                | The {@code sliding_nonce} is too far in the future.                                                                                             |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}       | The {@code sliding_nonce} has been previously recorded.                                                                                         |
-     * | EMPTY                      | 0                                             | The provided {@code validator_name} does not match the already-recorded human name for the validator.                                           |
+     * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ELIBRA_ROOT}                  | The sending account is not the Libra Root account.                                                                                        |
+     * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::ELIBRA_ROOT}                          | The sending account is not the Libra Root account.                                                                                        |
+     * | 0                          | 0                                             | The provided {@code validator_name} does not match the already-recorded human name for the validator.                                           |
      * | {@code Errors::INVALID_ARGUMENT} | {@code LibraSystem::EINVALID_PROSPECTIVE_VALIDATOR} | The validator to be added does not have a {@code ValidatorConfig::ValidatorConfig} resource published under it, or its {@code config} field is empty. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code LibraSystem::EALREADY_A_VALIDATOR}           | The {@code validator_address} account is already a registered validator.                                                                        |
      *
@@ -269,9 +273,9 @@ public abstract class ScriptCall {
         public final org.libra.types.AccountAddress validator_address;
 
         public AddValidatorAndReconfigure(@com.novi.serde.Unsigned Long sliding_nonce, com.novi.serde.Bytes validator_name, org.libra.types.AccountAddress validator_address) {
-            assert sliding_nonce != null;
-            assert validator_name != null;
-            assert validator_address != null;
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(validator_name, "validator_name must not be null");
+            java.util.Objects.requireNonNull(validator_address, "validator_address must not be null");
             this.sliding_nonce = sliding_nonce;
             this.validator_name = validator_name;
             this.validator_address = validator_address;
@@ -349,6 +353,7 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category                | Error Reason                            | Description                                                                                           |
      * | ----------------              | --------------                          | -------------                                                                                         |
+     * | {@code Errors::NOT_PUBLISHED}       | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code account}.                                           |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not.            |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                                         |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                                     |
@@ -368,9 +373,9 @@ public abstract class ScriptCall {
         public final org.libra.types.AccountAddress preburn_address;
 
         public Burn(org.libra.types.TypeTag token, @com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress preburn_address) {
-            assert token != null;
-            assert sliding_nonce != null;
-            assert preburn_address != null;
+            java.util.Objects.requireNonNull(token, "token must not be null");
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(preburn_address, "preburn_address must not be null");
             this.token = token;
             this.sliding_nonce = sliding_nonce;
             this.preburn_address = preburn_address;
@@ -451,7 +456,7 @@ public abstract class ScriptCall {
         public final org.libra.types.TypeTag coin_type;
 
         public BurnTxnFees(org.libra.types.TypeTag coin_type) {
-            assert coin_type != null;
+            java.util.Objects.requireNonNull(coin_type, "coin_type must not be null");
             this.coin_type = coin_type;
         }
 
@@ -521,6 +526,8 @@ public abstract class ScriptCall {
      * | {@code Errors::NOT_PUBLISHED}       | {@code Libra::ECURRENCY_INFO}                          | The specified {@code Token} is not a registered currency on-chain.                                          |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code LibraAccount::ECOIN_DEPOSIT_IS_ZERO}            | The value held in the preburn resource was zero.                                                      |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code LibraAccount::EPAYEE_CANT_ACCEPT_CURRENCY_TYPE} | The account at {@code preburn_address} doesn't have a balance resource for {@code Token}.                         |
+     * | {@code Errors::LIMIT_EXCEEDED}      | {@code LibraAccount::EDEPOSIT_EXCEEDS_LIMITS}          | The depositing of the funds held in the prebun area would exceed the {@code account}'s account limits.      |
+     * | {@code Errors::INVALID_STATE}       | {@code DualAttestation::EPAYEE_COMPLIANCE_KEY_NOT_SET} | The {@code account} does not have a compliance key set on it but dual attestion checking was performed.     |
      *
      * <p><b>Related Scripts</b>
      * <ul><li>{@code Script::burn_txn_fees}</li></ul>
@@ -532,8 +539,8 @@ public abstract class ScriptCall {
         public final org.libra.types.AccountAddress preburn_address;
 
         public CancelBurn(org.libra.types.TypeTag token, org.libra.types.AccountAddress preburn_address) {
-            assert token != null;
-            assert preburn_address != null;
+            java.util.Objects.requireNonNull(token, "token must not be null");
+            java.util.Objects.requireNonNull(preburn_address, "preburn_address must not be null");
             this.token = token;
             this.preburn_address = preburn_address;
         }
@@ -607,6 +614,7 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category              | Error Reason                                             | Description                                                                              |
      * | ----------------            | --------------                                           | -------------                                                                            |
+     * | {@code Errors::INVALID_ARGUMENT}  | {@code LibraAccount::EMALFORMED_AUTHENTICATION_KEY}            | The {@code auth_key_prefix} was not of length 32.                                              |
      * | {@code Errors::REQUIRES_ROLE}     | {@code Roles::EPARENT_VASP}                                    | The sending account wasn't a Parent VASP account.                                        |
      * | {@code Errors::ALREADY_PUBLISHED} | {@code Roles::EROLE_ID}                                        | The {@code child_address} address is already taken.                                            |
      * | {@code Errors::LIMIT_EXCEEDED}    | {@code VASP::ETOO_MANY_CHILDREN}                               | The sending account has reached the maximum number of allowed child accounts.            |
@@ -614,10 +622,11 @@ public abstract class ScriptCall {
      * | {@code Errors::INVALID_STATE}     | {@code LibraAccount::EWITHDRAWAL_CAPABILITY_ALREADY_EXTRACTED} | The withdrawal capability for the sending account has already been extracted.            |
      * | {@code Errors::NOT_PUBLISHED}     | {@code LibraAccount::EPAYER_DOESNT_HOLD_CURRENCY}              | The sending account doesn't have a balance in {@code CoinType}.                                |
      * | {@code Errors::LIMIT_EXCEEDED}    | {@code LibraAccount::EINSUFFICIENT_BALANCE}                    | The sending account doesn't have at least {@code child_initial_balance} of {@code CoinType} balance. |
+     * | {@code Errors::INVALID_ARGUMENT}  | {@code LibraAccount::ECANNOT_CREATE_AT_VM_RESERVED}            | The {@code child_address} is the reserved address 0x0.                                         |
      *
      * <p><b>Related Scripts</b>
      * <ul><li>{@code Script::create_parent_vasp_account}</li></ul>
-     * <ul><li>{@code Script::add_currency}</li></ul>
+     * <ul><li>{@code Script::add_currency_to_account}</li></ul>
      * <ul><li>{@code Script::rotate_authentication_key}</li></ul>
      * <ul><li>{@code Script::add_recovery_rotation_capability}</li></ul>
      * <ul><li>{@code Script::create_recovery_address}</li></ul>
@@ -630,11 +639,11 @@ public abstract class ScriptCall {
         public final @com.novi.serde.Unsigned Long child_initial_balance;
 
         public CreateChildVaspAccount(org.libra.types.TypeTag coin_type, org.libra.types.AccountAddress child_address, com.novi.serde.Bytes auth_key_prefix, Boolean add_all_currencies, @com.novi.serde.Unsigned Long child_initial_balance) {
-            assert coin_type != null;
-            assert child_address != null;
-            assert auth_key_prefix != null;
-            assert add_all_currencies != null;
-            assert child_initial_balance != null;
+            java.util.Objects.requireNonNull(coin_type, "coin_type must not be null");
+            java.util.Objects.requireNonNull(child_address, "child_address must not be null");
+            java.util.Objects.requireNonNull(auth_key_prefix, "auth_key_prefix must not be null");
+            java.util.Objects.requireNonNull(add_all_currencies, "add_all_currencies must not be null");
+            java.util.Objects.requireNonNull(child_initial_balance, "child_initial_balance must not be null");
             this.coin_type = coin_type;
             this.child_address = child_address;
             this.auth_key_prefix = auth_key_prefix;
@@ -714,10 +723,12 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category              | Error Reason                            | Description                                                                                |
      * | ----------------            | --------------                          | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}     | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code tc_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                          |
      * | {@code Errors::REQUIRES_ADDRESS}  | {@code CoreAddresses::ETREASURY_COMPLIANCE}   | The sending account is not the Treasury Compliance account.                                |
+     * | {@code Errors::REQUIRES_ROLE}     | {@code Roles::ETREASURY_COMPLIANCE}           | The sending account is not the Treasury Compliance account.                                |
      * | {@code Errors::NOT_PUBLISHED}     | {@code Libra::ECURRENCY_INFO}                 | The {@code Currency} is not a registered currency on-chain.                                      |
      * | {@code Errors::ALREADY_PUBLISHED} | {@code Roles::EROLE_ID}                       | The {@code addr} address is already taken.                                                       |
      *
@@ -735,12 +746,12 @@ public abstract class ScriptCall {
         public final Boolean add_all_currencies;
 
         public CreateDesignatedDealer(org.libra.types.TypeTag currency, @com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress addr, com.novi.serde.Bytes auth_key_prefix, com.novi.serde.Bytes human_name, Boolean add_all_currencies) {
-            assert currency != null;
-            assert sliding_nonce != null;
-            assert addr != null;
-            assert auth_key_prefix != null;
-            assert human_name != null;
-            assert add_all_currencies != null;
+            java.util.Objects.requireNonNull(currency, "currency must not be null");
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(addr, "addr must not be null");
+            java.util.Objects.requireNonNull(auth_key_prefix, "auth_key_prefix must not be null");
+            java.util.Objects.requireNonNull(human_name, "human_name must not be null");
+            java.util.Objects.requireNonNull(add_all_currencies, "add_all_currencies must not be null");
             this.currency = currency;
             this.sliding_nonce = sliding_nonce;
             this.addr = addr;
@@ -820,16 +831,18 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category              | Error Reason                            | Description                                                                                |
      * | ----------------            | --------------                          | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}     | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code tc_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                          |
-     * | {@code Errors::REQUIRES_ADDRESS}  | {@code CoreAddresses::ETREASURY_COMPLIANCE}   | The sending account is the Treasury Compliance account.                                    |
+     * | {@code Errors::REQUIRES_ADDRESS}  | {@code CoreAddresses::ETREASURY_COMPLIANCE}   | The sending account is not the Treasury Compliance account.                                |
+     * | {@code Errors::REQUIRES_ROLE}     | {@code Roles::ETREASURY_COMPLIANCE}           | The sending account is not the Treasury Compliance account.                                |
      * | {@code Errors::NOT_PUBLISHED}     | {@code Libra::ECURRENCY_INFO}                 | The {@code CoinType} is not a registered currency on-chain.                                      |
      * | {@code Errors::ALREADY_PUBLISHED} | {@code Roles::EROLE_ID}                       | The {@code new_account_address} address is already taken.                                        |
      *
      * <p><b>Related Scripts</b>
      * <ul><li>{@code Script::create_child_vasp_account}</li></ul>
-     * <ul><li>{@code Script::add_currency}</li></ul>
+     * <ul><li>{@code Script::add_currency_to_account}</li></ul>
      * <ul><li>{@code Script::rotate_authentication_key}</li></ul>
      * <ul><li>{@code Script::add_recovery_rotation_capability}</li></ul>
      * <ul><li>{@code Script::create_recovery_address}</li></ul>
@@ -844,12 +857,12 @@ public abstract class ScriptCall {
         public final Boolean add_all_currencies;
 
         public CreateParentVaspAccount(org.libra.types.TypeTag coin_type, @com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress new_account_address, com.novi.serde.Bytes auth_key_prefix, com.novi.serde.Bytes human_name, Boolean add_all_currencies) {
-            assert coin_type != null;
-            assert sliding_nonce != null;
-            assert new_account_address != null;
-            assert auth_key_prefix != null;
-            assert human_name != null;
-            assert add_all_currencies != null;
+            java.util.Objects.requireNonNull(coin_type, "coin_type must not be null");
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(new_account_address, "new_account_address must not be null");
+            java.util.Objects.requireNonNull(auth_key_prefix, "auth_key_prefix must not be null");
+            java.util.Objects.requireNonNull(human_name, "human_name must not be null");
+            java.util.Objects.requireNonNull(add_all_currencies, "add_all_currencies must not be null");
             this.coin_type = coin_type;
             this.sliding_nonce = sliding_nonce;
             this.new_account_address = new_account_address;
@@ -986,10 +999,12 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category              | Error Reason                            | Description                                                                                |
      * | ----------------            | --------------                          | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}     | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code lr_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                          |
      * | {@code Errors::REQUIRES_ADDRESS}  | {@code CoreAddresses::ELIBRA_ROOT}            | The sending account is not the Libra Root account.                                         |
+     * | {@code Errors::REQUIRES_ROLE}     | {@code Roles::ELIBRA_ROOT}                    | The sending account is not the Libra Root account.                                         |
      * | {@code Errors::ALREADY_PUBLISHED} | {@code Roles::EROLE_ID}                       | The {@code new_account_address} address is already taken.                                        |
      *
      * <p><b>Related Scripts</b>
@@ -1008,10 +1023,10 @@ public abstract class ScriptCall {
         public final com.novi.serde.Bytes human_name;
 
         public CreateValidatorAccount(@com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress new_account_address, com.novi.serde.Bytes auth_key_prefix, com.novi.serde.Bytes human_name) {
-            assert sliding_nonce != null;
-            assert new_account_address != null;
-            assert auth_key_prefix != null;
-            assert human_name != null;
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(new_account_address, "new_account_address must not be null");
+            java.util.Objects.requireNonNull(auth_key_prefix, "auth_key_prefix must not be null");
+            java.util.Objects.requireNonNull(human_name, "human_name must not be null");
             this.sliding_nonce = sliding_nonce;
             this.new_account_address = new_account_address;
             this.auth_key_prefix = auth_key_prefix;
@@ -1077,12 +1092,14 @@ public abstract class ScriptCall {
      * | {@code human_name}          | {@code vector<u8>} | ASCII-encoded human name for the validator.                                                     |
      *
      * <p><b>Common Abort Conditions</b>
-     * | Error Category | Error Reason | Description |
-     * |----------------|--------------|-------------|
+     * | Error Category              | Error Reason                            | Description                                                                                |
+     * | ----------------            | --------------                          | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}     | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code lr_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                          |
      * | {@code Errors::REQUIRES_ADDRESS}  | {@code CoreAddresses::ELIBRA_ROOT}            | The sending account is not the Libra Root account.                                         |
+     * | {@code Errors::REQUIRES_ROLE}     | {@code Roles::ELIBRA_ROOT}                    | The sending account is not the Libra Root account.                                         |
      * | {@code Errors::ALREADY_PUBLISHED} | {@code Roles::EROLE_ID}                       | The {@code new_account_address} address is already taken.                                        |
      *
      * <p><b>Related Scripts</b>
@@ -1101,10 +1118,10 @@ public abstract class ScriptCall {
         public final com.novi.serde.Bytes human_name;
 
         public CreateValidatorOperatorAccount(@com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress new_account_address, com.novi.serde.Bytes auth_key_prefix, com.novi.serde.Bytes human_name) {
-            assert sliding_nonce != null;
-            assert new_account_address != null;
-            assert auth_key_prefix != null;
-            assert human_name != null;
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(new_account_address, "new_account_address must not be null");
+            java.util.Objects.requireNonNull(auth_key_prefix, "auth_key_prefix must not be null");
+            java.util.Objects.requireNonNull(human_name, "human_name must not be null");
             this.sliding_nonce = sliding_nonce;
             this.new_account_address = new_account_address;
             this.auth_key_prefix = auth_key_prefix;
@@ -1182,10 +1199,12 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                                 | Description                                                                                |
      * | ----------------           | --------------                               | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}               | A {@code SlidingNonce} resource is not published under {@code tc_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}               | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}               | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}      | The {@code sliding_nonce} has been previously recorded.                                          |
      * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ETREASURY_COMPLIANCE}        | The sending account is not the Treasury Compliance account.                                |
+     * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::ETREASURY_COMPLIANCE}                | The sending account is not the Treasury Compliance account.                                |
      * | {@code Errors::INVALID_ARGUMENT} | {@code AccountFreezing::ECANNOT_FREEZE_TC}         | {@code to_freeze_account} was the Treasury Compliance account ({@code 0xB1E55ED}).                     |
      * | {@code Errors::INVALID_ARGUMENT} | {@code AccountFreezing::ECANNOT_FREEZE_LIBRA_ROOT} | {@code to_freeze_account} was the Libra Root account ({@code 0xA550C18}).                              |
      *
@@ -1197,8 +1216,8 @@ public abstract class ScriptCall {
         public final org.libra.types.AccountAddress to_freeze_account;
 
         public FreezeAccount(@com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress to_freeze_account) {
-            assert sliding_nonce != null;
-            assert to_freeze_account != null;
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(to_freeze_account, "to_freeze_account must not be null");
             this.sliding_nonce = sliding_nonce;
             this.to_freeze_account = to_freeze_account;
         }
@@ -1228,81 +1247,6 @@ public abstract class ScriptCall {
                 return new FreezeAccount(
                     sliding_nonce,
                     to_freeze_account
-                );
-            }
-        }
-    }
-
-    /**
-     * <p><b>Summary</b>
-     * Mints LBR from the sending account's constituent coins by depositing in the
-     * on-chain LBR reserve. Deposits the newly-minted LBR into the sending
-     * account. Can be sent by any account that can hold balances for the constituent
-     * currencies for LBR and LBR.
-     *
-     * <p><b>Technical Description</b>
-     * Mints {@code amount_lbr} LBR from the sending account's constituent coins and deposits the
-     * resulting LBR into the sending account.
-     *
-     * <p><b>Events</b>
-     * Successful execution of this script emits three events:
-     * <ul><li>A {@code LibraAccount::SentPaymentEvent} with the Coin1 currency code, and a</li></ul>
-     * {@code LibraAccount::SentPaymentEvent} with the Coin2 currency code on {@code account}'s
-     * {@code LibraAccount::LibraAccount} {@code sent_events} handle with the {@code amounts} for each event being the
-     * components amounts of {@code amount_lbr} LBR; and
-     * <ul><li>A {@code LibraAccount::ReceivedPaymentEvent} on {@code account}'s {@code LibraAccount::LibraAccount}</li></ul>
-     * {@code received_events} handle with the LBR currency code and amount field equal to {@code amount_lbr}.
-     *
-     * <p><b>Parameters</b>
-     * | Name         | Type      | Description                                      |
-     * | ------       | ------    | -------------                                    |
-     * | {@code account}    | {@code &signer} | The signer reference of the sending account.     |
-     * | {@code amount_lbr} | {@code u64}     | The amount of LBR (in microlibra) to be created. |
-     *
-     * <p><b>Common Abort Conditions</b>
-     * | Error Category             | Error Reason                                     | Description                                                                      |
-     * | ----------------           | --------------                                   | -------------                                                                    |
-     * | {@code Errors::NOT_PUBLISHED}    | {@code LibraAccount::EPAYER_DOESNT_HOLD_CURRENCY}      | {@code account} doesn't hold a balance in one of the backing currencies of LBR.        |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code LBR::EZERO_LBR_MINT_NOT_ALLOWED}                | {@code amount_lbr} passed in was zero.                                                 |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code LBR::ECOIN1}                                    | The amount of {@code Coin1} needed for the specified LBR would exceed {@code LBR::MAX_U64}.  |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code LBR::ECOIN2}                                    | The amount of {@code Coin2} needed for the specified LBR would exceed {@code LBR::MAX_U64}.  |
-     * | {@code Errors::INVALID_STATE}    | {@code Libra::EMINTING_NOT_ALLOWED}                    | Minting of LBR is not allowed currently.                                         |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code LibraAccount::EPAYEE_CANT_ACCEPT_CURRENCY_TYPE} | {@code account} doesn't hold a balance in LBR.                                         |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code LibraAccount::EWITHDRAWAL_EXCEEDS_LIMITS}       | {@code account} has exceeded its daily withdrawal limits for the backing coins of LBR. |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code LibraAccount::EDEPOSIT_EXCEEDS_LIMITS}          | {@code account} has exceeded its daily deposit limits for LBR.                         |
-     *
-     * <p><b>Related Scripts</b>
-     * <ul><li>{@code Script::unmint_lbr}</li></ul>
-     */
-    public static final class MintLbr extends ScriptCall {
-        public final @com.novi.serde.Unsigned Long amount_lbr;
-
-        public MintLbr(@com.novi.serde.Unsigned Long amount_lbr) {
-            assert amount_lbr != null;
-            this.amount_lbr = amount_lbr;
-        }
-
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null) return false;
-            if (getClass() != obj.getClass()) return false;
-            MintLbr other = (MintLbr) obj;
-            if (!java.util.Objects.equals(this.amount_lbr, other.amount_lbr)) { return false; }
-            return true;
-        }
-
-        public int hashCode() {
-            int value = 7;
-            value = 31 * value + (this.amount_lbr != null ? this.amount_lbr.hashCode() : 0);
-            return value;
-        }
-
-        public static final class Builder {
-            public @com.novi.serde.Unsigned Long amount_lbr;
-
-            public MintLbr build() {
-                return new MintLbr(
-                    amount_lbr
                 );
             }
         }
@@ -1369,11 +1313,11 @@ public abstract class ScriptCall {
         public final com.novi.serde.Bytes metadata_signature;
 
         public PeerToPeerWithMetadata(org.libra.types.TypeTag currency, org.libra.types.AccountAddress payee, @com.novi.serde.Unsigned Long amount, com.novi.serde.Bytes metadata, com.novi.serde.Bytes metadata_signature) {
-            assert currency != null;
-            assert payee != null;
-            assert amount != null;
-            assert metadata != null;
-            assert metadata_signature != null;
+            java.util.Objects.requireNonNull(currency, "currency must not be null");
+            java.util.Objects.requireNonNull(payee, "payee must not be null");
+            java.util.Objects.requireNonNull(amount, "amount must not be null");
+            java.util.Objects.requireNonNull(metadata, "metadata must not be null");
+            java.util.Objects.requireNonNull(metadata_signature, "metadata_signature must not be null");
             this.currency = currency;
             this.payee = payee;
             this.amount = amount;
@@ -1471,8 +1415,8 @@ public abstract class ScriptCall {
         public final @com.novi.serde.Unsigned Long amount;
 
         public Preburn(org.libra.types.TypeTag token, @com.novi.serde.Unsigned Long amount) {
-            assert token != null;
-            assert amount != null;
+            java.util.Objects.requireNonNull(token, "token must not be null");
+            java.util.Objects.requireNonNull(amount, "amount must not be null");
             this.token = token;
             this.amount = amount;
         }
@@ -1539,7 +1483,7 @@ public abstract class ScriptCall {
         public final com.novi.serde.Bytes public_key;
 
         public PublishSharedEd25519PublicKey(com.novi.serde.Bytes public_key) {
-            assert public_key != null;
+            java.util.Objects.requireNonNull(public_key, "public_key must not be null");
             this.public_key = public_key;
         }
 
@@ -1614,10 +1558,10 @@ public abstract class ScriptCall {
         public final com.novi.serde.Bytes fullnode_network_addresses;
 
         public RegisterValidatorConfig(org.libra.types.AccountAddress validator_account, com.novi.serde.Bytes consensus_pubkey, com.novi.serde.Bytes validator_network_addresses, com.novi.serde.Bytes fullnode_network_addresses) {
-            assert validator_account != null;
-            assert consensus_pubkey != null;
-            assert validator_network_addresses != null;
-            assert fullnode_network_addresses != null;
+            java.util.Objects.requireNonNull(validator_account, "validator_account must not be null");
+            java.util.Objects.requireNonNull(consensus_pubkey, "consensus_pubkey must not be null");
+            java.util.Objects.requireNonNull(validator_network_addresses, "validator_network_addresses must not be null");
+            java.util.Objects.requireNonNull(fullnode_network_addresses, "fullnode_network_addresses must not be null");
             this.validator_account = validator_account;
             this.consensus_pubkey = consensus_pubkey;
             this.validator_network_addresses = validator_network_addresses;
@@ -1686,12 +1630,15 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                            | Description                                                                                     |
      * | ----------------           | --------------                          | -------------                                                                                   |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code lr_account}.                                  |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not.      |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                                   |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                               |
-     * | EMPTY                      | 0                                       | The provided {@code validator_name} does not match the already-recorded human name for the validator. |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}          | The sending account is not the Libra Root account or Treasury Compliance account                |
+     * | 0                          | 0                                       | The provided {@code validator_name} does not match the already-recorded human name for the validator. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code LibraSystem::ENOT_AN_ACTIVE_VALIDATOR} | The validator to be removed is not in the validator set.                                        |
      * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ELIBRA_ROOT}            | The sending account is not the Libra Root account.                                              |
+     * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::ELIBRA_ROOT}                    | The sending account is not the Libra Root account.                                              |
      *
      * <p><b>Related Scripts</b>
      * <ul><li>{@code Script::create_validator_account}</li></ul>
@@ -1708,9 +1655,9 @@ public abstract class ScriptCall {
         public final org.libra.types.AccountAddress validator_address;
 
         public RemoveValidatorAndReconfigure(@com.novi.serde.Unsigned Long sliding_nonce, com.novi.serde.Bytes validator_name, org.libra.types.AccountAddress validator_address) {
-            assert sliding_nonce != null;
-            assert validator_name != null;
-            assert validator_address != null;
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(validator_name, "validator_name must not be null");
+            java.util.Objects.requireNonNull(validator_address, "validator_address must not be null");
             this.sliding_nonce = sliding_nonce;
             this.validator_name = validator_name;
             this.validator_address = validator_address;
@@ -1781,7 +1728,7 @@ public abstract class ScriptCall {
         public final com.novi.serde.Bytes new_key;
 
         public RotateAuthenticationKey(com.novi.serde.Bytes new_key) {
-            assert new_key != null;
+            java.util.Objects.requireNonNull(new_key, "new_key must not be null");
             this.new_key = new_key;
         }
 
@@ -1832,6 +1779,7 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                                               | Description                                                                                |
      * | ----------------           | --------------                                             | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                             | A {@code SlidingNonce} resource is not published under {@code account}.                                |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                             | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                             | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}                    | The {@code sliding_nonce} has been previously recorded.                                          |
@@ -1848,8 +1796,8 @@ public abstract class ScriptCall {
         public final com.novi.serde.Bytes new_key;
 
         public RotateAuthenticationKeyWithNonce(@com.novi.serde.Unsigned Long sliding_nonce, com.novi.serde.Bytes new_key) {
-            assert sliding_nonce != null;
-            assert new_key != null;
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(new_key, "new_key must not be null");
             this.sliding_nonce = sliding_nonce;
             this.new_key = new_key;
         }
@@ -1905,6 +1853,7 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                                               | Description                                                                                                |
      * | ----------------           | --------------                                             | -------------                                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                             | A {@code SlidingNonce} resource is not published under {@code lr_account}.                                             |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                             | The {@code sliding_nonce} in {@code lr_account} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                             | The {@code sliding_nonce} in {@code lr_account} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}                    | The {@code sliding_nonce} in{@code  lr_account} has been previously recorded.                                          |
@@ -1921,8 +1870,8 @@ public abstract class ScriptCall {
         public final com.novi.serde.Bytes new_key;
 
         public RotateAuthenticationKeyWithNonceAdmin(@com.novi.serde.Unsigned Long sliding_nonce, com.novi.serde.Bytes new_key) {
-            assert sliding_nonce != null;
-            assert new_key != null;
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(new_key, "new_key must not be null");
             this.sliding_nonce = sliding_nonce;
             this.new_key = new_key;
         }
@@ -1997,9 +1946,9 @@ public abstract class ScriptCall {
         public final com.novi.serde.Bytes new_key;
 
         public RotateAuthenticationKeyWithRecoveryAddress(org.libra.types.AccountAddress recovery_address, org.libra.types.AccountAddress to_recover, com.novi.serde.Bytes new_key) {
-            assert recovery_address != null;
-            assert to_recover != null;
-            assert new_key != null;
+            java.util.Objects.requireNonNull(recovery_address, "recovery_address must not be null");
+            java.util.Objects.requireNonNull(to_recover, "to_recover must not be null");
+            java.util.Objects.requireNonNull(new_key, "new_key must not be null");
             this.recovery_address = recovery_address;
             this.to_recover = to_recover;
             this.new_key = new_key;
@@ -2082,8 +2031,8 @@ public abstract class ScriptCall {
         public final com.novi.serde.Bytes new_key;
 
         public RotateDualAttestationInfo(com.novi.serde.Bytes new_url, com.novi.serde.Bytes new_key) {
-            assert new_url != null;
-            assert new_key != null;
+            java.util.Objects.requireNonNull(new_url, "new_url must not be null");
+            java.util.Objects.requireNonNull(new_key, "new_key must not be null");
             this.new_url = new_url;
             this.new_key = new_key;
         }
@@ -2149,7 +2098,7 @@ public abstract class ScriptCall {
         public final com.novi.serde.Bytes public_key;
 
         public RotateSharedEd25519PublicKey(com.novi.serde.Bytes public_key) {
-            assert public_key != null;
+            java.util.Objects.requireNonNull(public_key, "public_key must not be null");
             this.public_key = public_key;
         }
 
@@ -2204,17 +2153,18 @@ public abstract class ScriptCall {
      * | Error Category             | Error Reason                                   | Description                                                                                           |
      * | ----------------           | --------------                                 | -------------                                                                                         |
      * | {@code Errors::NOT_PUBLISHED}    | {@code ValidatorConfig::EVALIDATOR_CONFIG}           | {@code validator_address} does not have a {@code ValidatorConfig::ValidatorConfig} resource published under it.   |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code ValidatorConfig::EINVALID_TRANSACTION_SENDER} | {@code validator_operator_account} is not the registered operator for the validator at {@code validator_address}. |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code ValidatorConfig::EINVALID_CONSENSUS_KEY}      | {@code consensus_pubkey} is not a valid ed25519 public key.                                                 |
+     * | {@code Errors::REQUIRES_ROLE     | }Roles::EVALIDATOR_OPERATOR{@code                    | }validator_operator_account{@code  does not have a Validator Operator role.                                 |
+     * | }Errors::INVALID_ARGUMENT{@code  | }ValidatorConfig::EINVALID_TRANSACTION_SENDER{@code  | }validator_operator_account{@code  is not the registered operator for the validator at }validator_address{@code . |
+     * | }Errors::INVALID_ARGUMENT{@code  | }ValidatorConfig::EINVALID_CONSENSUS_KEY{@code       | }consensus_pubkey{@code  is not a valid ed25519 public key.                                                 |
      *
      * <p><b>Related Scripts</b>
-     * <ul><li>{@code Script::create_validator_account}</li></ul>
-     * <ul><li>{@code Script::create_validator_operator_account}</li></ul>
-     * <ul><li>{@code Script::add_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::remove_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator_with_nonce_admin}</li></ul>
-     * <ul><li>{@code Script::register_validator_config}</li></ul>
+     * <ul><li>}Script::create_validator_account{@code </li></ul>
+     * <ul><li>}Script::create_validator_operator_account{@code </li></ul>
+     * <ul><li>}Script::add_validator_and_reconfigure{@code </li></ul>
+     * <ul><li>}Script::remove_validator_and_reconfigure{@code </li></ul>
+     * <ul><li>}Script::set_validator_operator{@code </li></ul>
+     * <ul><li>}Script::set_validator_operator_with_nonce_admin{@code </li></ul>
+     * <ul><li>}Script::register_validator_config`</li></ul>
      */
     public static final class SetValidatorConfigAndReconfigure extends ScriptCall {
         public final org.libra.types.AccountAddress validator_account;
@@ -2223,10 +2173,10 @@ public abstract class ScriptCall {
         public final com.novi.serde.Bytes fullnode_network_addresses;
 
         public SetValidatorConfigAndReconfigure(org.libra.types.AccountAddress validator_account, com.novi.serde.Bytes consensus_pubkey, com.novi.serde.Bytes validator_network_addresses, com.novi.serde.Bytes fullnode_network_addresses) {
-            assert validator_account != null;
-            assert consensus_pubkey != null;
-            assert validator_network_addresses != null;
-            assert fullnode_network_addresses != null;
+            java.util.Objects.requireNonNull(validator_account, "validator_account must not be null");
+            java.util.Objects.requireNonNull(consensus_pubkey, "consensus_pubkey must not be null");
+            java.util.Objects.requireNonNull(validator_network_addresses, "validator_network_addresses must not be null");
+            java.util.Objects.requireNonNull(fullnode_network_addresses, "fullnode_network_addresses must not be null");
             this.validator_account = validator_account;
             this.consensus_pubkey = consensus_pubkey;
             this.validator_network_addresses = validator_network_addresses;
@@ -2297,7 +2247,7 @@ public abstract class ScriptCall {
      * | Error Category             | Error Reason                                          | Description                                                                                                                                                  |
      * | ----------------           | --------------                                        | -------------                                                                                                                                                |
      * | {@code Errors::NOT_PUBLISHED}    | {@code ValidatorOperatorConfig::EVALIDATOR_OPERATOR_CONFIG} | The {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource is not published under {@code operator_account}.                                                   |
-     * | EMPTY                      | 0                                                     | The {@code human_name} field of the {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource under {@code operator_account} does not match the provided {@code human_name}. |
+     * | 0                          | 0                                                     | The {@code human_name} field of the {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource under {@code operator_account} does not match the provided {@code human_name}. |
      * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::EVALIDATOR}                                   | {@code account} does not have a Validator account role.                                                                                                            |
      * | {@code Errors::INVALID_ARGUMENT} | {@code ValidatorConfig::ENOT_A_VALIDATOR_OPERATOR}          | The account at {@code operator_account} does not have a {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource.                                               |
      * | {@code Errors::NOT_PUBLISHED}    | {@code ValidatorConfig::EVALIDATOR_CONFIG}                  | A {@code ValidatorConfig::ValidatorConfig} is not published under {@code account}.                                                                                       |
@@ -2316,8 +2266,8 @@ public abstract class ScriptCall {
         public final org.libra.types.AccountAddress operator_account;
 
         public SetValidatorOperator(com.novi.serde.Bytes operator_name, org.libra.types.AccountAddress operator_account) {
-            assert operator_name != null;
-            assert operator_account != null;
+            java.util.Objects.requireNonNull(operator_name, "operator_name must not be null");
+            java.util.Objects.requireNonNull(operator_account, "operator_account must not be null");
             this.operator_name = operator_name;
             this.operator_account = operator_account;
         }
@@ -2379,11 +2329,13 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                                          | Description                                                                                                                                                  |
      * | ----------------           | --------------                                        | -------------                                                                                                                                                |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                        | A {@code SlidingNonce} resource is not published under {@code lr_account}.                                                                                               |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                        | The {@code sliding_nonce} in {@code lr_account} is too old and it's impossible to determine if it's duplicated or not.                                                   |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                        | The {@code sliding_nonce} in {@code lr_account} is too far in the future.                                                                                                |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}               | The {@code sliding_nonce} in{@code  lr_account} has been previously recorded.                                                                                            |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                        | The sending account is not the Libra Root account or Treasury Compliance account                                                                             |
      * | {@code Errors::NOT_PUBLISHED}    | {@code ValidatorOperatorConfig::EVALIDATOR_OPERATOR_CONFIG} | The {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource is not published under {@code operator_account}.                                                   |
-     * | EMPTY                      | 0                                                     | The {@code human_name} field of the {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource under {@code operator_account} does not match the provided {@code human_name}. |
+     * | 0                          | 0                                                     | The {@code human_name} field of the {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource under {@code operator_account} does not match the provided {@code human_name}. |
      * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::EVALIDATOR}                                   | {@code account} does not have a Validator account role.                                                                                                            |
      * | {@code Errors::INVALID_ARGUMENT} | {@code ValidatorConfig::ENOT_A_VALIDATOR_OPERATOR}          | The account at {@code operator_account} does not have a {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource.                                               |
      * | {@code Errors::NOT_PUBLISHED}    | {@code ValidatorConfig::EVALIDATOR_CONFIG}                  | A {@code ValidatorConfig::ValidatorConfig} is not published under {@code account}.                                                                                       |
@@ -2403,9 +2355,9 @@ public abstract class ScriptCall {
         public final org.libra.types.AccountAddress operator_account;
 
         public SetValidatorOperatorWithNonceAdmin(@com.novi.serde.Unsigned Long sliding_nonce, com.novi.serde.Bytes operator_name, org.libra.types.AccountAddress operator_account) {
-            assert sliding_nonce != null;
-            assert operator_name != null;
-            assert operator_account != null;
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(operator_name, "operator_name must not be null");
+            java.util.Objects.requireNonNull(operator_account, "operator_account must not be null");
             this.sliding_nonce = sliding_nonce;
             this.operator_name = operator_name;
             this.operator_account = operator_account;
@@ -2482,16 +2434,19 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category                | Error Reason                                 | Description                                                                                                                  |
      * | ----------------              | --------------                               | -------------                                                                                                                |
+     * | {@code Errors::NOT_PUBLISHED}       | {@code SlidingNonce::ESLIDING_NONCE}               | A {@code SlidingNonce} resource is not published under {@code tc_account}.                                                               |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_TOO_OLD}               | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not.                                   |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_TOO_NEW}               | The {@code sliding_nonce} is too far in the future.                                                                                |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}      | The {@code sliding_nonce} has been previously recorded.                                                                            |
      * | {@code Errors::REQUIRES_ADDRESS}    | {@code CoreAddresses::ETREASURY_COMPLIANCE}        | {@code tc_account} is not the Treasury Compliance account.                                                                         |
+     * | {@code Errors::REQUIRES_ROLE}       | {@code Roles::ETREASURY_COMPLIANCE}                | {@code tc_account} is not the Treasury Compliance account.                                                                         |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code DesignatedDealer::EINVALID_MINT_AMOUNT}     | {@code mint_amount} is zero.                                                                                                       |
      * | {@code Errors::NOT_PUBLISHED}       | {@code DesignatedDealer::EDEALER}                  | {@code DesignatedDealer::Dealer} or {@code DesignatedDealer::TierInfo<CoinType>} resource does not exist at {@code designated_dealer_address}. |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code DesignatedDealer::EINVALID_TIER_INDEX}      | The {@code tier_index} is out of bounds.                                                                                           |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code DesignatedDealer::EINVALID_AMOUNT_FOR_TIER} | {@code mint_amount} exceeds the maximum allowed amount for {@code tier_index}.                                                           |
      * | {@code Errors::REQUIRES_CAPABILITY} | {@code Libra::EMINT_CAPABILITY}                    | {@code tc_account} does not have a {@code Libra::MintCapability<CoinType>} resource published under it.                                  |
      * | {@code Errors::INVALID_STATE}       | {@code Libra::EMINTING_NOT_ALLOWED}                | Minting is not currently allowed for {@code CoinType} coins.                                                                       |
+     * | {@code Errors::LIMIT_EXCEEDED}      | {@code LibraAccount::EDEPOSIT_EXCEEDS_LIMITS}      | The depositing of the funds would exceed the {@code account}'s account limits.                                                     |
      *
      * <p><b>Related Scripts</b>
      * <ul><li>{@code Script::create_designated_dealer}</li></ul>
@@ -2506,11 +2461,11 @@ public abstract class ScriptCall {
         public final @com.novi.serde.Unsigned Long tier_index;
 
         public TieredMint(org.libra.types.TypeTag coin_type, @com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress designated_dealer_address, @com.novi.serde.Unsigned Long mint_amount, @com.novi.serde.Unsigned Long tier_index) {
-            assert coin_type != null;
-            assert sliding_nonce != null;
-            assert designated_dealer_address != null;
-            assert mint_amount != null;
-            assert tier_index != null;
+            java.util.Objects.requireNonNull(coin_type, "coin_type must not be null");
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(designated_dealer_address, "designated_dealer_address must not be null");
+            java.util.Objects.requireNonNull(mint_amount, "mint_amount must not be null");
+            java.util.Objects.requireNonNull(tier_index, "tier_index must not be null");
             this.coin_type = coin_type;
             this.sliding_nonce = sliding_nonce;
             this.designated_dealer_address = designated_dealer_address;
@@ -2586,6 +2541,7 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                            | Description                                                                                |
      * | ----------------           | --------------                          | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code account}.                                |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                          |
@@ -2599,8 +2555,8 @@ public abstract class ScriptCall {
         public final org.libra.types.AccountAddress to_unfreeze_account;
 
         public UnfreezeAccount(@com.novi.serde.Unsigned Long sliding_nonce, org.libra.types.AccountAddress to_unfreeze_account) {
-            assert sliding_nonce != null;
-            assert to_unfreeze_account != null;
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(to_unfreeze_account, "to_unfreeze_account must not be null");
             this.sliding_nonce = sliding_nonce;
             this.to_unfreeze_account = to_unfreeze_account;
         }
@@ -2637,78 +2593,6 @@ public abstract class ScriptCall {
 
     /**
      * <p><b>Summary</b>
-     * Withdraws a specified amount of LBR from the transaction sender's account, and unstaples the
-     * withdrawn LBR into its constituent coins. Deposits each of the constituent coins to the
-     * transaction sender's balances. Any account that can hold balances that has the correct balances
-     * may send this transaction.
-     *
-     * <p><b>Technical Description</b>
-     * Withdraws {@code amount_lbr} LBR coins from the {@code LibraAccount::Balance<LBR::LBR>} balance held under
-     * {@code account}. Withdraws the backing coins for the LBR coins from the on-chain reserve in the
-     * {@code LBR::Reserve} resource published under {@code 0xA550C18}. It then deposits each of the backing coins
-     * into balance resources published under {@code account}.
-     *
-     * <p><b>Events</b>
-     * Successful execution of this transaction will emit two {@code LibraAccount::SentPaymentEvent}s. One
-     * for each constituent currency that is unstapled and returned to the sending {@code account}'s
-     * balances.
-     *
-     * <p><b>Parameters</b>
-     * | Name         | Type      | Description                                                     |
-     * | ------       | ------    | -------------                                                   |
-     * | {@code account}    | {@code &signer} | The signer reference of the sending account of the transaction. |
-     * | {@code amount_lbr} | {@code u64}     | The amount of microlibra to unstaple.                           |
-     *
-     * <p><b>Common Abort Conditions</b>
-     * | Error Category             | Error Reason                                             | Description                                                                               |
-     * | ----------------           | --------------                                           | -------------                                                                             |
-     * | {@code Errors::INVALID_STATE}    | {@code LibraAccount::EWITHDRAWAL_CAPABILITY_ALREADY_EXTRACTED} | The {@code LibraAccount::WithdrawCapability} for {@code account} has previously been extracted.       |
-     * | {@code Errors::NOT_PUBLISHED}    | {@code LibraAccount::EPAYER_DOESNT_HOLD_CURRENCY}              | {@code account} doesn't have a balance in LBR.                                                  |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code LibraAccount::EINSUFFICIENT_BALANCE}                    | {@code amount_lbr} is greater than the balance of LBR in {@code account}.                             |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code Libra::ECOIN}                                           | {@code amount_lbr} is zero.                                                                     |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code LibraAccount::EWITHDRAWAL_EXCEEDS_LIMITS}               | {@code account} has exceeded its daily withdrawal limits for LBR.                               |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code LibraAccount::EDEPOSIT_EXCEEDS_LIMITS}                  | {@code account} has exceeded its daily deposit limits for one of the backing currencies of LBR. |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code LibraAccount::EPAYEE_CANT_ACCEPT_CURRENCY_TYPE}         | {@code account} doesn't hold a balance in one or both of the backing currencies of LBR.         |
-     *
-     * <p><b>Related Scripts</b>
-     * <ul><li>{@code Script::mint_lbr}</li></ul>
-     */
-    public static final class UnmintLbr extends ScriptCall {
-        public final @com.novi.serde.Unsigned Long amount_lbr;
-
-        public UnmintLbr(@com.novi.serde.Unsigned Long amount_lbr) {
-            assert amount_lbr != null;
-            this.amount_lbr = amount_lbr;
-        }
-
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null) return false;
-            if (getClass() != obj.getClass()) return false;
-            UnmintLbr other = (UnmintLbr) obj;
-            if (!java.util.Objects.equals(this.amount_lbr, other.amount_lbr)) { return false; }
-            return true;
-        }
-
-        public int hashCode() {
-            int value = 7;
-            value = 31 * value + (this.amount_lbr != null ? this.amount_lbr.hashCode() : 0);
-            return value;
-        }
-
-        public static final class Builder {
-            public @com.novi.serde.Unsigned Long amount_lbr;
-
-            public UnmintLbr build() {
-                return new UnmintLbr(
-                    amount_lbr
-                );
-            }
-        }
-    }
-
-    /**
-     * <p><b>Summary</b>
      * Update the dual attestation limit on-chain. Defined in terms of micro-LBR.  The transaction can
      * only be sent by the Treasury Compliance account.  After this transaction all inter-VASP
      * payments over this limit must be checked for dual attestation.
@@ -2727,6 +2611,7 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                            | Description                                                                                |
      * | ----------------           | --------------                          | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code tc_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                          |
@@ -2741,8 +2626,8 @@ public abstract class ScriptCall {
         public final @com.novi.serde.Unsigned Long new_micro_lbr_limit;
 
         public UpdateDualAttestationLimit(@com.novi.serde.Unsigned Long sliding_nonce, @com.novi.serde.Unsigned Long new_micro_lbr_limit) {
-            assert sliding_nonce != null;
-            assert new_micro_lbr_limit != null;
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(new_micro_lbr_limit, "new_micro_lbr_limit must not be null");
             this.sliding_nonce = sliding_nonce;
             this.new_micro_lbr_limit = new_micro_lbr_limit;
         }
@@ -2800,10 +2685,12 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                            | Description                                                                                |
      * | ----------------           | --------------                          | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code tc_account}.                             |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                          |
      * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ETREASURY_COMPLIANCE}   | {@code tc_account} is not the Treasury Compliance account.                                       |
+     * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::ETREASURY_COMPLIANCE}           | {@code tc_account} is not the Treasury Compliance account.                                       |
      * | {@code Errors::INVALID_ARGUMENT} | {@code FixedPoint32::EDENOMINATOR}            | {@code new_exchange_rate_denominator} is zero.                                                   |
      * | {@code Errors::INVALID_ARGUMENT} | {@code FixedPoint32::ERATIO_OUT_OF_RANGE}     | The quotient is unrepresentable as a {@code FixedPoint32}.                                       |
      * | {@code Errors::LIMIT_EXCEEDED}   | {@code FixedPoint32::ERATIO_OUT_OF_RANGE}     | The quotient is unrepresentable as a {@code FixedPoint32}.                                       |
@@ -2819,10 +2706,10 @@ public abstract class ScriptCall {
         public final @com.novi.serde.Unsigned Long new_exchange_rate_denominator;
 
         public UpdateExchangeRate(org.libra.types.TypeTag currency, @com.novi.serde.Unsigned Long sliding_nonce, @com.novi.serde.Unsigned Long new_exchange_rate_numerator, @com.novi.serde.Unsigned Long new_exchange_rate_denominator) {
-            assert currency != null;
-            assert sliding_nonce != null;
-            assert new_exchange_rate_numerator != null;
-            assert new_exchange_rate_denominator != null;
+            java.util.Objects.requireNonNull(currency, "currency must not be null");
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(new_exchange_rate_numerator, "new_exchange_rate_numerator must not be null");
+            java.util.Objects.requireNonNull(new_exchange_rate_denominator, "new_exchange_rate_denominator must not be null");
             this.currency = currency;
             this.sliding_nonce = sliding_nonce;
             this.new_exchange_rate_numerator = new_exchange_rate_numerator;
@@ -2888,6 +2775,7 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b>
      * | Error Category             | Error Reason                                  | Description                                                                                |
      * | ----------------           | --------------                                | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                | A {@code SlidingNonce} resource is not published under {@code account}.                                |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}       | The {@code sliding_nonce} has been previously recorded.                                          |
@@ -2899,8 +2787,8 @@ public abstract class ScriptCall {
         public final @com.novi.serde.Unsigned Long major;
 
         public UpdateLibraVersion(@com.novi.serde.Unsigned Long sliding_nonce, @com.novi.serde.Unsigned Long major) {
-            assert sliding_nonce != null;
-            assert major != null;
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(major, "major must not be null");
             this.sliding_nonce = sliding_nonce;
             this.major = major;
         }
@@ -2969,8 +2857,8 @@ public abstract class ScriptCall {
         public final Boolean allow_minting;
 
         public UpdateMintingAbility(org.libra.types.TypeTag currency, Boolean allow_minting) {
-            assert currency != null;
-            assert allow_minting != null;
+            java.util.Objects.requireNonNull(currency, "currency must not be null");
+            java.util.Objects.requireNonNull(allow_minting, "allow_minting must not be null");
             this.currency = currency;
             this.allow_minting = allow_minting;
         }

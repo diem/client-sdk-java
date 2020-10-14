@@ -8,8 +8,8 @@ public final class AccessPath {
     public final com.novi.serde.Bytes path;
 
     public AccessPath(AccountAddress address, com.novi.serde.Bytes path) {
-        assert address != null;
-        assert path != null;
+        java.util.Objects.requireNonNull(address, "address must not be null");
+        java.util.Objects.requireNonNull(path, "path must not be null");
         this.address = address;
         this.path = path;
     }

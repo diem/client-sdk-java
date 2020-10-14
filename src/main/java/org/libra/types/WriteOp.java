@@ -76,7 +76,7 @@ public abstract class WriteOp {
         public final com.novi.serde.Bytes value;
 
         public Value(com.novi.serde.Bytes value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 

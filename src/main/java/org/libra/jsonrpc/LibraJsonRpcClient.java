@@ -103,18 +103,18 @@ public class LibraJsonRpcClient implements LibraClient {
     }
 
     @Override
-    public JsonRpc.BlockMetadata getMetadata() throws LibraException {
+    public JsonRpc.Metadata getMetadata() throws LibraException {
         Response resp = call(Method.get_metadata, new ArrayList<>());
-        return new Builder<JsonRpc.BlockMetadata>().parse(resp, JsonRpc.BlockMetadata.newBuilder());
+        return new Builder<JsonRpc.Metadata>().parse(resp, JsonRpc.Metadata.newBuilder());
     }
 
     @Override
-    public JsonRpc.BlockMetadata getMetadata(@Unsigned long version) throws LibraException {
+    public JsonRpc.Metadata getMetadata(@Unsigned long version) throws LibraException {
         List<Object> params = new ArrayList<>();
         params.add(version);
 
         Response resp = call(Method.get_metadata, params);
-        return new Builder<JsonRpc.BlockMetadata>().parse(resp, JsonRpc.BlockMetadata.newBuilder());
+        return new Builder<JsonRpc.Metadata>().parse(resp, JsonRpc.Metadata.newBuilder());
     }
 
     @Override

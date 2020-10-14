@@ -8,8 +8,8 @@ public final class ChangeSet {
     public final java.util.List<ContractEvent> events;
 
     public ChangeSet(WriteSet write_set, java.util.List<ContractEvent> events) {
-        assert write_set != null;
-        assert events != null;
+        java.util.Objects.requireNonNull(write_set, "write_set must not be null");
+        java.util.Objects.requireNonNull(events, "events must not be null");
         this.write_set = write_set;
         this.events = events;
     }

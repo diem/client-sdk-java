@@ -10,10 +10,10 @@ public final class ContractEventV0 {
     public final com.novi.serde.Bytes event_data;
 
     public ContractEventV0(EventKey key, @com.novi.serde.Unsigned Long sequence_number, TypeTag type_tag, com.novi.serde.Bytes event_data) {
-        assert key != null;
-        assert sequence_number != null;
-        assert type_tag != null;
-        assert event_data != null;
+        java.util.Objects.requireNonNull(key, "key must not be null");
+        java.util.Objects.requireNonNull(sequence_number, "sequence_number must not be null");
+        java.util.Objects.requireNonNull(type_tag, "type_tag must not be null");
+        java.util.Objects.requireNonNull(event_data, "event_data must not be null");
         this.key = key;
         this.sequence_number = sequence_number;
         this.type_tag = type_tag;

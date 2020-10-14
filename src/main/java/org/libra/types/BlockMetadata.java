@@ -11,11 +11,11 @@ public final class BlockMetadata {
     public final AccountAddress proposer;
 
     public BlockMetadata(HashValue id, @com.novi.serde.Unsigned Long round, @com.novi.serde.Unsigned Long timestamp_usecs, java.util.List<AccountAddress> previous_block_votes, AccountAddress proposer) {
-        assert id != null;
-        assert round != null;
-        assert timestamp_usecs != null;
-        assert previous_block_votes != null;
-        assert proposer != null;
+        java.util.Objects.requireNonNull(id, "id must not be null");
+        java.util.Objects.requireNonNull(round, "round must not be null");
+        java.util.Objects.requireNonNull(timestamp_usecs, "timestamp_usecs must not be null");
+        java.util.Objects.requireNonNull(previous_block_votes, "previous_block_votes must not be null");
+        java.util.Objects.requireNonNull(proposer, "proposer must not be null");
         this.id = id;
         this.round = round;
         this.timestamp_usecs = timestamp_usecs;

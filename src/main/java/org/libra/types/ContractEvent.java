@@ -37,7 +37,7 @@ public abstract class ContractEvent {
         public final ContractEventV0 value;
 
         public V0(ContractEventV0 value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 

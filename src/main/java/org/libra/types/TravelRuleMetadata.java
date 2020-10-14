@@ -37,7 +37,7 @@ public abstract class TravelRuleMetadata {
         public final TravelRuleMetadataV0 value;
 
         public TravelRuleMetadataVersion0(TravelRuleMetadataV0 value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 

@@ -7,7 +7,7 @@ public final class Identifier {
     public final String value;
 
     public Identifier(String value) {
-        assert value != null;
+        java.util.Objects.requireNonNull(value, "value must not be null");
         this.value = value;
     }
 

@@ -7,7 +7,7 @@ public final class ChainId {
     public final @com.novi.serde.Unsigned Byte value;
 
     public ChainId(@com.novi.serde.Unsigned Byte value) {
-        assert value != null;
+        java.util.Objects.requireNonNull(value, "value must not be null");
         this.value = value;
     }
 

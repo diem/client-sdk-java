@@ -7,7 +7,7 @@ public final class AccountAddress {
     public final @com.novi.serde.Unsigned Byte @com.novi.serde.ArrayLen(length=16) [] value;
 
     public AccountAddress(@com.novi.serde.Unsigned Byte @com.novi.serde.ArrayLen(length=16) [] value) {
-        assert value != null;
+        java.util.Objects.requireNonNull(value, "value must not be null");
         this.value = value;
     }
 

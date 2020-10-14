@@ -14,14 +14,14 @@ public final class RawTransaction {
     public final ChainId chain_id;
 
     public RawTransaction(AccountAddress sender, @com.novi.serde.Unsigned Long sequence_number, TransactionPayload payload, @com.novi.serde.Unsigned Long max_gas_amount, @com.novi.serde.Unsigned Long gas_unit_price, String gas_currency_code, @com.novi.serde.Unsigned Long expiration_timestamp_secs, ChainId chain_id) {
-        assert sender != null;
-        assert sequence_number != null;
-        assert payload != null;
-        assert max_gas_amount != null;
-        assert gas_unit_price != null;
-        assert gas_currency_code != null;
-        assert expiration_timestamp_secs != null;
-        assert chain_id != null;
+        java.util.Objects.requireNonNull(sender, "sender must not be null");
+        java.util.Objects.requireNonNull(sequence_number, "sequence_number must not be null");
+        java.util.Objects.requireNonNull(payload, "payload must not be null");
+        java.util.Objects.requireNonNull(max_gas_amount, "max_gas_amount must not be null");
+        java.util.Objects.requireNonNull(gas_unit_price, "gas_unit_price must not be null");
+        java.util.Objects.requireNonNull(gas_currency_code, "gas_currency_code must not be null");
+        java.util.Objects.requireNonNull(expiration_timestamp_secs, "expiration_timestamp_secs must not be null");
+        java.util.Objects.requireNonNull(chain_id, "chain_id must not be null");
         this.sender = sender;
         this.sequence_number = sequence_number;
         this.payload = payload;

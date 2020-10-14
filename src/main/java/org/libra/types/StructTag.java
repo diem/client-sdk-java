@@ -10,10 +10,10 @@ public final class StructTag {
     public final java.util.List<TypeTag> type_params;
 
     public StructTag(AccountAddress address, Identifier module, Identifier name, java.util.List<TypeTag> type_params) {
-        assert address != null;
-        assert module != null;
-        assert name != null;
-        assert type_params != null;
+        java.util.Objects.requireNonNull(address, "address must not be null");
+        java.util.Objects.requireNonNull(module, "module must not be null");
+        java.util.Objects.requireNonNull(name, "name must not be null");
+        java.util.Objects.requireNonNull(type_params, "type_params must not be null");
         this.address = address;
         this.module = module;
         this.name = name;

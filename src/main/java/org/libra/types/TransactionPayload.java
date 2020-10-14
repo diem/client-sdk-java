@@ -39,7 +39,7 @@ public abstract class TransactionPayload {
         public final WriteSetPayload value;
 
         public WriteSet(WriteSetPayload value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 
@@ -88,7 +88,7 @@ public abstract class TransactionPayload {
         public final org.libra.types.Script value;
 
         public Script(org.libra.types.Script value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 
@@ -137,7 +137,7 @@ public abstract class TransactionPayload {
         public final org.libra.types.Module value;
 
         public Module(org.libra.types.Module value) {
-            assert value != null;
+            java.util.Objects.requireNonNull(value, "value must not be null");
             this.value = value;
         }
 
