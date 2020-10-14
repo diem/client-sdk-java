@@ -57,7 +57,7 @@ implementation 'org.libra:libra-client-sdk-java:0.0.3'
 ## System Requirements
 
 * [gradle](https://gradle.org/install/)
-* JDK 8+ (https://www.oracle.com/java/technologies/javase-downloads.html)
+* [JDK 8+](https://www.oracle.com/java/technologies/javase-downloads.html)
 
 ## Build
 
