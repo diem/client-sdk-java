@@ -38,7 +38,7 @@ You can find all of the example code under the [`src/test/java/org/libra/example
 **Gradle**
 
 ```gradle
-implementation 'org.libra:libra-client-sdk-java:0.0.3'
+implementation 'org.libra:libra-client-sdk-java:0.1.0'
 ```
 
 **Maven**
@@ -47,10 +47,10 @@ implementation 'org.libra:libra-client-sdk-java:0.0.3'
 <dependency>
   <groupId>org.libra</groupId>
   <artifactId>libra-client-sdk-java</artifactId>
-  <version>0.0.3</version>
+  <version>0.1.0</version>
 </dependency>
 ```
-[Download Jars on Maven](https://search.maven.org/search?q=a:libra-client-sdk-java)
+[Download Jars on Maven](https://repo1.maven.org/maven2/org/libra/libra-client-sdk-java/)
 
 # Development
 
@@ -78,6 +78,9 @@ gradle test
 ```
 // reset libra submodule to testnet branch, re-generate stdlib and lcs type classes
 gradle gen
+
+// generate jsonrpc types from protobuf definition
+gradle generateProto
 
 // confirm everything works
 gradle test
