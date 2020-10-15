@@ -23,6 +23,7 @@
 - `Signer`: sign transaction logic.
 - `Testnet`: Testnet utility, minting coins, create Testnet client, chain id, Testnet JSON-RPC URL.
 - `TransactionMetadata`: utils for creating peer to peer transaction metadata. [LIP-4](https://lip.libra.org/lip-4/)
+- `Constants`: static data and JSON-RPC response enum type values.
 
 ## Examples
 
