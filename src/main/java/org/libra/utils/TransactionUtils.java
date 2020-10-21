@@ -3,6 +3,7 @@
 
 package org.libra.utils;
 
+import org.libra.Constants;
 import org.libra.jsonrpctypes.JsonRpc;
 
 /**
@@ -10,7 +11,7 @@ import org.libra.jsonrpctypes.JsonRpc;
  */
 public class TransactionUtils {
 
-    public static final String VM_STATUS_EXECUTED = "executed";
+    public static final String VM_STATUS_EXECUTED = Constants.VM_STATUS_EXECUTED;
 
     /**
      * Check given transaction is executed successfully.
