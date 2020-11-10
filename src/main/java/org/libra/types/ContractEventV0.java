@@ -1,7 +1,5 @@
 package org.libra.types;
 
-import java.math.BigInteger;
-
 
 public final class ContractEventV0 {
     public final EventKey key;

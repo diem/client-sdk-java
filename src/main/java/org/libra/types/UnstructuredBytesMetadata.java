@@ -1,7 +1,5 @@
 package org.libra.types;
 
-import java.math.BigInteger;
-
 
 public final class UnstructuredBytesMetadata {
     public final java.util.Optional<com.novi.serde.Bytes> metadata;

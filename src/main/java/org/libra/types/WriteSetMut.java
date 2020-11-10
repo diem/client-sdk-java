@@ -1,7 +1,5 @@
 package org.libra.types;
 
-import java.math.BigInteger;
-
 
 public final class WriteSetMut {
     public final java.util.List<com.novi.serde.Tuple2<AccessPath, WriteOp>> write_set;

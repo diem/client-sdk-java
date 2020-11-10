@@ -1,7 +1,5 @@
 package org.libra.types;
 
-import java.math.BigInteger;
-
 
 public final class AccountAddress {
     public final @com.novi.serde.Unsigned Byte @com.novi.serde.ArrayLen(length=16) [] value;

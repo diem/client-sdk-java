@@ -1,7 +1,5 @@
 package org.libra.types;
 
-import java.math.BigInteger;
-
 final class TraitHelpers {
     static void serialize_array16_u8_array(@com.novi.serde.Unsigned Byte @com.novi.serde.ArrayLen(length=16) [] value, com.novi.serde.Serializer serializer) throws com.novi.serde.SerializationError {
         if (value.length != 16) {

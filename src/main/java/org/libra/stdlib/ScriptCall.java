@@ -1,7 +1,5 @@
 package org.libra.stdlib;
 
-import java.math.BigInteger;
-
 
 public abstract class ScriptCall {
 

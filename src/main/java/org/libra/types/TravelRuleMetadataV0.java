@@ -1,7 +1,5 @@
 package org.libra.types;
 
-import java.math.BigInteger;
-
 
 public final class TravelRuleMetadataV0 {
     public final java.util.Optional<String> off_chain_reference_id;

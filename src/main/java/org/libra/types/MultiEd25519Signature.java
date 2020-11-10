@@ -1,7 +1,5 @@
 package org.libra.types;
 
-import java.math.BigInteger;
-
 
 public final class MultiEd25519Signature {
     public final com.novi.serde.Bytes value;

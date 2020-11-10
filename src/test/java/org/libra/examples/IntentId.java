@@ -9,7 +9,6 @@ import org.libra.AccountIdentifier;
 import org.libra.IntentIdentifier;
 import org.libra.LocalAccount;
 import org.libra.Testnet;
-import org.libra.utils.CurrencyCode;
 
 public class IntentId {
     @Test

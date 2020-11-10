@@ -1,7 +1,5 @@
 package org.libra.types;
 
-import java.math.BigInteger;
-
 
 public final class GeneralMetadataV0 {
     public final java.util.Optional<com.novi.serde.Bytes> to_subaddress;

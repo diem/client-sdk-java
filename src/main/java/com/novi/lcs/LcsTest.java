@@ -6,7 +6,6 @@ package com.novi.lcs;
 import java.util.Arrays;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
-import java.lang.Runnable;
 
 public class LcsTest {
 

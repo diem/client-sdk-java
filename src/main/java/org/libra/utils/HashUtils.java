@@ -5,7 +5,6 @@ package org.libra.utils;
 
 import com.novi.serde.SerializationError;
 import org.bouncycastle.jcajce.provider.digest.SHA3;
-import org.libra.jsonrpctypes.JsonRpc;
 import org.libra.types.RawTransaction;
 import org.libra.types.SignedTransaction;
 import org.libra.types.Transaction;

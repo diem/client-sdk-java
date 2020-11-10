@@ -1,7 +1,5 @@
 package org.libra.types;
 
-import java.math.BigInteger;
-
 
 public final class Script {
     public final com.novi.serde.Bytes code;
