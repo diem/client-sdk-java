@@ -1,8 +1,10 @@
-# libra-client-sdk-java
+> **Note to readers:** On December 1, 2020, the Libra Association was renamed to Diem Association. The project repos are in the process of being migrated. All projects will remain available for use here until the migration to a new GitHub Organization is complete.
 
-![Java CI with Gradle](https://github.com/libra/libra-client-sdk-java/workflows/Java%20CI%20with%20Gradle/badge.svg) [![API Reference](https://img.shields.io/badge/api-reference-blue.svg)](https://github.com/libra/libra/blob/master/json-rpc/json-rpc-spec.md) [![Apache V2 License](https://img.shields.io/badge/license-Apache%20V2-blue.svg)](../master/LICENSE) [![javadoc](https://javadoc.io/badge2/org.libra/libra-client-sdk-java/javadoc.svg)](https://javadoc.io/doc/org.libra/libra-client-sdk-java)
+# client-sdk-java
 
-`libra-client-sdk-java` is the official Libra Client SDK for the Java programming language.
+![Java CI with Gradle](https://github.com/libra/client-sdk-java/workflows/Java%20CI%20with%20Gradle/badge.svg) [![API Reference](https://img.shields.io/badge/api-reference-blue.svg)](https://github.com/libra/libra/blob/master/json-rpc/json-rpc-spec.md) [![Apache V2 License](https://img.shields.io/badge/license-Apache%20V2-blue.svg)](../master/LICENSE) [![javadoc](https://javadoc.io/badge2/org.libra/client-sdk-java/javadoc.svg)](https://javadoc.io/doc/org.libra/client-sdk-java)
+
+`client-sdk-java` is the official Libra Client SDK for the Java programming language.
 
 ## Overview of SDK's Packages
 
