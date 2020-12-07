@@ -32,9 +32,9 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
             pom {
-                name = 'Libra Client SDK'
-                description = 'The official Libra Client SDK for the Java programming language.'
-                url = 'https://github.com/libra/libra-client-sdk-java'
+                name = 'Diem Client SDK'
+                description = 'The official Diem Client SDK for the Java programming language.'
+                url = 'https://github.com/libra/client-sdk-java'
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -48,8 +48,8 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:git@github.com:libra/libra-client-sdk-java.git'
-                    url = 'https://github.com/libra/libra-client-sdk-java'
+                    connection = 'scm:git:git@github.com:libra/client-sdk-java.git'
+                    url = 'https://github.com/libra/client-sdk-java'
                 }
             }
             tasks.withType(Jar) {
