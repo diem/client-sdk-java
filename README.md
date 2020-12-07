@@ -48,12 +48,12 @@ implementation 'org.libra:libra-client-sdk-java:0.1.0'
 
 ```xml
 <dependency>
-  <groupId>org.libra</groupId>
-  <artifactId>libra-client-sdk-java</artifactId>
+  <groupId>com.diem</groupId>
+  <artifactId>client-sdk-java</artifactId>
   <version>0.1.0</version>
 </dependency>
 ```
-[Download Jars on Maven](https://repo1.maven.org/maven2/org/libra/libra-client-sdk-java/)
+[Download Jars on Maven](https://repo1.maven.org/maven2/com/diem/client-sdk-java/)
 
 # Development
 
@@ -68,7 +68,7 @@ implementation 'org.libra:libra-client-sdk-java:0.1.0'
 gradle build
 ```
 
-Jar file location: build/libs/libra-client-sdk-java.jar
+Jar file location: build/libs/client-sdk-java.jar
 
 ## Test
 
