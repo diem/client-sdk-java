@@ -1,4 +1,4 @@
-# Contributing to libra-client-sdk-java
+# Contributing to client-sdk-java
 
 This project welcomes contributions.
 
@@ -12,6 +12,6 @@ When submitting a PR, the libra-github-bot will check your comment for a valid C
 
 ## Issues
 
-libra-client-sdk-java uses [GitHub issues](https://github.com/libra/libra-client-sdk-java/issues) to track
+client-sdk-java uses [GitHub issues](https://github.com/libra/client-sdk-java/issues) to track
 bugs. Please include necessary information and instructions to reproduce your
 issue.

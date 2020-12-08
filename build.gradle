@@ -10,7 +10,7 @@ repositories {
     mavenCentral()
 }
 
-group 'org.libra'
+group 'com.diem'
 version '0.1.0'
 
 apply plugin: 'java-library'
@@ -43,8 +43,8 @@ publishing {
                 }
                 developers {
                     developer {
-                        name = 'Libra Open Source'
-                        url = 'https://developers.libra.org'
+                        name = 'Diem Open Source'
+                        url = 'https://developers.diem.org'
                     }
                 }
                 scm {
