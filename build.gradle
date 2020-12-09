@@ -44,7 +44,7 @@ publishing {
                 developers {
                     developer {
                         name = 'Diem Open Source'
-                        url = 'https://developers.diem.org'
+                        url = 'https://developers.diem.com'
                     }
                 }
                 scm {
@@ -116,8 +116,8 @@ task gen {
             executable "sh"
             args '-c', 'target/debug/generate-transaction-builders' +
                     ' --language java' +
-                    ' --module-name org.libra.stdlib' +
-                    ' --with-libra-types "testsuite/generate-format/tests/staged/libra.yaml"' +
+                    ' --module-name com.diem.stdlib' +
+                    ' --with-diem-types "testsuite/generate-format/tests/staged/diem.yaml"' +
                     ' --target-source-dir "./../src/main/java"' +
                     ' "language/stdlib/compiled/transaction_scripts/abi"'
         }
