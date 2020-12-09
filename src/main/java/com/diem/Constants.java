@@ -11,10 +11,10 @@ import com.diem.types.ChainId;
  * Defines constants for static data and enum type values.
  *
  * See the following Diem JSON-RPC response type documents for more details of enum type values:
- * <a href="https://github.com/libra/libra/blob/master/json-rpc/docs/type_account.md#type-account">Account</a>
- * <a href="https://github.com/libra/libra/blob/master/json-rpc/docs/type_event.md#event-data">EventData</a>
- * <a href="https://github.com/libra/libra/blob/master/json-rpc/docs/type_transaction.md#type-vmstatus">VmStatus</a>
- * <a href="https://github.com/libra/libra/blob/master/json-rpc/docs/type_transaction.md#type-transactiondata">TransactionData</a>
+ * <a href="https://github.com/diem/diem/blob/master/json-rpc/docs/type_account.md#type-account">Account</a>
+ * <a href="https://github.com/diem/diem/blob/master/json-rpc/docs/type_event.md#event-data">EventData</a>
+ * <a href="https://github.com/diem/diem/blob/master/json-rpc/docs/type_transaction.md#type-vmstatus">VmStatus</a>
+ * <a href="https://github.com/diem/diem/blob/master/json-rpc/docs/type_transaction.md#type-transactiondata">TransactionData</a>
  */
 public interface Constants {
     // static account addresses
@@ -63,7 +63,7 @@ public interface Constants {
     String TRANSACTION_DATA_UNKNOWN = "unknown";
 
     // Script#type field values, only set unknown type here,
-    // other types, please see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+    // other types, please see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
     String SCRIPT_UNKNOWN = "unknown";
 
 }

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 /**
  * IntentIdentifier implements Diem Intent Identifier encoding and decoding.
- * @see <a href="https://github.com/libra/lip/blob/master/lips/lip-5.md">LIP-5 Address formatting</a>
+ * @see <a href="https://github.com/diem/lip/blob/master/lips/lip-5.md">LIP-5 Address formatting</a>
  * */
 public class IntentIdentifier {
 

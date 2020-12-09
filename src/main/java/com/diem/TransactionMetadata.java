@@ -20,7 +20,7 @@ import static com.google.common.primitives.Bytes.concat;
 /**
  * <p>Utils for creating peer to peer transaction metadata.</p>
  *
- * @see <a href="https://github.com/libra/lip/blob/master/lips/lip-4.md">LIP-4 Transaction Metadata Specification</a>
+ * @see <a href="https://github.com/diem/lip/blob/master/lips/lip-4.md">LIP-4 Transaction Metadata Specification</a>
  */
 public class TransactionMetadata {
     /**

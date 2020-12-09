@@ -8,7 +8,7 @@ import com.google.gson.JsonElement;
 import java.util.Objects;
 
 /**
- * JSON-RPC response with <a href="https://github.com/libra/libra/blob/master/json-rpc/json-rpc-spec.md#libra-extensions">Diem extension</a>
+ * JSON-RPC response with <a href="https://github.com/diem/diem/blob/master/json-rpc/json-rpc-spec.md#diem-extensions">Diem extension</a>
  */
 public class Response {
     private int id;

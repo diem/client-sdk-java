@@ -15707,7 +15707,7 @@ public final class JsonRpc {
     /**
      * <pre>
      **
-     * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+     * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
      * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
      * It is possible server side does not know the code and the code is valid.
      * </pre>
@@ -15718,7 +15718,7 @@ public final class JsonRpc {
     /**
      * <pre>
      **
-     * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+     * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
      * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
      * It is possible server side does not know the code and the code is valid.
      * </pre>
@@ -16090,7 +16090,7 @@ public final class JsonRpc {
     /**
      * <pre>
      **
-     * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+     * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
      * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
      * It is possible server side does not know the code and the code is valid.
      * </pre>
@@ -16112,7 +16112,7 @@ public final class JsonRpc {
     /**
      * <pre>
      **
-     * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+     * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
      * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
      * It is possible server side does not know the code and the code is valid.
      * </pre>
@@ -16945,7 +16945,7 @@ public final class JsonRpc {
       /**
        * <pre>
        **
-       * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+       * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
        * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
        * It is possible server side does not know the code and the code is valid.
        * </pre>
@@ -16967,7 +16967,7 @@ public final class JsonRpc {
       /**
        * <pre>
        **
-       * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+       * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
        * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
        * It is possible server side does not know the code and the code is valid.
        * </pre>
@@ -16990,7 +16990,7 @@ public final class JsonRpc {
       /**
        * <pre>
        **
-       * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+       * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
        * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
        * It is possible server side does not know the code and the code is valid.
        * </pre>
@@ -17010,7 +17010,7 @@ public final class JsonRpc {
       /**
        * <pre>
        **
-       * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+       * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
        * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
        * It is possible server side does not know the code and the code is valid.
        * </pre>
@@ -17026,7 +17026,7 @@ public final class JsonRpc {
       /**
        * <pre>
        **
-       * Name of the script code, see https://github.com/libra/libra/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
+       * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
        * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
        * It is possible server side does not know the code and the code is valid.
        * </pre>
