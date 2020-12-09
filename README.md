@@ -12,7 +12,6 @@
 > LIP-X = Diem Improvement Protocol
 
 - `jsonrpc`: diem JSON-RPC APIs client. [SPEC](https://github.com/diem/diem/blob/master/json-rpc/json-rpc-spec.md)
-- `jsonrpctypes`: generated code, JSON-RPC API response data object classes generated from protobuf definition.
 - `stdlib`: generated code, move stdlib script utils for constructing transaction script playload.
 - `types`: generated code, diem on-chain data structure types. Mostly generated code with small extension code for attaching handy functions to generated types.
 - `utils`: utility functions, account address utils, currency code, hashing, hex encoding / decoding, transaction utils.
@@ -39,7 +38,7 @@ You can find all of the example code under the [`src/test/java/com/diem/examples
 **Gradle**
 
 ```gradle
-implementation 'com.diem:diem-client-sdk-java:0.1.0'
+implementation 'com.diem:client-sdk-java:1.0.0'
 ```
 
 **Maven**
@@ -48,7 +47,7 @@ implementation 'com.diem:diem-client-sdk-java:0.1.0'
 <dependency>
   <groupId>com.diem</groupId>
   <artifactId>client-sdk-java</artifactId>
-  <version>0.1.0</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 [Download Jars on Maven](https://repo1.maven.org/maven2/com/diem/client-sdk-java/)
