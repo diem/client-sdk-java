@@ -1,0 +1,9 @@
+Release a new version:
+* update version number in build.gradle
+* commit the change and land to master
+* after build passed on master: run "Publish Maven Package" action
+* after "Publish Maven Package" is success, run "Release Maven Package" action
+Validate:
+* check new version is published to https://repo1.maven.org/maven2/com/diem/client-sdk-java
+  * Note: it may take some time to be published to above url after the "Release Maven Package" action succeed
+  * other place like https://mvnrepository.com/artifact/com.diem/client-sdk-java will take longer time to be updated
