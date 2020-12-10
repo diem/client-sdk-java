@@ -1,6 +1,6 @@
 # client-sdk-java
 
-![Java CI with Gradle](https://github.com/diem/client-sdk-java/workflows/Java%20CI%20with%20Gradle/badge.svg) [![API Reference](https://img.shields.io/badge/api-reference-blue.svg)](https://github.com/diem/diem/blob/master/json-rpc/json-rpc-spec.md) [![Apache V2 License](https://img.shields.io/badge/license-Apache%20V2-blue.svg)](../master/LICENSE) [![javadoc](https://javadoc.io/badge2/org.diem/client-sdk-java/javadoc.svg)](https://javadoc.io/doc/org.diem/client-sdk-java)
+![Java CI with Gradle](https://github.com/diem/client-sdk-java/workflows/Java%20CI%20with%20Gradle/badge.svg) [![API Reference](https://img.shields.io/badge/api-reference-blue.svg)](https://github.com/diem/diem/blob/master/json-rpc/json-rpc-spec.md) [![Apache V2 License](https://img.shields.io/badge/license-Apache%20V2-blue.svg)](../master/LICENSE) [![javadoc](https://javadoc.io/badge2/org.diem/client-sdk-java/javadoc.svg)](https://javadoc.io/doc/com.diem/client-sdk-java)
 
 `client-sdk-java` is the official diem Client SDK for the Java programming language.
 
