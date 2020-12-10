@@ -102,7 +102,7 @@ public class AccountIdentifier {
      * NetworkPrefix is network prefix of a Diem Account Identifier.
      */
     public enum NetworkPrefix {
-        MainnetPrefix("xdx"), TestnetPrefix("tdx");
+        MainnetPrefix("dm"), TestnetPrefix("tdm"), PreMainnetPrefix("pdm"), DryRunMainnetPrefix("ddm");
 
         private final String value;
 

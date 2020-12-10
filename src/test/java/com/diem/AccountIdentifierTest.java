@@ -26,7 +26,7 @@ public class AccountIdentifierTest {
     public void testEncodeDecodeAccountIdentifier_success() {
         String idStr = new AccountIdentifier(AccountIdentifier.NetworkPrefix.MainnetPrefix, accountAddress, subAddress).encodeV1();
 
-        assertEquals("xdx1p7ujcndcl7nudzwt8fglhx6wxn08kgs5tm6mz4usj3s3eh", idStr);
+        assertEquals("dm1p7ujcndcl7nudzwt8fglhx6wxn08kgs5tm6mz4us2vfufk", idStr);
 
         AccountIdentifier identifier = AccountIdentifier.decode(AccountIdentifier.NetworkPrefix.MainnetPrefix, idStr);
 
@@ -39,7 +39,7 @@ public class AccountIdentifierTest {
     public void testEncodeDecodeAccountIdentifierWithoutSubAddress_success() {
         String idStr = new AccountIdentifier(AccountIdentifier.NetworkPrefix.MainnetPrefix, accountAddress).encodeV1();
 
-        assertEquals("xdx1p7ujcndcl7nudzwt8fglhx6wxnvqqqqqqqqqqqqq46cggp", idStr);
+        assertEquals("dm1p7ujcndcl7nudzwt8fglhx6wxnvqqqqqqqqqqqqqd8p9cq", idStr);
 
         AccountIdentifier identifier = AccountIdentifier.decode(AccountIdentifier.NetworkPrefix.MainnetPrefix, idStr);
 
