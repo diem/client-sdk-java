@@ -11,7 +11,7 @@ repositories {
 }
 
 group 'com.diem'
-version '0.1.0'
+version '1.0.0'
 
 apply plugin: 'java-library'
 apply plugin: 'java'
@@ -34,7 +34,7 @@ publishing {
             pom {
                 name = 'Diem Client SDK'
                 description = 'The official Diem Client SDK for the Java programming language.'
-                url = 'https://github.com/libra/client-sdk-java'
+                url = 'https://github.com/diem/client-sdk-java'
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -44,12 +44,12 @@ publishing {
                 developers {
                     developer {
                         name = 'Diem Open Source'
-                        url = 'https://developers.diem.org'
+                        url = 'https://developers.diem.com'
                     }
                 }
                 scm {
-                    connection = 'scm:git:git@github.com:libra/client-sdk-java.git'
-                    url = 'https://github.com/libra/client-sdk-java'
+                    connection = 'scm:git:git@github.com:diem/client-sdk-java.git'
+                    url = 'https://github.com/diem/client-sdk-java'
                 }
             }
             tasks.withType(Jar) {
@@ -107,17 +107,17 @@ signing {
 task gen {
     doLast {
         exec {
-            workingDir 'libra'
+            workingDir 'diem'
             executable "sh"
             args "-c", "cargo build -p transaction-builder-generator"
         }
         exec {
-            workingDir 'libra'
+            workingDir 'diem'
             executable "sh"
             args '-c', 'target/debug/generate-transaction-builders' +
                     ' --language java' +
-                    ' --module-name org.libra.stdlib' +
-                    ' --with-libra-types "testsuite/generate-format/tests/staged/libra.yaml"' +
+                    ' --module-name com.diem.stdlib' +
+                    ' --with-diem-types "testsuite/generate-format/tests/staged/diem.yaml"' +
                     ' --target-source-dir "./../src/main/java"' +
                     ' "language/stdlib/compiled/transaction_scripts/abi"'
         }
