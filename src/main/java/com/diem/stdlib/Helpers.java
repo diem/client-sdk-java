@@ -831,7 +831,7 @@ public final class Helpers {
      * {@code DualAttestation::get_cur_microdiem_limit} XDX and {@code payer} and {@code payee} are distinct VASPs.
      * However, a transaction sender can opt in to dual attestation even when it is not required
      * (e.g., a DesignatedDealer -{@code >} VASP payment) by providing a non-empty {@code metadata_signature}.
-     * Standardized {@code metadata} LCS format can be found in {@code diem_types::transaction::metadata::Metadata}.
+     * Standardized {@code metadata} BCS format can be found in {@code diem_types::transaction::metadata::Metadata}.
      *
      * <p><b>Events</b>
      * Successful execution of this script emits two events:

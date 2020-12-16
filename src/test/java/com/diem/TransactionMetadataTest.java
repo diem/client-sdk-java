@@ -8,7 +8,7 @@ import com.diem.types.AccountAddress;
 import com.diem.types.GeneralMetadata;
 import com.diem.types.GeneralMetadataV0;
 import com.diem.utils.AccountAddressUtils;
-import com.novi.lcs.LcsDeserializer;
+import com.novi.bcs.BcsDeserializer;
 import com.novi.serde.Bytes;
 import com.novi.serde.DeserializationError;
 import com.novi.serde.Unsigned;
@@ -125,7 +125,7 @@ public class TransactionMetadataTest {
                 new GeneralMetadataV0(Optional.of(new Bytes(fromSubAddress.getBytes())),
                         Optional.of(new Bytes(toSubAddress.getBytes())), Optional.of(sequenceNumber)));
 
-        Metadata refundMetadataDeserialized = Metadata.deserialize(new LcsDeserializer(refundMetadata.getMetadata().content()));
+        Metadata refundMetadataDeserialized = Metadata.deserialize(new BcsDeserializer(refundMetadata.getMetadata().content()));
         Metadata.GeneralMetadata metadataDeserialized = (Metadata.GeneralMetadata) refundMetadataDeserialized;
         assertEquals(expected, metadataDeserialized.value);
     }
@@ -149,7 +149,7 @@ public class TransactionMetadataTest {
                 new GeneralMetadataV0(Optional.of(new Bytes(fromSubAddress.getBytes())), Optional.empty(),
                         Optional.of(sequenceNumber)));
 
-        Metadata refundMetadataDeserialized = Metadata.deserialize(new LcsDeserializer(refundMetadata.getMetadata().content()));
+        Metadata refundMetadataDeserialized = Metadata.deserialize(new BcsDeserializer(refundMetadata.getMetadata().content()));
         Metadata.GeneralMetadata metadataDeserialized = (Metadata.GeneralMetadata) refundMetadataDeserialized;
         assertEquals(expected, metadataDeserialized.value);
     }
@@ -173,7 +173,7 @@ public class TransactionMetadataTest {
                 new GeneralMetadataV0(Optional.empty(), Optional.of(new Bytes(toSubAddress.getBytes())),
                         Optional.of(sequenceNumber)));
 
-        Metadata refundMetadataDeserialized = Metadata.deserialize(new LcsDeserializer(refundMetadata.getMetadata().content()));
+        Metadata refundMetadataDeserialized = Metadata.deserialize(new BcsDeserializer(refundMetadata.getMetadata().content()));
         Metadata.GeneralMetadata metadataDeserialized = (Metadata.GeneralMetadata) refundMetadataDeserialized;
         assertEquals(expected, metadataDeserialized.value);
     }
