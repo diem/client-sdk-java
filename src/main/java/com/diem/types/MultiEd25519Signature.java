@@ -15,8 +15,8 @@ public final class MultiEd25519Signature {
         serializer.decrease_container_depth();
     }
 
-    public byte[] lcsSerialize() throws com.novi.serde.SerializationError {
-        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+    public byte[] bcsSerialize() throws com.novi.serde.SerializationError {
+        com.novi.serde.Serializer serializer = new com.novi.bcs.BcsSerializer();
         serialize(serializer);
         return serializer.get_bytes();
     }
@@ -29,11 +29,11 @@ public final class MultiEd25519Signature {
         return builder.build();
     }
 
-    public static MultiEd25519Signature lcsDeserialize(byte[] input) throws com.novi.serde.DeserializationError {
+    public static MultiEd25519Signature bcsDeserialize(byte[] input) throws com.novi.serde.DeserializationError {
         if (input == null) {
              throw new com.novi.serde.DeserializationError("Cannot deserialize null array");
         }
-        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        com.novi.serde.Deserializer deserializer = new com.novi.bcs.BcsDeserializer(input);
         MultiEd25519Signature value = deserialize(deserializer);
         if (deserializer.get_buffer_offset() < input.length) {
              throw new com.novi.serde.DeserializationError("Some input bytes were not read");

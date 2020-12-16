@@ -6,7 +6,7 @@ package com.diem;
 import com.diem.jsonrpc.DiemJsonRpcClient;
 import com.diem.jsonrpc.InvalidResponseException;
 import com.diem.jsonrpc.Retry;
-import com.novi.lcs.LcsDeserializer;
+import com.novi.bcs.BcsDeserializer;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
@@ -92,7 +92,7 @@ public class Testnet {
         if (response.getStatusLine().getStatusCode() != 200) {
             throw new InvalidResponseException(response.getStatusLine().getStatusCode(), body);
         }
-        LcsDeserializer de = new LcsDeserializer(Hex.decode(body));
+        BcsDeserializer de = new BcsDeserializer(Hex.decode(body));
         long length = de.deserialize_len();
         List<SignedTransaction> txns = new ArrayList<>();
         for (int i = 0; i < length; i++) {

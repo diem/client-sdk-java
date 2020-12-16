@@ -171,7 +171,7 @@ public class DiemJsonRpcClient implements DiemClient {
     public void submit(SignedTransaction txn) throws DiemException {
         String hex;
         try {
-            hex = Hex.encode(txn.lcsSerialize());
+            hex = Hex.encode(txn.bcsSerialize());
         } catch (SerializationError e) {
             throw new RuntimeException(e);
         }
@@ -184,7 +184,7 @@ public class DiemJsonRpcClient implements DiemClient {
         SignedTransaction signedTransaction;
 
         try {
-            signedTransaction = SignedTransaction.lcsDeserialize(bytes);
+            signedTransaction = SignedTransaction.bcsDeserialize(bytes);
         } catch (DeserializationError e) {
             throw new IllegalArgumentException(
                     String.format("Deserialize given hex string as SignedTransaction LCS failed: %s", e.getMessage()));

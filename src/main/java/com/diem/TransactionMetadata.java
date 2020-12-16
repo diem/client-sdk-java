@@ -5,8 +5,8 @@ package com.diem;
 
 import com.diem.jsonrpc.JsonRpc;
 import com.diem.types.*;
-import com.novi.lcs.LcsDeserializer;
-import com.novi.lcs.LcsSerializer;
+import com.novi.bcs.BcsDeserializer;
+import com.novi.bcs.BcsSerializer;
 import com.novi.serde.Bytes;
 import com.novi.serde.DeserializationError;
 import com.novi.serde.SerializationError;
@@ -42,7 +42,7 @@ public class TransactionMetadata {
                         new TravelRuleMetadataV0(Optional.of(offChainReferenceId))));
 
         // receiver_lcs_data = lcs(metadata, sender_address, amount, "@@$$DIEM_ATTEST$$@@" /*ASCII-encoded string*/);
-        LcsSerializer serializer = new LcsSerializer();
+        BcsSerializer serializer = new BcsSerializer();
         try {
             travelRuleMetadata.serialize(serializer);
 
@@ -136,7 +136,7 @@ public class TransactionMetadata {
         }
 
         byte[] bytes = Hex.decode(metadata);
-        return Metadata.deserialize(new LcsDeserializer(bytes));
+        return Metadata.deserialize(new BcsDeserializer(bytes));
     }
 
     /**
@@ -176,7 +176,7 @@ public class TransactionMetadata {
                         new GeneralMetadataV0(toSubAddress, byteFromSubAddress, referencedEvent)));
 
         try {
-            return new TransactionMetadata(generalMetadata.lcsSerialize(), new byte[0]);
+            return new TransactionMetadata(generalMetadata.bcsSerialize(), new byte[0]);
         } catch (SerializationError e) {
             throw new RuntimeException(e);
         }

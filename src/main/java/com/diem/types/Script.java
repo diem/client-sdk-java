@@ -23,8 +23,8 @@ public final class Script {
         serializer.decrease_container_depth();
     }
 
-    public byte[] lcsSerialize() throws com.novi.serde.SerializationError {
-        com.novi.serde.Serializer serializer = new com.novi.lcs.LcsSerializer();
+    public byte[] bcsSerialize() throws com.novi.serde.SerializationError {
+        com.novi.serde.Serializer serializer = new com.novi.bcs.BcsSerializer();
         serialize(serializer);
         return serializer.get_bytes();
     }
@@ -39,11 +39,11 @@ public final class Script {
         return builder.build();
     }
 
-    public static Script lcsDeserialize(byte[] input) throws com.novi.serde.DeserializationError {
+    public static Script bcsDeserialize(byte[] input) throws com.novi.serde.DeserializationError {
         if (input == null) {
              throw new com.novi.serde.DeserializationError("Cannot deserialize null array");
         }
-        com.novi.serde.Deserializer deserializer = new com.novi.lcs.LcsDeserializer(input);
+        com.novi.serde.Deserializer deserializer = new com.novi.bcs.BcsDeserializer(input);
         Script value = deserialize(deserializer);
         if (deserializer.get_buffer_offset() < input.length) {
              throw new com.novi.serde.DeserializationError("Some input bytes were not read");

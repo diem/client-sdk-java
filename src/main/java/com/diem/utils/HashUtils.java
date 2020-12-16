@@ -41,7 +41,7 @@ public class HashUtils {
     public static String transactionHash(SignedTransaction signedTransaction) {
         Transaction.UserTransaction userTransaction = new Transaction.UserTransaction(signedTransaction);
         try {
-            byte[] transactions = hash(hashPrefix("Transaction"), userTransaction.lcsSerialize());
+            byte[] transactions = hash(hashPrefix("Transaction"), userTransaction.bcsSerialize());
             return Hex.encode(transactions);
         } catch (SerializationError e) {
             throw new RuntimeException(e);
@@ -59,7 +59,7 @@ public class HashUtils {
      */
     public static byte[] signatureMessage(RawTransaction txn) {
         try {
-            return concat(hashPrefix("RawTransaction"), txn.lcsSerialize());
+            return concat(hashPrefix("RawTransaction"), txn.bcsSerialize());
         } catch (SerializationError e) {
             throw new RuntimeException(e);
         }
