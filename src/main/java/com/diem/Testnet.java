@@ -27,9 +27,9 @@ import java.util.List;
  * Testnet is utility class for handing Testnet specific data and functions.
  */
 public class Testnet {
-    public static String JSON_RPC_URL = "http://dev.testnet.diem.com/v1";
-    public static String FAUCET_SERVER_URL = "http://dev.testnet.diem.com/mint";
-    public static ChainId CHAIN_ID = new ChainId((byte) 3);
+    public static String JSON_RPC_URL = "http://testnet.diem.com/v1";
+    public static String FAUCET_SERVER_URL = "http://testnet.diem.com/mint";
+    public static ChainId CHAIN_ID = new ChainId((byte) 2);
     public static String DD_ADDRESS = "000000000000000000000000000000DD";
 
     public static final String XUS = "XUS";
