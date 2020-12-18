@@ -73,10 +73,18 @@ Jar file location: build/libs/client-sdk-java.jar
 gradle test
 ```
 
-## Upgrade to latest diem testnet release
+## Upgrade to latest diem release
 
 ```
-// reset diem submodule to testnet branch, re-generate stdlib and lcs type classes
+// checkout diem submodule
+git submodule update diem
+
+
+// reset diem submodule to diem release revision
+cd diem
+git fetch/checkout/pull origin <revision/branch>
+
+// re-generate stdlib and lcs type classes
 gradle gen
 
 // generate jsonrpc types from protobuf definition
