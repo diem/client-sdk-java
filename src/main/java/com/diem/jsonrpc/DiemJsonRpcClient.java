@@ -58,13 +58,13 @@ public class DiemJsonRpcClient implements DiemClient {
     private final LedgerState state;
     private final URI serverURL;
     private final HttpClient httpClient;
-    private Retry<Response> retryGetMethods;
+    private Retry<Response> retry;
 
     public DiemJsonRpcClient(String serverURL, ChainId chainId) {
         this(serverURL, createDefaultHttpClient(), chainId, DEFAULT_RETRY_ON_STALE_RESPONSE);
     }
 
-    public DiemJsonRpcClient(String serverURL, HttpClient httpClient, ChainId chainId, Retry<Response> retryGetMethods) {
+    public DiemJsonRpcClient(String serverURL, HttpClient httpClient, ChainId chainId, Retry<Response> retry) {
         try {
             this.serverURL = new URL(serverURL).toURI();
         } catch (URISyntaxException | MalformedURLException e) {
@@ -72,7 +72,7 @@ public class DiemJsonRpcClient implements DiemClient {
         }
         this.httpClient = httpClient;
         this.state = new LedgerState(chainId);
-        this.retryGetMethods = retryGetMethods;
+        this.retry = retry;
     }
 
     @Override
@@ -164,7 +164,7 @@ public class DiemJsonRpcClient implements DiemClient {
         List<Object> params = new ArrayList<>();
         params.add(data);
 
-        callWithoutRetry(Method.submit, params);
+        call(Method.submit, params);
     }
 
     @Override
@@ -293,7 +293,7 @@ public class DiemJsonRpcClient implements DiemClient {
 
     public Response call(final Method method, final List<Object> params) throws DiemException {
         try {
-            return this.retryGetMethods.execute(() -> DiemJsonRpcClient.this.callWithoutRetry(method, params));
+            return this.retry.execute(() -> DiemJsonRpcClient.this.callWithoutRetry(method, params));
         } catch (DiemException e) {
             throw e;
         } catch (Exception e) {
