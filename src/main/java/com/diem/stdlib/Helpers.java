@@ -114,11 +114,12 @@ public final class Helpers {
      * | {@code recovery_address}   | {@code address} | The account address where the {@code to_recover_account}'s {@code DiemAccount::KeyRotationCapability} will be stored. |
      *
      * <p><b>Common Abort Conditions</b>
-     * | Error Category             | Error Reason                                               | Description                                                                                     |
-     * | ----------------           | --------------                                             | -------------                                                                                   |
-     * | {@code Errors::INVALID_STATE}    | {@code DiemAccount::EKEY_ROTATION_CAPABILITY_ALREADY_EXTRACTED} | {@code to_recover_account} has already delegated/extracted its {@code DiemAccount::KeyRotationCapability}. |
-     * | {@code Errors::NOT_PUBLISHED}    | {@code RecoveryAddress::ERECOVERY_ADDRESS}                       | {@code recovery_address} does not have a {@code RecoveryAddress} resource published under it.               |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code RecoveryAddress::EINVALID_KEY_ROTATION_DELEGATION}        | {@code to_recover_account} and {@code recovery_address} do not belong to the same VASP.                     |
+     * | Error Category             | Error Reason                                              | Description                                                                                       |
+     * | ----------------           | --------------                                            | -------------                                                                                     |
+     * | {@code Errors::INVALID_STATE}    | {@code DiemAccount::EKEY_ROTATION_CAPABILITY_ALREADY_EXTRACTED} | {@code to_recover_account} has already delegated/extracted its {@code DiemAccount::KeyRotationCapability}.    |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code RecoveryAddress::ERECOVERY_ADDRESS}                      | {@code recovery_address} does not have a {@code RecoveryAddress} resource published under it.                 |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code RecoveryAddress::EINVALID_KEY_ROTATION_DELEGATION}       | {@code to_recover_account} and {@code recovery_address} do not belong to the same VASP.                       |
+     * | {@code Errors::LIMIT_EXCEEDED}   | {@code  RecoveryAddress::EMAX_KEYS_REGISTERED}                  | {@code RecoveryAddress::MAX_REGISTERED_KEYS} have already been registered with this {@code recovery_address}. |
      *
      * <p><b>Related Scripts</b>
      * <ul><li>{@code Script::create_recovery_address}</li></ul>

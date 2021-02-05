@@ -4,9 +4,7 @@
 package com.diem;
 
 import com.diem.jsonrpc.JsonRpc;
-import com.diem.types.AccountAddress;
-import com.diem.types.GeneralMetadata;
-import com.diem.types.GeneralMetadataV0;
+import com.diem.types.*;
 import com.diem.utils.AccountAddressUtils;
 import com.novi.bcs.BcsDeserializer;
 import com.novi.serde.Bytes;
@@ -14,7 +12,6 @@ import com.novi.serde.DeserializationError;
 import com.novi.serde.Unsigned;
 import org.junit.Before;
 import org.junit.Test;
-import com.diem.types.Metadata;
 import com.diem.utils.Hex;
 
 import java.util.Optional;
@@ -203,6 +200,17 @@ public class TransactionMetadataTest {
         JsonRpc.Event event = newEvent("", 123);
         Metadata metadata = TransactionMetadata.deserializeMetadata(event);
         assertNull(metadata);
+    }
+
+    @Test
+    public void testRefundMetadata() {
+        long txnVersion = 12343;
+        RefundReason reason = new RefundReason.UserInitiatedFullRefund();
+        TransactionMetadata metadata = TransactionMetadata.createRefundMetadata(txnVersion, reason);
+        byte[] metadataBytes = metadata.getMetadata().content();
+
+        assertEquals("0400373000000000000003", Hex.encode(metadataBytes).toLowerCase());
+        assertArrayEquals(new byte[0], metadata.getSignatureMessage());
     }
 
     private JsonRpc.Event newEvent(String type, String receiverAddress) {

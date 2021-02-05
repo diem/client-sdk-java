@@ -94,6 +94,26 @@ public class TransactionMetadata {
                 Optional.of(new Bytes(toSubAddress.getBytes())), Optional.empty());
     }
 
+
+    /**
+     * NewRefundMetadata creates metadata for creating refund p2p transaction script with original payment
+     * transaction version and reason.
+     * @param txnVersion original payment transaction version
+     * @param reason the reason of the refund
+     * @return TransactionMetadata
+     */
+    public static TransactionMetadata createRefundMetadata(long txnVersion, RefundReason reason) {
+        Metadata.RefundMetadata metadata = new Metadata.RefundMetadata(
+                new RefundMetadata.RefundMetadataV0(
+                        new RefundMetadataV0(txnVersion, reason)));
+
+        try {
+            return new TransactionMetadata(metadata.bcsSerialize(), new byte[0]);
+        } catch (SerializationError e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * This function looks for `receivedpayment` event of the given receiver account address in given transaction#events list.
      * The event found can be used for creating refund transaction metadata with refund event reference sequence number.

@@ -12,6 +12,7 @@ public abstract class Metadata {
             case 1: return GeneralMetadata.load(deserializer);
             case 2: return TravelRuleMetadata.load(deserializer);
             case 3: return UnstructuredBytesMetadata.load(deserializer);
+            case 4: return RefundMetadata.load(deserializer);
             default: throw new com.novi.serde.DeserializationError("Unknown variant index for Metadata: " + index);
         }
     }
@@ -213,6 +214,55 @@ public abstract class Metadata {
 
             public UnstructuredBytesMetadata build() {
                 return new UnstructuredBytesMetadata(
+                    value
+                );
+            }
+        }
+    }
+
+    public static final class RefundMetadata extends Metadata {
+        public final com.diem.types.RefundMetadata value;
+
+        public RefundMetadata(com.diem.types.RefundMetadata value) {
+            java.util.Objects.requireNonNull(value, "value must not be null");
+            this.value = value;
+        }
+
+        public void serialize(com.novi.serde.Serializer serializer) throws com.novi.serde.SerializationError {
+            serializer.increase_container_depth();
+            serializer.serialize_variant_index(4);
+            value.serialize(serializer);
+            serializer.decrease_container_depth();
+        }
+
+        static RefundMetadata load(com.novi.serde.Deserializer deserializer) throws com.novi.serde.DeserializationError {
+            deserializer.increase_container_depth();
+            Builder builder = new Builder();
+            builder.value = com.diem.types.RefundMetadata.deserialize(deserializer);
+            deserializer.decrease_container_depth();
+            return builder.build();
+        }
+
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null) return false;
+            if (getClass() != obj.getClass()) return false;
+            RefundMetadata other = (RefundMetadata) obj;
+            if (!java.util.Objects.equals(this.value, other.value)) { return false; }
+            return true;
+        }
+
+        public int hashCode() {
+            int value = 7;
+            value = 31 * value + (this.value != null ? this.value.hashCode() : 0);
+            return value;
+        }
+
+        public static final class Builder {
+            public com.diem.types.RefundMetadata value;
+
+            public RefundMetadata build() {
+                return new RefundMetadata(
                     value
                 );
             }
