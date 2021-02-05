@@ -38,7 +38,7 @@ You can find all of the example code under the [`src/test/java/com/diem/examples
 **Gradle**
 
 ```gradle
-implementation 'com.diem:client-sdk-java:1.0.0'
+implementation 'com.diem:client-sdk-java:1.0.2'
 ```
 
 **Maven**
@@ -47,7 +47,7 @@ implementation 'com.diem:client-sdk-java:1.0.0'
 <dependency>
   <groupId>com.diem</groupId>
   <artifactId>client-sdk-java</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.2</version>
 </dependency>
 ```
 [Download Jars on Maven](https://repo1.maven.org/maven2/com/diem/client-sdk-java/)

@@ -4,6 +4,12 @@ Release a new version:
 * after build passed on master: run "Publish Maven Package" action
 * after "Publish Maven Package" is success, run "Release Maven Package" action
 Validate:
+
+
+Trouble shooting:
 * check new version is published to https://repo1.maven.org/maven2/com/diem/client-sdk-java
   * Note: it may take some time to be published to above url after the "Release Maven Package" action succeed
   * other place like https://mvnrepository.com/artifact/com.diem/client-sdk-java will take longer time to be updated
+* when publish failed, login to https://oss.sonatype.org/#stagingRepositories to check packages, manual close and release.
+  * likely should drop all packages (because they only contain partial uploaded stuff), then retry the publish again.
+
