@@ -119,7 +119,7 @@ task gen {
                     ' --module-name com.diem.stdlib' +
                     ' --with-diem-types "testsuite/generate-format/tests/staged/diem.yaml"' +
                     ' --target-source-dir "./../src/main/java"' +
-                    ' "language/stdlib/compiled/transaction_scripts/abi"'
+                    ' "language/diem-framework/compiled/legacy/transaction_scripts/abi"'
         }
     }
 }
