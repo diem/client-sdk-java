@@ -163,6 +163,7 @@ public class TransactionMetadata {
      * Create TransactionMetadata for refund a transaction by it's event sequence number and transaction metadata.
      * If a transaction uses TravelRule metadata, it should refund in same way (off-chain communication + TravelRule metadata).
      *
+     * @deprecated prefer createRefundMetadata and Metadata.RefundMetadata
      * @param eventSequenceNumber
      * @param generalMetadata
      * @return TransactionMetadata

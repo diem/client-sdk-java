@@ -31,7 +31,6 @@ You can find all of the example code under the [`src/test/java/com/diem/examples
 * [Create Child VASP Account](./src/test/java/com/diem/examples/CreateChildVASP.java)
 * [All Types Peer To Peer Transfer](./src/test/java/com/diem/examples/PeerToPeerTransfer.java)
 * [Intent Identifier](./src/test/java/com/diem/examples/IntentId.java)
-* [Refund](./src/test/java/com/diem/examples/Refund.java)
 
 ## Download
 
