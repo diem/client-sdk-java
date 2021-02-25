@@ -148,6 +148,22 @@ final class TraitHelpers {
         return obj;
     }
 
+    static void serialize_vector_str(java.util.List<String> value, com.novi.serde.Serializer serializer) throws com.novi.serde.SerializationError {
+        serializer.serialize_len(value.size());
+        for (String item : value) {
+            serializer.serialize_str(item);
+        }
+    }
+
+    static java.util.List<String> deserialize_vector_str(com.novi.serde.Deserializer deserializer) throws com.novi.serde.DeserializationError {
+        long length = deserializer.deserialize_len();
+        java.util.List<String> obj = new java.util.ArrayList<String>((int) length);
+        for (long i = 0; i < length; i++) {
+            obj.add(deserializer.deserialize_str());
+        }
+        return obj;
+    }
+
     static void serialize_vector_tuple2_AccessPath_WriteOp(java.util.List<com.novi.serde.Tuple2<AccessPath, WriteOp>> value, com.novi.serde.Serializer serializer) throws com.novi.serde.SerializationError {
         serializer.serialize_len(value.size());
         for (com.novi.serde.Tuple2<AccessPath, WriteOp> item : value) {
