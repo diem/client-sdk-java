@@ -9,19 +9,19 @@
 ### [`com.diem`](./src/main/java/com/com/diem/)
 
 > SPEC = specification
-> LIP-X = Diem Improvement Protocol
+> DIP-X = Diem Improvement Protocol
 
 - `jsonrpc`: diem JSON-RPC APIs client. [SPEC](https://github.com/diem/diem/blob/master/json-rpc/json-rpc-spec.md)
 - `stdlib`: generated code, move stdlib script utils for constructing transaction script playload.
 - `types`: generated code, diem on-chain data structure types. Mostly generated code with small extension code for attaching handy functions to generated types.
 - `utils`: utility functions, account address utils, currency code, hashing, hex encoding / decoding, transaction utils.
-- `AccountIdentifier` & `IntentIdentifier`: encoding & decoding diem Account Identifier and Intent URL. [LIP-5](https://dip.diem.com/dip-5/)
+- `AccountIdentifier` & `IntentIdentifier`: encoding & decoding diem Account Identifier and Intent URL. [DIP-5](https://dip.diem.com/dip-5/)
 - `DiemClient`: interface of JSON-RPC client.
 - `DiemException`: root exception of all checked exceptions defined in SDK.
 - `PrivateKey`: abstraction for hiding private key details, implement this interface for plugin your customized private key signing logic.
 - `Signer`: sign transaction logic.
 - `Testnet`: Testnet utility, minting coins, create Testnet client, chain id, Testnet JSON-RPC URL.
-- `TransactionMetadata`: utils for creating peer to peer transaction metadata. [LIP-4](https://dip.diem.com/dip-4/)
+- `TransactionMetadata`: utils for creating peer to peer transaction metadata. [DIP-4](https://dip.diem.com/dip-4/)
 - `Constants`: static data and JSON-RPC response enum type values.
 
 ## Examples
