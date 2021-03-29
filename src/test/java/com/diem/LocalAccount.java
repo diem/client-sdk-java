@@ -23,7 +23,7 @@ public class LocalAccount {
             Ed25519PrivateKeyParameters privateKeyParams) {
         PrivateKey privateKey = new Ed25519PrivateKey(privateKeyParams);
 
-        AuthKey authKey = AuthKey.ed24419(privateKey.publicKey());
+        AuthKey authKey = AuthKey.ed25519(privateKey.publicKey());
         AccountAddress address = authKey.accountAddress();
 
         return new LocalAccount(address, authKey, privateKey);
