@@ -19,7 +19,7 @@ public class AuthKey {
     private static byte[] ED25519_KEY_SCHEME = new byte[]{0};
     private static byte[] MULTI_ED25519_KEY_SCHEME = new byte[]{1};
 
-    public static AuthKey ed24419(byte[] publicKey) {
+    public static AuthKey ed25519(byte[] publicKey) {
         return new AuthKey(HashUtils.hash(publicKey, ED25519_KEY_SCHEME));
     }
 
