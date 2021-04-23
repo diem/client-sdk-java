@@ -18,6 +18,20 @@ public class LedgerState {
         this.chainId = chainId;
     }
 
+    public LedgerState(ChainId chainId, long version, long timestampUsecs) {
+        this.chainId = chainId;
+        this.version = version;
+        this.timestampUsecs = timestampUsecs;
+    }
+
+    public synchronized ChainId getChainId() {
+        return chainId;
+    }
+
+    public synchronized long getVersion() {
+        return version;
+    }
+
     /**
      * @return timestamp in micro-seconds
      */
