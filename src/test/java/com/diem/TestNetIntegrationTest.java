@@ -214,6 +214,36 @@ public class TestNetIntegrationTest {
                         expirationTimeSec, 5));
     }
 
+    @Test
+    public void testSubmitShouldIgnoreStaleResponseError() throws Exception {
+        Testnet.mintCoins(client, coins(10000), account1.authKey.hex(), Testnet.XUS);
+        Testnet.mintCoins(client, coins(10000), account2.authKey.hex(), Testnet.XUS);
+
+        long seqNum = client.getAccount(account1.address).getSequenceNumber();
+        Script script = Helpers.encode_peer_to_peer_with_metadata_script(
+                CurrencyCode.typeTag(Testnet.XUS), account2.address, coins(2), new Bytes(new byte[0]), new Bytes(new byte[0]));
+        RawTransaction rawTxn = new RawTransaction(
+                account1.address, seqNum,
+                new TransactionPayload.Script(script),
+                coins(1), 0L, Testnet.XUS,
+                100000000000L, Testnet.CHAIN_ID);
+        DiemJsonRpcClient dclient = (DiemJsonRpcClient) client;
+        LedgerState state = dclient.getState();
+        dclient.setState(new LedgerState(state.getChainId(), state.getVersion(), state.getTimestampUsecs()));
+        SignedTransaction signedTxn = Signer.sign(account1.privateKey, rawTxn);
+
+        client.submit(signedTxn);
+
+        dclient.setState(state);
+        JsonRpc.Transaction transaction = client.waitForTransaction(signedTxn, DEFAULT_TIMEOUT);
+
+        assertNotNull(transaction);
+        assertTrue(TransactionUtils.isExecuted(transaction));
+        assertEquals(2, transaction.getEventsList().size());
+        assertEquals("sentpayment", transaction.getEvents(0).getData().getType());
+        assertEquals("receivedpayment", transaction.getEvents(1).getData().getType());
+    }
+
     private long nowInSeconds(int plus) {
         return System.currentTimeMillis() / 1000 + plus;
     }

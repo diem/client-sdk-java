@@ -55,7 +55,7 @@ public class DiemJsonRpcClient implements DiemClient {
         return HttpClients.custom().setKeepAliveStrategy((response, context) -> 30 * 1000).build();
     }
 
-    private final LedgerState state;
+    private LedgerState state;
     private final URI serverURL;
     private final HttpClient httpClient;
     private Retry<Response> retry;
@@ -73,6 +73,14 @@ public class DiemJsonRpcClient implements DiemClient {
         this.httpClient = httpClient;
         this.state = new LedgerState(chainId);
         this.retry = retry;
+    }
+
+    public LedgerState getState() {
+        return state;
+    }
+
+    public void setState(LedgerState state) {
+        this.state = state;
     }
 
     @Override
@@ -164,7 +172,12 @@ public class DiemJsonRpcClient implements DiemClient {
         List<Object> params = new ArrayList<>();
         params.add(data);
 
-        call(Method.submit, params);
+        try {
+            callWithoutRetry(Method.submit, params);
+        } catch (StaleResponseException e) {
+            // ignore
+            // see https://github.com/diem/client-sdks/blob/master/specs/json_rpc_client.md#submit-transaction-api-should-ignore-stale-response-error for more details
+        }
     }
 
     @Override
