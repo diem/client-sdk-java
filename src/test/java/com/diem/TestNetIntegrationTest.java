@@ -197,19 +197,21 @@ public class TestNetIntegrationTest {
     }
 
     @Test
-    public void testWaitForTransaction_timeout() {
+    public void testWaitForTransaction_timeout() throws DiemException {
         long expirationTimeSec = nowInSeconds(5);
+        JsonRpc.Account account = client.getAccount(Constants.ROOT_ACCOUNT_ADDRESS);
         assertThrows("transaction not found within timeout period", DiemTransactionWaitTimeoutException.class,
-                () -> client.waitForTransaction(Constants.ROOT_ACCOUNT_ADDRESS, 100,
+                () -> client.waitForTransaction(Constants.ROOT_ACCOUNT_ADDRESS, account.getSequenceNumber() + 1000,
                         "28f8151939d68b692d296028ca54bb7e9e92a2f9543effd2a424a79df67d0071",
                         expirationTimeSec, 0));
     }
 
     @Test
-    public void testWaitForTransaction_transactionExpired() {
+    public void testWaitForTransaction_transactionExpired() throws DiemException {
         long expirationTimeSec = nowInSeconds(0);
+        JsonRpc.Account account = client.getAccount(Constants.ROOT_ACCOUNT_ADDRESS);
         assertThrows("transaction not found within timeout period", DiemTransactionExpiredException.class,
-                () -> client.waitForTransaction(Constants.ROOT_ACCOUNT_ADDRESS, 1,
+                () -> client.waitForTransaction(Constants.ROOT_ACCOUNT_ADDRESS, account.getSequenceNumber() + 1000,
                         "28f8151939d68b692d296028ca54bb7e9e92a2f9543effd2a424a79df67d0071",
                         expirationTimeSec, 5));
     }
