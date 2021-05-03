@@ -713,6 +713,15 @@ public final class JsonRpc {
      * <code>optional .jsonrpc.AccountRole role = 10;</code>
      */
     com.diem.jsonrpc.JsonRpc.AccountRoleOrBuilder getRoleOrBuilder();
+
+    /**
+     * <pre>
+     * the transaction version of the account
+     * </pre>
+     *
+     * <code>optional uint64 version = 11;</code>
+     */
+    long getVersion();
   }
   /**
    * Protobuf type {@code jsonrpc.Account}
@@ -735,6 +744,7 @@ public final class JsonRpc {
       delegatedKeyRotationCapability_ = false;
       delegatedWithdrawalCapability_ = false;
       isFrozen_ = false;
+      version_ = 0L;
     }
 
     @java.lang.Override
@@ -826,6 +836,11 @@ public final class JsonRpc {
                 role_ = subBuilder.buildPartial();
               }
 
+              break;
+            }
+            case 88: {
+
+              version_ = input.readUInt64();
               break;
             }
           }
@@ -1115,6 +1130,19 @@ public final class JsonRpc {
       return getRole();
     }
 
+    public static final int VERSION_FIELD_NUMBER = 11;
+    private long version_;
+    /**
+     * <pre>
+     * the transaction version of the account
+     * </pre>
+     *
+     * <code>optional uint64 version = 11;</code>
+     */
+    public long getVersion() {
+      return version_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -1156,6 +1184,9 @@ public final class JsonRpc {
       }
       if (role_ != null) {
         output.writeMessage(10, getRole());
+      }
+      if (version_ != 0L) {
+        output.writeUInt64(11, version_);
       }
     }
 
@@ -1200,6 +1231,10 @@ public final class JsonRpc {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(10, getRole());
       }
+      if (version_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(11, version_);
+      }
       memoizedSize = size;
       return size;
     }
@@ -1239,6 +1274,8 @@ public final class JsonRpc {
         result = result && getRole()
             .equals(other.getRole());
       }
+      result = result && (getVersion()
+          == other.getVersion());
       return result;
     }
 
@@ -1277,6 +1314,9 @@ public final class JsonRpc {
         hash = (37 * hash) + ROLE_FIELD_NUMBER;
         hash = (53 * hash) + getRole().hashCode();
       }
+      hash = (37 * hash) + VERSION_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getVersion());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1424,6 +1464,8 @@ public final class JsonRpc {
           role_ = null;
           roleBuilder_ = null;
         }
+        version_ = 0L;
+
         return this;
       }
 
@@ -1470,6 +1512,7 @@ public final class JsonRpc {
         } else {
           result.role_ = roleBuilder_.build();
         }
+        result.version_ = version_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1568,6 +1611,9 @@ public final class JsonRpc {
         }
         if (other.hasRole()) {
           mergeRole(other.getRole());
+        }
+        if (other.getVersion() != 0L) {
+          setVersion(other.getVersion());
         }
         onChanged();
         return this;
@@ -2412,6 +2458,44 @@ public final class JsonRpc {
         }
         return roleBuilder_;
       }
+
+      private long version_ ;
+      /**
+       * <pre>
+       * the transaction version of the account
+       * </pre>
+       *
+       * <code>optional uint64 version = 11;</code>
+       */
+      public long getVersion() {
+        return version_;
+      }
+      /**
+       * <pre>
+       * the transaction version of the account
+       * </pre>
+       *
+       * <code>optional uint64 version = 11;</code>
+       */
+      public Builder setVersion(long value) {
+        
+        version_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * the transaction version of the account
+       * </pre>
+       *
+       * <code>optional uint64 version = 11;</code>
+       */
+      public Builder clearVersion() {
+        
+        version_ = 0L;
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
@@ -2610,6 +2694,30 @@ public final class JsonRpc {
      */
     com.diem.jsonrpc.JsonRpc.AmountOrBuilder getPreburnBalancesOrBuilder(
         int index);
+
+    /**
+     * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+     */
+    java.util.List<com.diem.jsonrpc.JsonRpc.PreburnQueue> 
+        getPreburnQueuesList();
+    /**
+     * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+     */
+    com.diem.jsonrpc.JsonRpc.PreburnQueue getPreburnQueues(int index);
+    /**
+     * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+     */
+    int getPreburnQueuesCount();
+    /**
+     * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+     */
+    java.util.List<? extends com.diem.jsonrpc.JsonRpc.PreburnQueueOrBuilder> 
+        getPreburnQueuesOrBuilderList();
+    /**
+     * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+     */
+    com.diem.jsonrpc.JsonRpc.PreburnQueueOrBuilder getPreburnQueuesOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code jsonrpc.AccountRole}
@@ -2634,6 +2742,7 @@ public final class JsonRpc {
       numChildren_ = 0L;
       receivedMintEventsKey_ = "";
       preburnBalances_ = java.util.Collections.emptyList();
+      preburnQueues_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -2728,6 +2837,15 @@ public final class JsonRpc {
                   input.readMessage(com.diem.jsonrpc.JsonRpc.Amount.parser(), extensionRegistry));
               break;
             }
+            case 98: {
+              if (!((mutable_bitField0_ & 0x00000800) == 0x00000800)) {
+                preburnQueues_ = new java.util.ArrayList<com.diem.jsonrpc.JsonRpc.PreburnQueue>();
+                mutable_bitField0_ |= 0x00000800;
+              }
+              preburnQueues_.add(
+                  input.readMessage(com.diem.jsonrpc.JsonRpc.PreburnQueue.parser(), extensionRegistry));
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -2738,6 +2856,9 @@ public final class JsonRpc {
       } finally {
         if (((mutable_bitField0_ & 0x00000400) == 0x00000400)) {
           preburnBalances_ = java.util.Collections.unmodifiableList(preburnBalances_);
+        }
+        if (((mutable_bitField0_ & 0x00000800) == 0x00000800)) {
+          preburnQueues_ = java.util.Collections.unmodifiableList(preburnQueues_);
         }
         makeExtensionsImmutable();
       }
@@ -3112,6 +3233,41 @@ public final class JsonRpc {
       return preburnBalances_.get(index);
     }
 
+    public static final int PREBURN_QUEUES_FIELD_NUMBER = 12;
+    private java.util.List<com.diem.jsonrpc.JsonRpc.PreburnQueue> preburnQueues_;
+    /**
+     * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+     */
+    public java.util.List<com.diem.jsonrpc.JsonRpc.PreburnQueue> getPreburnQueuesList() {
+      return preburnQueues_;
+    }
+    /**
+     * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+     */
+    public java.util.List<? extends com.diem.jsonrpc.JsonRpc.PreburnQueueOrBuilder> 
+        getPreburnQueuesOrBuilderList() {
+      return preburnQueues_;
+    }
+    /**
+     * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+     */
+    public int getPreburnQueuesCount() {
+      return preburnQueues_.size();
+    }
+    /**
+     * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+     */
+    public com.diem.jsonrpc.JsonRpc.PreburnQueue getPreburnQueues(int index) {
+      return preburnQueues_.get(index);
+    }
+    /**
+     * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+     */
+    public com.diem.jsonrpc.JsonRpc.PreburnQueueOrBuilder getPreburnQueuesOrBuilder(
+        int index) {
+      return preburnQueues_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -3157,6 +3313,9 @@ public final class JsonRpc {
       for (int i = 0; i < preburnBalances_.size(); i++) {
         output.writeMessage(11, preburnBalances_.get(i));
       }
+      for (int i = 0; i < preburnQueues_.size(); i++) {
+        output.writeMessage(12, preburnQueues_.get(i));
+      }
     }
 
     public int getSerializedSize() {
@@ -3200,6 +3359,10 @@ public final class JsonRpc {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(11, preburnBalances_.get(i));
       }
+      for (int i = 0; i < preburnQueues_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(12, preburnQueues_.get(i));
+      }
       memoizedSize = size;
       return size;
     }
@@ -3238,6 +3401,8 @@ public final class JsonRpc {
           .equals(other.getReceivedMintEventsKey());
       result = result && getPreburnBalancesList()
           .equals(other.getPreburnBalancesList());
+      result = result && getPreburnQueuesList()
+          .equals(other.getPreburnQueuesList());
       return result;
     }
 
@@ -3273,6 +3438,10 @@ public final class JsonRpc {
       if (getPreburnBalancesCount() > 0) {
         hash = (37 * hash) + PREBURN_BALANCES_FIELD_NUMBER;
         hash = (53 * hash) + getPreburnBalancesList().hashCode();
+      }
+      if (getPreburnQueuesCount() > 0) {
+        hash = (37 * hash) + PREBURN_QUEUES_FIELD_NUMBER;
+        hash = (53 * hash) + getPreburnQueuesList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -3389,6 +3558,7 @@ public final class JsonRpc {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getPreburnBalancesFieldBuilder();
+          getPreburnQueuesFieldBuilder();
         }
       }
       public Builder clear() {
@@ -3418,6 +3588,12 @@ public final class JsonRpc {
           bitField0_ = (bitField0_ & ~0x00000400);
         } else {
           preburnBalancesBuilder_.clear();
+        }
+        if (preburnQueuesBuilder_ == null) {
+          preburnQueues_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000800);
+        } else {
+          preburnQueuesBuilder_.clear();
         }
         return this;
       }
@@ -3461,6 +3637,15 @@ public final class JsonRpc {
           result.preburnBalances_ = preburnBalances_;
         } else {
           result.preburnBalances_ = preburnBalancesBuilder_.build();
+        }
+        if (preburnQueuesBuilder_ == null) {
+          if (((bitField0_ & 0x00000800) == 0x00000800)) {
+            preburnQueues_ = java.util.Collections.unmodifiableList(preburnQueues_);
+            bitField0_ = (bitField0_ & ~0x00000800);
+          }
+          result.preburnQueues_ = preburnQueues_;
+        } else {
+          result.preburnQueues_ = preburnQueuesBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -3565,6 +3750,32 @@ public final class JsonRpc {
                    getPreburnBalancesFieldBuilder() : null;
             } else {
               preburnBalancesBuilder_.addAllMessages(other.preburnBalances_);
+            }
+          }
+        }
+        if (preburnQueuesBuilder_ == null) {
+          if (!other.preburnQueues_.isEmpty()) {
+            if (preburnQueues_.isEmpty()) {
+              preburnQueues_ = other.preburnQueues_;
+              bitField0_ = (bitField0_ & ~0x00000800);
+            } else {
+              ensurePreburnQueuesIsMutable();
+              preburnQueues_.addAll(other.preburnQueues_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.preburnQueues_.isEmpty()) {
+            if (preburnQueuesBuilder_.isEmpty()) {
+              preburnQueuesBuilder_.dispose();
+              preburnQueuesBuilder_ = null;
+              preburnQueues_ = other.preburnQueues_;
+              bitField0_ = (bitField0_ & ~0x00000800);
+              preburnQueuesBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getPreburnQueuesFieldBuilder() : null;
+            } else {
+              preburnQueuesBuilder_.addAllMessages(other.preburnQueues_);
             }
           }
         }
@@ -4518,6 +4729,246 @@ public final class JsonRpc {
         }
         return preburnBalancesBuilder_;
       }
+
+      private java.util.List<com.diem.jsonrpc.JsonRpc.PreburnQueue> preburnQueues_ =
+        java.util.Collections.emptyList();
+      private void ensurePreburnQueuesIsMutable() {
+        if (!((bitField0_ & 0x00000800) == 0x00000800)) {
+          preburnQueues_ = new java.util.ArrayList<com.diem.jsonrpc.JsonRpc.PreburnQueue>(preburnQueues_);
+          bitField0_ |= 0x00000800;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.diem.jsonrpc.JsonRpc.PreburnQueue, com.diem.jsonrpc.JsonRpc.PreburnQueue.Builder, com.diem.jsonrpc.JsonRpc.PreburnQueueOrBuilder> preburnQueuesBuilder_;
+
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public java.util.List<com.diem.jsonrpc.JsonRpc.PreburnQueue> getPreburnQueuesList() {
+        if (preburnQueuesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(preburnQueues_);
+        } else {
+          return preburnQueuesBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public int getPreburnQueuesCount() {
+        if (preburnQueuesBuilder_ == null) {
+          return preburnQueues_.size();
+        } else {
+          return preburnQueuesBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public com.diem.jsonrpc.JsonRpc.PreburnQueue getPreburnQueues(int index) {
+        if (preburnQueuesBuilder_ == null) {
+          return preburnQueues_.get(index);
+        } else {
+          return preburnQueuesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public Builder setPreburnQueues(
+          int index, com.diem.jsonrpc.JsonRpc.PreburnQueue value) {
+        if (preburnQueuesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePreburnQueuesIsMutable();
+          preburnQueues_.set(index, value);
+          onChanged();
+        } else {
+          preburnQueuesBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public Builder setPreburnQueues(
+          int index, com.diem.jsonrpc.JsonRpc.PreburnQueue.Builder builderForValue) {
+        if (preburnQueuesBuilder_ == null) {
+          ensurePreburnQueuesIsMutable();
+          preburnQueues_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          preburnQueuesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public Builder addPreburnQueues(com.diem.jsonrpc.JsonRpc.PreburnQueue value) {
+        if (preburnQueuesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePreburnQueuesIsMutable();
+          preburnQueues_.add(value);
+          onChanged();
+        } else {
+          preburnQueuesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public Builder addPreburnQueues(
+          int index, com.diem.jsonrpc.JsonRpc.PreburnQueue value) {
+        if (preburnQueuesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePreburnQueuesIsMutable();
+          preburnQueues_.add(index, value);
+          onChanged();
+        } else {
+          preburnQueuesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public Builder addPreburnQueues(
+          com.diem.jsonrpc.JsonRpc.PreburnQueue.Builder builderForValue) {
+        if (preburnQueuesBuilder_ == null) {
+          ensurePreburnQueuesIsMutable();
+          preburnQueues_.add(builderForValue.build());
+          onChanged();
+        } else {
+          preburnQueuesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public Builder addPreburnQueues(
+          int index, com.diem.jsonrpc.JsonRpc.PreburnQueue.Builder builderForValue) {
+        if (preburnQueuesBuilder_ == null) {
+          ensurePreburnQueuesIsMutable();
+          preburnQueues_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          preburnQueuesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public Builder addAllPreburnQueues(
+          java.lang.Iterable<? extends com.diem.jsonrpc.JsonRpc.PreburnQueue> values) {
+        if (preburnQueuesBuilder_ == null) {
+          ensurePreburnQueuesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, preburnQueues_);
+          onChanged();
+        } else {
+          preburnQueuesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public Builder clearPreburnQueues() {
+        if (preburnQueuesBuilder_ == null) {
+          preburnQueues_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000800);
+          onChanged();
+        } else {
+          preburnQueuesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public Builder removePreburnQueues(int index) {
+        if (preburnQueuesBuilder_ == null) {
+          ensurePreburnQueuesIsMutable();
+          preburnQueues_.remove(index);
+          onChanged();
+        } else {
+          preburnQueuesBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public com.diem.jsonrpc.JsonRpc.PreburnQueue.Builder getPreburnQueuesBuilder(
+          int index) {
+        return getPreburnQueuesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public com.diem.jsonrpc.JsonRpc.PreburnQueueOrBuilder getPreburnQueuesOrBuilder(
+          int index) {
+        if (preburnQueuesBuilder_ == null) {
+          return preburnQueues_.get(index);  } else {
+          return preburnQueuesBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public java.util.List<? extends com.diem.jsonrpc.JsonRpc.PreburnQueueOrBuilder> 
+           getPreburnQueuesOrBuilderList() {
+        if (preburnQueuesBuilder_ != null) {
+          return preburnQueuesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(preburnQueues_);
+        }
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public com.diem.jsonrpc.JsonRpc.PreburnQueue.Builder addPreburnQueuesBuilder() {
+        return getPreburnQueuesFieldBuilder().addBuilder(
+            com.diem.jsonrpc.JsonRpc.PreburnQueue.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public com.diem.jsonrpc.JsonRpc.PreburnQueue.Builder addPreburnQueuesBuilder(
+          int index) {
+        return getPreburnQueuesFieldBuilder().addBuilder(
+            index, com.diem.jsonrpc.JsonRpc.PreburnQueue.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnQueue preburn_queues = 12;</code>
+       */
+      public java.util.List<com.diem.jsonrpc.JsonRpc.PreburnQueue.Builder> 
+           getPreburnQueuesBuilderList() {
+        return getPreburnQueuesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.diem.jsonrpc.JsonRpc.PreburnQueue, com.diem.jsonrpc.JsonRpc.PreburnQueue.Builder, com.diem.jsonrpc.JsonRpc.PreburnQueueOrBuilder> 
+          getPreburnQueuesFieldBuilder() {
+        if (preburnQueuesBuilder_ == null) {
+          preburnQueuesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.diem.jsonrpc.JsonRpc.PreburnQueue, com.diem.jsonrpc.JsonRpc.PreburnQueue.Builder, com.diem.jsonrpc.JsonRpc.PreburnQueueOrBuilder>(
+                  preburnQueues_,
+                  ((bitField0_ & 0x00000800) == 0x00000800),
+                  getParentForChildren(),
+                  isClean());
+          preburnQueues_ = null;
+        }
+        return preburnQueuesBuilder_;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
@@ -4562,6 +5013,1614 @@ public final class JsonRpc {
     }
 
     public com.diem.jsonrpc.JsonRpc.AccountRole getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PreburnQueueOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:jsonrpc.PreburnQueue)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional string currency = 1;</code>
+     */
+    java.lang.String getCurrency();
+    /**
+     * <code>optional string currency = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getCurrencyBytes();
+
+    /**
+     * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+     */
+    java.util.List<com.diem.jsonrpc.JsonRpc.PreburnWithMetadata> 
+        getPreburnsList();
+    /**
+     * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+     */
+    com.diem.jsonrpc.JsonRpc.PreburnWithMetadata getPreburns(int index);
+    /**
+     * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+     */
+    int getPreburnsCount();
+    /**
+     * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+     */
+    java.util.List<? extends com.diem.jsonrpc.JsonRpc.PreburnWithMetadataOrBuilder> 
+        getPreburnsOrBuilderList();
+    /**
+     * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+     */
+    com.diem.jsonrpc.JsonRpc.PreburnWithMetadataOrBuilder getPreburnsOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code jsonrpc.PreburnQueue}
+   */
+  public  static final class PreburnQueue extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:jsonrpc.PreburnQueue)
+      PreburnQueueOrBuilder {
+    // Use PreburnQueue.newBuilder() to construct.
+    private PreburnQueue(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PreburnQueue() {
+      currency_ = "";
+      preburns_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private PreburnQueue(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              currency_ = s;
+              break;
+            }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                preburns_ = new java.util.ArrayList<com.diem.jsonrpc.JsonRpc.PreburnWithMetadata>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              preburns_.add(
+                  input.readMessage(com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.parser(), extensionRegistry));
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          preburns_ = java.util.Collections.unmodifiableList(preburns_);
+        }
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.diem.jsonrpc.JsonRpc.internal_static_jsonrpc_PreburnQueue_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.diem.jsonrpc.JsonRpc.internal_static_jsonrpc_PreburnQueue_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.diem.jsonrpc.JsonRpc.PreburnQueue.class, com.diem.jsonrpc.JsonRpc.PreburnQueue.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int CURRENCY_FIELD_NUMBER = 1;
+    private volatile java.lang.Object currency_;
+    /**
+     * <code>optional string currency = 1;</code>
+     */
+    public java.lang.String getCurrency() {
+      java.lang.Object ref = currency_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        currency_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string currency = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getCurrencyBytes() {
+      java.lang.Object ref = currency_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        currency_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PREBURNS_FIELD_NUMBER = 2;
+    private java.util.List<com.diem.jsonrpc.JsonRpc.PreburnWithMetadata> preburns_;
+    /**
+     * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+     */
+    public java.util.List<com.diem.jsonrpc.JsonRpc.PreburnWithMetadata> getPreburnsList() {
+      return preburns_;
+    }
+    /**
+     * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+     */
+    public java.util.List<? extends com.diem.jsonrpc.JsonRpc.PreburnWithMetadataOrBuilder> 
+        getPreburnsOrBuilderList() {
+      return preburns_;
+    }
+    /**
+     * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+     */
+    public int getPreburnsCount() {
+      return preburns_.size();
+    }
+    /**
+     * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+     */
+    public com.diem.jsonrpc.JsonRpc.PreburnWithMetadata getPreburns(int index) {
+      return preburns_.get(index);
+    }
+    /**
+     * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+     */
+    public com.diem.jsonrpc.JsonRpc.PreburnWithMetadataOrBuilder getPreburnsOrBuilder(
+        int index) {
+      return preburns_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!getCurrencyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, currency_);
+      }
+      for (int i = 0; i < preburns_.size(); i++) {
+        output.writeMessage(2, preburns_.get(i));
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!getCurrencyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, currency_);
+      }
+      for (int i = 0; i < preburns_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, preburns_.get(i));
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.diem.jsonrpc.JsonRpc.PreburnQueue)) {
+        return super.equals(obj);
+      }
+      com.diem.jsonrpc.JsonRpc.PreburnQueue other = (com.diem.jsonrpc.JsonRpc.PreburnQueue) obj;
+
+      boolean result = true;
+      result = result && getCurrency()
+          .equals(other.getCurrency());
+      result = result && getPreburnsList()
+          .equals(other.getPreburnsList());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + CURRENCY_FIELD_NUMBER;
+      hash = (53 * hash) + getCurrency().hashCode();
+      if (getPreburnsCount() > 0) {
+        hash = (37 * hash) + PREBURNS_FIELD_NUMBER;
+        hash = (53 * hash) + getPreburnsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.diem.jsonrpc.JsonRpc.PreburnQueue parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnQueue parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnQueue parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnQueue parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnQueue parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnQueue parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnQueue parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnQueue parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnQueue parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnQueue parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.diem.jsonrpc.JsonRpc.PreburnQueue prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code jsonrpc.PreburnQueue}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:jsonrpc.PreburnQueue)
+        com.diem.jsonrpc.JsonRpc.PreburnQueueOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.diem.jsonrpc.JsonRpc.internal_static_jsonrpc_PreburnQueue_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.diem.jsonrpc.JsonRpc.internal_static_jsonrpc_PreburnQueue_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.diem.jsonrpc.JsonRpc.PreburnQueue.class, com.diem.jsonrpc.JsonRpc.PreburnQueue.Builder.class);
+      }
+
+      // Construct using com.diem.jsonrpc.JsonRpc.PreburnQueue.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getPreburnsFieldBuilder();
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        currency_ = "";
+
+        if (preburnsBuilder_ == null) {
+          preburns_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          preburnsBuilder_.clear();
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.diem.jsonrpc.JsonRpc.internal_static_jsonrpc_PreburnQueue_descriptor;
+      }
+
+      public com.diem.jsonrpc.JsonRpc.PreburnQueue getDefaultInstanceForType() {
+        return com.diem.jsonrpc.JsonRpc.PreburnQueue.getDefaultInstance();
+      }
+
+      public com.diem.jsonrpc.JsonRpc.PreburnQueue build() {
+        com.diem.jsonrpc.JsonRpc.PreburnQueue result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.diem.jsonrpc.JsonRpc.PreburnQueue buildPartial() {
+        com.diem.jsonrpc.JsonRpc.PreburnQueue result = new com.diem.jsonrpc.JsonRpc.PreburnQueue(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        result.currency_ = currency_;
+        if (preburnsBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            preburns_ = java.util.Collections.unmodifiableList(preburns_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.preburns_ = preburns_;
+        } else {
+          result.preburns_ = preburnsBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.diem.jsonrpc.JsonRpc.PreburnQueue) {
+          return mergeFrom((com.diem.jsonrpc.JsonRpc.PreburnQueue)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.diem.jsonrpc.JsonRpc.PreburnQueue other) {
+        if (other == com.diem.jsonrpc.JsonRpc.PreburnQueue.getDefaultInstance()) return this;
+        if (!other.getCurrency().isEmpty()) {
+          currency_ = other.currency_;
+          onChanged();
+        }
+        if (preburnsBuilder_ == null) {
+          if (!other.preburns_.isEmpty()) {
+            if (preburns_.isEmpty()) {
+              preburns_ = other.preburns_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensurePreburnsIsMutable();
+              preburns_.addAll(other.preburns_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.preburns_.isEmpty()) {
+            if (preburnsBuilder_.isEmpty()) {
+              preburnsBuilder_.dispose();
+              preburnsBuilder_ = null;
+              preburns_ = other.preburns_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              preburnsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getPreburnsFieldBuilder() : null;
+            } else {
+              preburnsBuilder_.addAllMessages(other.preburns_);
+            }
+          }
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.diem.jsonrpc.JsonRpc.PreburnQueue parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.diem.jsonrpc.JsonRpc.PreburnQueue) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object currency_ = "";
+      /**
+       * <code>optional string currency = 1;</code>
+       */
+      public java.lang.String getCurrency() {
+        java.lang.Object ref = currency_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          currency_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string currency = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getCurrencyBytes() {
+        java.lang.Object ref = currency_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          currency_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string currency = 1;</code>
+       */
+      public Builder setCurrency(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        currency_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string currency = 1;</code>
+       */
+      public Builder clearCurrency() {
+        
+        currency_ = getDefaultInstance().getCurrency();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string currency = 1;</code>
+       */
+      public Builder setCurrencyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        currency_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<com.diem.jsonrpc.JsonRpc.PreburnWithMetadata> preburns_ =
+        java.util.Collections.emptyList();
+      private void ensurePreburnsIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          preburns_ = new java.util.ArrayList<com.diem.jsonrpc.JsonRpc.PreburnWithMetadata>(preburns_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.diem.jsonrpc.JsonRpc.PreburnWithMetadata, com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.Builder, com.diem.jsonrpc.JsonRpc.PreburnWithMetadataOrBuilder> preburnsBuilder_;
+
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public java.util.List<com.diem.jsonrpc.JsonRpc.PreburnWithMetadata> getPreburnsList() {
+        if (preburnsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(preburns_);
+        } else {
+          return preburnsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public int getPreburnsCount() {
+        if (preburnsBuilder_ == null) {
+          return preburns_.size();
+        } else {
+          return preburnsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public com.diem.jsonrpc.JsonRpc.PreburnWithMetadata getPreburns(int index) {
+        if (preburnsBuilder_ == null) {
+          return preburns_.get(index);
+        } else {
+          return preburnsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public Builder setPreburns(
+          int index, com.diem.jsonrpc.JsonRpc.PreburnWithMetadata value) {
+        if (preburnsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePreburnsIsMutable();
+          preburns_.set(index, value);
+          onChanged();
+        } else {
+          preburnsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public Builder setPreburns(
+          int index, com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.Builder builderForValue) {
+        if (preburnsBuilder_ == null) {
+          ensurePreburnsIsMutable();
+          preburns_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          preburnsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public Builder addPreburns(com.diem.jsonrpc.JsonRpc.PreburnWithMetadata value) {
+        if (preburnsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePreburnsIsMutable();
+          preburns_.add(value);
+          onChanged();
+        } else {
+          preburnsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public Builder addPreburns(
+          int index, com.diem.jsonrpc.JsonRpc.PreburnWithMetadata value) {
+        if (preburnsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePreburnsIsMutable();
+          preburns_.add(index, value);
+          onChanged();
+        } else {
+          preburnsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public Builder addPreburns(
+          com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.Builder builderForValue) {
+        if (preburnsBuilder_ == null) {
+          ensurePreburnsIsMutable();
+          preburns_.add(builderForValue.build());
+          onChanged();
+        } else {
+          preburnsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public Builder addPreburns(
+          int index, com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.Builder builderForValue) {
+        if (preburnsBuilder_ == null) {
+          ensurePreburnsIsMutable();
+          preburns_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          preburnsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public Builder addAllPreburns(
+          java.lang.Iterable<? extends com.diem.jsonrpc.JsonRpc.PreburnWithMetadata> values) {
+        if (preburnsBuilder_ == null) {
+          ensurePreburnsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, preburns_);
+          onChanged();
+        } else {
+          preburnsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public Builder clearPreburns() {
+        if (preburnsBuilder_ == null) {
+          preburns_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          preburnsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public Builder removePreburns(int index) {
+        if (preburnsBuilder_ == null) {
+          ensurePreburnsIsMutable();
+          preburns_.remove(index);
+          onChanged();
+        } else {
+          preburnsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.Builder getPreburnsBuilder(
+          int index) {
+        return getPreburnsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public com.diem.jsonrpc.JsonRpc.PreburnWithMetadataOrBuilder getPreburnsOrBuilder(
+          int index) {
+        if (preburnsBuilder_ == null) {
+          return preburns_.get(index);  } else {
+          return preburnsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public java.util.List<? extends com.diem.jsonrpc.JsonRpc.PreburnWithMetadataOrBuilder> 
+           getPreburnsOrBuilderList() {
+        if (preburnsBuilder_ != null) {
+          return preburnsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(preburns_);
+        }
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.Builder addPreburnsBuilder() {
+        return getPreburnsFieldBuilder().addBuilder(
+            com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.Builder addPreburnsBuilder(
+          int index) {
+        return getPreburnsFieldBuilder().addBuilder(
+            index, com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .jsonrpc.PreburnWithMetadata preburns = 2;</code>
+       */
+      public java.util.List<com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.Builder> 
+           getPreburnsBuilderList() {
+        return getPreburnsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.diem.jsonrpc.JsonRpc.PreburnWithMetadata, com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.Builder, com.diem.jsonrpc.JsonRpc.PreburnWithMetadataOrBuilder> 
+          getPreburnsFieldBuilder() {
+        if (preburnsBuilder_ == null) {
+          preburnsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.diem.jsonrpc.JsonRpc.PreburnWithMetadata, com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.Builder, com.diem.jsonrpc.JsonRpc.PreburnWithMetadataOrBuilder>(
+                  preburns_,
+                  ((bitField0_ & 0x00000002) == 0x00000002),
+                  getParentForChildren(),
+                  isClean());
+          preburns_ = null;
+        }
+        return preburnsBuilder_;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:jsonrpc.PreburnQueue)
+    }
+
+    // @@protoc_insertion_point(class_scope:jsonrpc.PreburnQueue)
+    private static final com.diem.jsonrpc.JsonRpc.PreburnQueue DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.diem.jsonrpc.JsonRpc.PreburnQueue();
+    }
+
+    public static com.diem.jsonrpc.JsonRpc.PreburnQueue getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PreburnQueue>
+        PARSER = new com.google.protobuf.AbstractParser<PreburnQueue>() {
+      public PreburnQueue parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new PreburnQueue(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PreburnQueue> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PreburnQueue> getParserForType() {
+      return PARSER;
+    }
+
+    public com.diem.jsonrpc.JsonRpc.PreburnQueue getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PreburnWithMetadataOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:jsonrpc.PreburnWithMetadata)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .jsonrpc.Amount preburn = 1;</code>
+     */
+    boolean hasPreburn();
+    /**
+     * <code>optional .jsonrpc.Amount preburn = 1;</code>
+     */
+    com.diem.jsonrpc.JsonRpc.Amount getPreburn();
+    /**
+     * <code>optional .jsonrpc.Amount preburn = 1;</code>
+     */
+    com.diem.jsonrpc.JsonRpc.AmountOrBuilder getPreburnOrBuilder();
+
+    /**
+     * <pre>
+     * hex-encoded bytes
+     * </pre>
+     *
+     * <code>optional string metadata = 2;</code>
+     */
+    java.lang.String getMetadata();
+    /**
+     * <pre>
+     * hex-encoded bytes
+     * </pre>
+     *
+     * <code>optional string metadata = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getMetadataBytes();
+  }
+  /**
+   * Protobuf type {@code jsonrpc.PreburnWithMetadata}
+   */
+  public  static final class PreburnWithMetadata extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:jsonrpc.PreburnWithMetadata)
+      PreburnWithMetadataOrBuilder {
+    // Use PreburnWithMetadata.newBuilder() to construct.
+    private PreburnWithMetadata(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PreburnWithMetadata() {
+      metadata_ = "";
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private PreburnWithMetadata(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.diem.jsonrpc.JsonRpc.Amount.Builder subBuilder = null;
+              if (preburn_ != null) {
+                subBuilder = preburn_.toBuilder();
+              }
+              preburn_ = input.readMessage(com.diem.jsonrpc.JsonRpc.Amount.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(preburn_);
+                preburn_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              metadata_ = s;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.diem.jsonrpc.JsonRpc.internal_static_jsonrpc_PreburnWithMetadata_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.diem.jsonrpc.JsonRpc.internal_static_jsonrpc_PreburnWithMetadata_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.class, com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.Builder.class);
+    }
+
+    public static final int PREBURN_FIELD_NUMBER = 1;
+    private com.diem.jsonrpc.JsonRpc.Amount preburn_;
+    /**
+     * <code>optional .jsonrpc.Amount preburn = 1;</code>
+     */
+    public boolean hasPreburn() {
+      return preburn_ != null;
+    }
+    /**
+     * <code>optional .jsonrpc.Amount preburn = 1;</code>
+     */
+    public com.diem.jsonrpc.JsonRpc.Amount getPreburn() {
+      return preburn_ == null ? com.diem.jsonrpc.JsonRpc.Amount.getDefaultInstance() : preburn_;
+    }
+    /**
+     * <code>optional .jsonrpc.Amount preburn = 1;</code>
+     */
+    public com.diem.jsonrpc.JsonRpc.AmountOrBuilder getPreburnOrBuilder() {
+      return getPreburn();
+    }
+
+    public static final int METADATA_FIELD_NUMBER = 2;
+    private volatile java.lang.Object metadata_;
+    /**
+     * <pre>
+     * hex-encoded bytes
+     * </pre>
+     *
+     * <code>optional string metadata = 2;</code>
+     */
+    public java.lang.String getMetadata() {
+      java.lang.Object ref = metadata_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        metadata_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * hex-encoded bytes
+     * </pre>
+     *
+     * <code>optional string metadata = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getMetadataBytes() {
+      java.lang.Object ref = metadata_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        metadata_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (preburn_ != null) {
+        output.writeMessage(1, getPreburn());
+      }
+      if (!getMetadataBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, metadata_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (preburn_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getPreburn());
+      }
+      if (!getMetadataBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, metadata_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.diem.jsonrpc.JsonRpc.PreburnWithMetadata)) {
+        return super.equals(obj);
+      }
+      com.diem.jsonrpc.JsonRpc.PreburnWithMetadata other = (com.diem.jsonrpc.JsonRpc.PreburnWithMetadata) obj;
+
+      boolean result = true;
+      result = result && (hasPreburn() == other.hasPreburn());
+      if (hasPreburn()) {
+        result = result && getPreburn()
+            .equals(other.getPreburn());
+      }
+      result = result && getMetadata()
+          .equals(other.getMetadata());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (hasPreburn()) {
+        hash = (37 * hash) + PREBURN_FIELD_NUMBER;
+        hash = (53 * hash) + getPreburn().hashCode();
+      }
+      hash = (37 * hash) + METADATA_FIELD_NUMBER;
+      hash = (53 * hash) + getMetadata().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.diem.jsonrpc.JsonRpc.PreburnWithMetadata parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnWithMetadata parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnWithMetadata parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnWithMetadata parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnWithMetadata parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnWithMetadata parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnWithMetadata parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnWithMetadata parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnWithMetadata parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.diem.jsonrpc.JsonRpc.PreburnWithMetadata parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.diem.jsonrpc.JsonRpc.PreburnWithMetadata prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code jsonrpc.PreburnWithMetadata}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:jsonrpc.PreburnWithMetadata)
+        com.diem.jsonrpc.JsonRpc.PreburnWithMetadataOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.diem.jsonrpc.JsonRpc.internal_static_jsonrpc_PreburnWithMetadata_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.diem.jsonrpc.JsonRpc.internal_static_jsonrpc_PreburnWithMetadata_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.class, com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.Builder.class);
+      }
+
+      // Construct using com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (preburnBuilder_ == null) {
+          preburn_ = null;
+        } else {
+          preburn_ = null;
+          preburnBuilder_ = null;
+        }
+        metadata_ = "";
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.diem.jsonrpc.JsonRpc.internal_static_jsonrpc_PreburnWithMetadata_descriptor;
+      }
+
+      public com.diem.jsonrpc.JsonRpc.PreburnWithMetadata getDefaultInstanceForType() {
+        return com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.getDefaultInstance();
+      }
+
+      public com.diem.jsonrpc.JsonRpc.PreburnWithMetadata build() {
+        com.diem.jsonrpc.JsonRpc.PreburnWithMetadata result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.diem.jsonrpc.JsonRpc.PreburnWithMetadata buildPartial() {
+        com.diem.jsonrpc.JsonRpc.PreburnWithMetadata result = new com.diem.jsonrpc.JsonRpc.PreburnWithMetadata(this);
+        if (preburnBuilder_ == null) {
+          result.preburn_ = preburn_;
+        } else {
+          result.preburn_ = preburnBuilder_.build();
+        }
+        result.metadata_ = metadata_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.diem.jsonrpc.JsonRpc.PreburnWithMetadata) {
+          return mergeFrom((com.diem.jsonrpc.JsonRpc.PreburnWithMetadata)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.diem.jsonrpc.JsonRpc.PreburnWithMetadata other) {
+        if (other == com.diem.jsonrpc.JsonRpc.PreburnWithMetadata.getDefaultInstance()) return this;
+        if (other.hasPreburn()) {
+          mergePreburn(other.getPreburn());
+        }
+        if (!other.getMetadata().isEmpty()) {
+          metadata_ = other.metadata_;
+          onChanged();
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.diem.jsonrpc.JsonRpc.PreburnWithMetadata parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.diem.jsonrpc.JsonRpc.PreburnWithMetadata) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private com.diem.jsonrpc.JsonRpc.Amount preburn_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.diem.jsonrpc.JsonRpc.Amount, com.diem.jsonrpc.JsonRpc.Amount.Builder, com.diem.jsonrpc.JsonRpc.AmountOrBuilder> preburnBuilder_;
+      /**
+       * <code>optional .jsonrpc.Amount preburn = 1;</code>
+       */
+      public boolean hasPreburn() {
+        return preburnBuilder_ != null || preburn_ != null;
+      }
+      /**
+       * <code>optional .jsonrpc.Amount preburn = 1;</code>
+       */
+      public com.diem.jsonrpc.JsonRpc.Amount getPreburn() {
+        if (preburnBuilder_ == null) {
+          return preburn_ == null ? com.diem.jsonrpc.JsonRpc.Amount.getDefaultInstance() : preburn_;
+        } else {
+          return preburnBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .jsonrpc.Amount preburn = 1;</code>
+       */
+      public Builder setPreburn(com.diem.jsonrpc.JsonRpc.Amount value) {
+        if (preburnBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          preburn_ = value;
+          onChanged();
+        } else {
+          preburnBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .jsonrpc.Amount preburn = 1;</code>
+       */
+      public Builder setPreburn(
+          com.diem.jsonrpc.JsonRpc.Amount.Builder builderForValue) {
+        if (preburnBuilder_ == null) {
+          preburn_ = builderForValue.build();
+          onChanged();
+        } else {
+          preburnBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .jsonrpc.Amount preburn = 1;</code>
+       */
+      public Builder mergePreburn(com.diem.jsonrpc.JsonRpc.Amount value) {
+        if (preburnBuilder_ == null) {
+          if (preburn_ != null) {
+            preburn_ =
+              com.diem.jsonrpc.JsonRpc.Amount.newBuilder(preburn_).mergeFrom(value).buildPartial();
+          } else {
+            preburn_ = value;
+          }
+          onChanged();
+        } else {
+          preburnBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .jsonrpc.Amount preburn = 1;</code>
+       */
+      public Builder clearPreburn() {
+        if (preburnBuilder_ == null) {
+          preburn_ = null;
+          onChanged();
+        } else {
+          preburn_ = null;
+          preburnBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .jsonrpc.Amount preburn = 1;</code>
+       */
+      public com.diem.jsonrpc.JsonRpc.Amount.Builder getPreburnBuilder() {
+        
+        onChanged();
+        return getPreburnFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .jsonrpc.Amount preburn = 1;</code>
+       */
+      public com.diem.jsonrpc.JsonRpc.AmountOrBuilder getPreburnOrBuilder() {
+        if (preburnBuilder_ != null) {
+          return preburnBuilder_.getMessageOrBuilder();
+        } else {
+          return preburn_ == null ?
+              com.diem.jsonrpc.JsonRpc.Amount.getDefaultInstance() : preburn_;
+        }
+      }
+      /**
+       * <code>optional .jsonrpc.Amount preburn = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.diem.jsonrpc.JsonRpc.Amount, com.diem.jsonrpc.JsonRpc.Amount.Builder, com.diem.jsonrpc.JsonRpc.AmountOrBuilder> 
+          getPreburnFieldBuilder() {
+        if (preburnBuilder_ == null) {
+          preburnBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.diem.jsonrpc.JsonRpc.Amount, com.diem.jsonrpc.JsonRpc.Amount.Builder, com.diem.jsonrpc.JsonRpc.AmountOrBuilder>(
+                  getPreburn(),
+                  getParentForChildren(),
+                  isClean());
+          preburn_ = null;
+        }
+        return preburnBuilder_;
+      }
+
+      private java.lang.Object metadata_ = "";
+      /**
+       * <pre>
+       * hex-encoded bytes
+       * </pre>
+       *
+       * <code>optional string metadata = 2;</code>
+       */
+      public java.lang.String getMetadata() {
+        java.lang.Object ref = metadata_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          metadata_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * hex-encoded bytes
+       * </pre>
+       *
+       * <code>optional string metadata = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getMetadataBytes() {
+        java.lang.Object ref = metadata_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          metadata_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * hex-encoded bytes
+       * </pre>
+       *
+       * <code>optional string metadata = 2;</code>
+       */
+      public Builder setMetadata(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        metadata_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * hex-encoded bytes
+       * </pre>
+       *
+       * <code>optional string metadata = 2;</code>
+       */
+      public Builder clearMetadata() {
+        
+        metadata_ = getDefaultInstance().getMetadata();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * hex-encoded bytes
+       * </pre>
+       *
+       * <code>optional string metadata = 2;</code>
+       */
+      public Builder setMetadataBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        metadata_ = value;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:jsonrpc.PreburnWithMetadata)
+    }
+
+    // @@protoc_insertion_point(class_scope:jsonrpc.PreburnWithMetadata)
+    private static final com.diem.jsonrpc.JsonRpc.PreburnWithMetadata DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.diem.jsonrpc.JsonRpc.PreburnWithMetadata();
+    }
+
+    public static com.diem.jsonrpc.JsonRpc.PreburnWithMetadata getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PreburnWithMetadata>
+        PARSER = new com.google.protobuf.AbstractParser<PreburnWithMetadata>() {
+      public PreburnWithMetadata parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new PreburnWithMetadata(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PreburnWithMetadata> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PreburnWithMetadata> getParserForType() {
+      return PARSER;
+    }
+
+    public com.diem.jsonrpc.JsonRpc.PreburnWithMetadata getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -5664,7 +7723,7 @@ public final class JsonRpc {
      * <pre>
      **
      * createaccount event field.
-     * Role id of the created account, see [LIP-2](https://dip.diem.com/dip-2/#move-implementation)
+     * Role id of the created account, see [DIP-2](https://dip.diem.com/dip-2/#move-implementation)
      * for more details
      * </pre>
      *
@@ -5683,6 +7742,28 @@ public final class JsonRpc {
      * <code>optional uint64 committed_timestamp_secs = 20;</code>
      */
     long getCommittedTimestampSecs();
+
+    /**
+     * <pre>
+     **
+     * unknown event field.
+     * Hex-encoded BCS bytes of the event data.
+     * </pre>
+     *
+     * <code>optional string bytes = 21;</code>
+     */
+    java.lang.String getBytes();
+    /**
+     * <pre>
+     **
+     * unknown event field.
+     * Hex-encoded BCS bytes of the event data.
+     * </pre>
+     *
+     * <code>optional string bytes = 21;</code>
+     */
+    com.google.protobuf.ByteString
+        getBytesBytes();
   }
   /**
    * Protobuf type {@code jsonrpc.EventData}
@@ -5714,6 +7795,7 @@ public final class JsonRpc {
       createdAddress_ = "";
       roleId_ = 0L;
       committedTimestampSecs_ = 0L;
+      bytes_ = "";
     }
 
     @java.lang.Override
@@ -5853,6 +7935,12 @@ public final class JsonRpc {
             case 160: {
 
               committedTimestampSecs_ = input.readUInt64();
+              break;
+            }
+            case 170: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              bytes_ = s;
               break;
             }
           }
@@ -6440,7 +8528,7 @@ public final class JsonRpc {
      * <pre>
      **
      * createaccount event field.
-     * Role id of the created account, see [LIP-2](https://dip.diem.com/dip-2/#move-implementation)
+     * Role id of the created account, see [DIP-2](https://dip.diem.com/dip-2/#move-implementation)
      * for more details
      * </pre>
      *
@@ -6464,6 +8552,52 @@ public final class JsonRpc {
      */
     public long getCommittedTimestampSecs() {
       return committedTimestampSecs_;
+    }
+
+    public static final int BYTES_FIELD_NUMBER = 21;
+    private volatile java.lang.Object bytes_;
+    /**
+     * <pre>
+     **
+     * unknown event field.
+     * Hex-encoded BCS bytes of the event data.
+     * </pre>
+     *
+     * <code>optional string bytes = 21;</code>
+     */
+    public java.lang.String getBytes() {
+      java.lang.Object ref = bytes_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        bytes_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     **
+     * unknown event field.
+     * Hex-encoded BCS bytes of the event data.
+     * </pre>
+     *
+     * <code>optional string bytes = 21;</code>
+     */
+    public com.google.protobuf.ByteString
+        getBytesBytes() {
+      java.lang.Object ref = bytes_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        bytes_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -6534,6 +8668,9 @@ public final class JsonRpc {
       }
       if (committedTimestampSecs_ != 0L) {
         output.writeUInt64(20, committedTimestampSecs_);
+      }
+      if (!getBytesBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 21, bytes_);
       }
     }
 
@@ -6607,6 +8744,9 @@ public final class JsonRpc {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(20, committedTimestampSecs_);
       }
+      if (!getBytesBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(21, bytes_);
+      }
       memoizedSize = size;
       return size;
     }
@@ -6666,6 +8806,8 @@ public final class JsonRpc {
           == other.getRoleId());
       result = result && (getCommittedTimestampSecs()
           == other.getCommittedTimestampSecs());
+      result = result && getBytes()
+          .equals(other.getBytes());
       return result;
     }
 
@@ -6723,6 +8865,8 @@ public final class JsonRpc {
       hash = (37 * hash) + COMMITTED_TIMESTAMP_SECS_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getCommittedTimestampSecs());
+      hash = (37 * hash) + BYTES_FIELD_NUMBER;
+      hash = (53 * hash) + getBytes().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -6883,6 +9027,8 @@ public final class JsonRpc {
 
         committedTimestampSecs_ = 0L;
 
+        bytes_ = "";
+
         return this;
       }
 
@@ -6928,6 +9074,7 @@ public final class JsonRpc {
         result.createdAddress_ = createdAddress_;
         result.roleId_ = roleId_;
         result.committedTimestampSecs_ = committedTimestampSecs_;
+        result.bytes_ = bytes_;
         onBuilt();
         return result;
       }
@@ -7036,6 +9183,10 @@ public final class JsonRpc {
         }
         if (other.getCommittedTimestampSecs() != 0L) {
           setCommittedTimestampSecs(other.getCommittedTimestampSecs());
+        }
+        if (!other.getBytes().isEmpty()) {
+          bytes_ = other.bytes_;
+          onChanged();
         }
         onChanged();
         return this;
@@ -8376,7 +10527,7 @@ public final class JsonRpc {
        * <pre>
        **
        * createaccount event field.
-       * Role id of the created account, see [LIP-2](https://dip.diem.com/dip-2/#move-implementation)
+       * Role id of the created account, see [DIP-2](https://dip.diem.com/dip-2/#move-implementation)
        * for more details
        * </pre>
        *
@@ -8389,7 +10540,7 @@ public final class JsonRpc {
        * <pre>
        **
        * createaccount event field.
-       * Role id of the created account, see [LIP-2](https://dip.diem.com/dip-2/#move-implementation)
+       * Role id of the created account, see [DIP-2](https://dip.diem.com/dip-2/#move-implementation)
        * for more details
        * </pre>
        *
@@ -8405,7 +10556,7 @@ public final class JsonRpc {
        * <pre>
        **
        * createaccount event field.
-       * Role id of the created account, see [LIP-2](https://dip.diem.com/dip-2/#move-implementation)
+       * Role id of the created account, see [DIP-2](https://dip.diem.com/dip-2/#move-implementation)
        * for more details
        * </pre>
        *
@@ -8461,6 +10612,105 @@ public final class JsonRpc {
       public Builder clearCommittedTimestampSecs() {
         
         committedTimestampSecs_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object bytes_ = "";
+      /**
+       * <pre>
+       **
+       * unknown event field.
+       * Hex-encoded BCS bytes of the event data.
+       * </pre>
+       *
+       * <code>optional string bytes = 21;</code>
+       */
+      public java.lang.String getBytes() {
+        java.lang.Object ref = bytes_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          bytes_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * unknown event field.
+       * Hex-encoded BCS bytes of the event data.
+       * </pre>
+       *
+       * <code>optional string bytes = 21;</code>
+       */
+      public com.google.protobuf.ByteString
+          getBytesBytes() {
+        java.lang.Object ref = bytes_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          bytes_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * unknown event field.
+       * Hex-encoded BCS bytes of the event data.
+       * </pre>
+       *
+       * <code>optional string bytes = 21;</code>
+       */
+      public Builder setBytes(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        bytes_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * unknown event field.
+       * Hex-encoded BCS bytes of the event data.
+       * </pre>
+       *
+       * <code>optional string bytes = 21;</code>
+       */
+      public Builder clearBytes() {
+        
+        bytes_ = getDefaultInstance().getBytes();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * unknown event field.
+       * Hex-encoded BCS bytes of the event data.
+       * </pre>
+       *
+       * <code>optional string bytes = 21;</code>
+       */
+      public Builder setBytesBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        bytes_ = value;
         onChanged();
         return this;
       }
@@ -9929,7 +12179,7 @@ public final class JsonRpc {
 
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string bytes = 4;</code>
@@ -9937,7 +12187,7 @@ public final class JsonRpc {
     java.lang.String getBytes();
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string bytes = 4;</code>
@@ -10183,7 +12433,7 @@ public final class JsonRpc {
     private volatile java.lang.Object bytes_;
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string bytes = 4;</code>
@@ -10202,7 +12452,7 @@ public final class JsonRpc {
     }
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string bytes = 4;</code>
@@ -10942,7 +13192,7 @@ public final class JsonRpc {
       private java.lang.Object bytes_ = "";
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string bytes = 4;</code>
@@ -10961,7 +13211,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string bytes = 4;</code>
@@ -10981,7 +13231,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string bytes = 4;</code>
@@ -10998,7 +13248,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string bytes = 4;</code>
@@ -11011,7 +13261,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string bytes = 4;</code>
@@ -15707,8 +17957,8 @@ public final class JsonRpc {
     /**
      * <pre>
      **
-     * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
-     * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+     * Name of the script code, see https://github.com/diem/diem/blob/main/language/diem-framework/script_documentation/script_documentation.md for all available script names.
+     * Type is set as "unknown" if script code can't be recognized, "script_function" if it was a script function, or the transaction payload is not a script.
      * It is possible server side does not know the code and the code is valid.
      * </pre>
      *
@@ -15718,8 +17968,8 @@ public final class JsonRpc {
     /**
      * <pre>
      **
-     * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
-     * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+     * Name of the script code, see https://github.com/diem/diem/blob/main/language/diem-framework/script_documentation/script_documentation.md for all available script names.
+     * Type is set as "unknown" if script code can't be recognized, "script_function" if it was a script function, or the transaction payload is not a script.
      * It is possible server side does not know the code and the code is valid.
      * </pre>
      *
@@ -15908,7 +18158,7 @@ public final class JsonRpc {
      * <pre>
      **
      * Metadata of the transaction, LCS serialized hex-encoded string.
-     * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+     * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
      * </pre>
      *
      * <code>optional string metadata = 8;</code>
@@ -15918,7 +18168,7 @@ public final class JsonRpc {
      * <pre>
      **
      * Metadata of the transaction, LCS serialized hex-encoded string.
-     * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+     * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
      * </pre>
      *
      * <code>optional string metadata = 8;</code>
@@ -15930,7 +18180,7 @@ public final class JsonRpc {
      * <pre>
      **
      * Hex-encoded metadata signature, use this to validate metadata.
-     * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+     * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
      * </pre>
      *
      * <code>optional string metadata_signature = 9;</code>
@@ -15940,13 +18190,120 @@ public final class JsonRpc {
      * <pre>
      **
      * Hex-encoded metadata signature, use this to validate metadata.
-     * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+     * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
      * </pre>
      *
      * <code>optional string metadata_signature = 9;</code>
      */
     com.google.protobuf.ByteString
         getMetadataSignatureBytes();
+
+    /**
+     * <pre>
+     **
+     * Hex encoded account address as a string
+     * </pre>
+     *
+     * <code>optional string module_address = 10;</code>
+     */
+    java.lang.String getModuleAddress();
+    /**
+     * <pre>
+     **
+     * Hex encoded account address as a string
+     * </pre>
+     *
+     * <code>optional string module_address = 10;</code>
+     */
+    com.google.protobuf.ByteString
+        getModuleAddressBytes();
+
+    /**
+     * <pre>
+     **
+     * The module name published under `module_address` where the script function
+     * being called is defined.
+     * </pre>
+     *
+     * <code>optional string module_name = 11;</code>
+     */
+    java.lang.String getModuleName();
+    /**
+     * <pre>
+     **
+     * The module name published under `module_address` where the script function
+     * being called is defined.
+     * </pre>
+     *
+     * <code>optional string module_name = 11;</code>
+     */
+    com.google.protobuf.ByteString
+        getModuleNameBytes();
+
+    /**
+     * <pre>
+     **
+     * The name of the function being called, and that is defined in the module
+     * with name `module_name` published under the `module_address` account address.
+     * </pre>
+     *
+     * <code>optional string function_name = 12;</code>
+     */
+    java.lang.String getFunctionName();
+    /**
+     * <pre>
+     **
+     * The name of the function being called, and that is defined in the module
+     * with name `module_name` published under the `module_address` account address.
+     * </pre>
+     *
+     * <code>optional string function_name = 12;</code>
+     */
+    com.google.protobuf.ByteString
+        getFunctionNameBytes();
+
+    /**
+     * <pre>
+     **
+     * List of hex-encoded string of BCS bytes representing script function arguments.
+     * This field does not contain type information.
+     * </pre>
+     *
+     * <code>repeated string arguments_bcs = 13;</code>
+     */
+    java.util.List<java.lang.String>
+        getArgumentsBcsList();
+    /**
+     * <pre>
+     **
+     * List of hex-encoded string of BCS bytes representing script function arguments.
+     * This field does not contain type information.
+     * </pre>
+     *
+     * <code>repeated string arguments_bcs = 13;</code>
+     */
+    int getArgumentsBcsCount();
+    /**
+     * <pre>
+     **
+     * List of hex-encoded string of BCS bytes representing script function arguments.
+     * This field does not contain type information.
+     * </pre>
+     *
+     * <code>repeated string arguments_bcs = 13;</code>
+     */
+    java.lang.String getArgumentsBcs(int index);
+    /**
+     * <pre>
+     **
+     * List of hex-encoded string of BCS bytes representing script function arguments.
+     * This field does not contain type information.
+     * </pre>
+     *
+     * <code>repeated string arguments_bcs = 13;</code>
+     */
+    com.google.protobuf.ByteString
+        getArgumentsBcsBytes(int index);
   }
   /**
    * Protobuf type {@code jsonrpc.Script}
@@ -15969,6 +18326,10 @@ public final class JsonRpc {
       currency_ = "";
       metadata_ = "";
       metadataSignature_ = "";
+      moduleAddress_ = "";
+      moduleName_ = "";
+      functionName_ = "";
+      argumentsBcs_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
 
     @java.lang.Override
@@ -16055,6 +18416,33 @@ public final class JsonRpc {
               metadataSignature_ = s;
               break;
             }
+            case 82: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              moduleAddress_ = s;
+              break;
+            }
+            case 90: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              moduleName_ = s;
+              break;
+            }
+            case 98: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              functionName_ = s;
+              break;
+            }
+            case 106: {
+              java.lang.String s = input.readStringRequireUtf8();
+              if (!((mutable_bitField0_ & 0x00001000) == 0x00001000)) {
+                argumentsBcs_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00001000;
+              }
+              argumentsBcs_.add(s);
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -16068,6 +18456,9 @@ public final class JsonRpc {
         }
         if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
           typeArguments_ = typeArguments_.getUnmodifiableView();
+        }
+        if (((mutable_bitField0_ & 0x00001000) == 0x00001000)) {
+          argumentsBcs_ = argumentsBcs_.getUnmodifiableView();
         }
         makeExtensionsImmutable();
       }
@@ -16090,8 +18481,8 @@ public final class JsonRpc {
     /**
      * <pre>
      **
-     * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
-     * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+     * Name of the script code, see https://github.com/diem/diem/blob/main/language/diem-framework/script_documentation/script_documentation.md for all available script names.
+     * Type is set as "unknown" if script code can't be recognized, "script_function" if it was a script function, or the transaction payload is not a script.
      * It is possible server side does not know the code and the code is valid.
      * </pre>
      *
@@ -16112,8 +18503,8 @@ public final class JsonRpc {
     /**
      * <pre>
      **
-     * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
-     * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+     * Name of the script code, see https://github.com/diem/diem/blob/main/language/diem-framework/script_documentation/script_documentation.md for all available script names.
+     * Type is set as "unknown" if script code can't be recognized, "script_function" if it was a script function, or the transaction payload is not a script.
      * It is possible server side does not know the code and the code is valid.
      * </pre>
      *
@@ -16411,7 +18802,7 @@ public final class JsonRpc {
      * <pre>
      **
      * Metadata of the transaction, LCS serialized hex-encoded string.
-     * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+     * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
      * </pre>
      *
      * <code>optional string metadata = 8;</code>
@@ -16432,7 +18823,7 @@ public final class JsonRpc {
      * <pre>
      **
      * Metadata of the transaction, LCS serialized hex-encoded string.
-     * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+     * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
      * </pre>
      *
      * <code>optional string metadata = 8;</code>
@@ -16457,7 +18848,7 @@ public final class JsonRpc {
      * <pre>
      **
      * Hex-encoded metadata signature, use this to validate metadata.
-     * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+     * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
      * </pre>
      *
      * <code>optional string metadata_signature = 9;</code>
@@ -16478,7 +18869,7 @@ public final class JsonRpc {
      * <pre>
      **
      * Hex-encoded metadata signature, use this to validate metadata.
-     * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+     * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
      * </pre>
      *
      * <code>optional string metadata_signature = 9;</code>
@@ -16495,6 +18886,195 @@ public final class JsonRpc {
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
+    }
+
+    public static final int MODULE_ADDRESS_FIELD_NUMBER = 10;
+    private volatile java.lang.Object moduleAddress_;
+    /**
+     * <pre>
+     **
+     * Hex encoded account address as a string
+     * </pre>
+     *
+     * <code>optional string module_address = 10;</code>
+     */
+    public java.lang.String getModuleAddress() {
+      java.lang.Object ref = moduleAddress_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        moduleAddress_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     **
+     * Hex encoded account address as a string
+     * </pre>
+     *
+     * <code>optional string module_address = 10;</code>
+     */
+    public com.google.protobuf.ByteString
+        getModuleAddressBytes() {
+      java.lang.Object ref = moduleAddress_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        moduleAddress_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MODULE_NAME_FIELD_NUMBER = 11;
+    private volatile java.lang.Object moduleName_;
+    /**
+     * <pre>
+     **
+     * The module name published under `module_address` where the script function
+     * being called is defined.
+     * </pre>
+     *
+     * <code>optional string module_name = 11;</code>
+     */
+    public java.lang.String getModuleName() {
+      java.lang.Object ref = moduleName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        moduleName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     **
+     * The module name published under `module_address` where the script function
+     * being called is defined.
+     * </pre>
+     *
+     * <code>optional string module_name = 11;</code>
+     */
+    public com.google.protobuf.ByteString
+        getModuleNameBytes() {
+      java.lang.Object ref = moduleName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        moduleName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int FUNCTION_NAME_FIELD_NUMBER = 12;
+    private volatile java.lang.Object functionName_;
+    /**
+     * <pre>
+     **
+     * The name of the function being called, and that is defined in the module
+     * with name `module_name` published under the `module_address` account address.
+     * </pre>
+     *
+     * <code>optional string function_name = 12;</code>
+     */
+    public java.lang.String getFunctionName() {
+      java.lang.Object ref = functionName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        functionName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     **
+     * The name of the function being called, and that is defined in the module
+     * with name `module_name` published under the `module_address` account address.
+     * </pre>
+     *
+     * <code>optional string function_name = 12;</code>
+     */
+    public com.google.protobuf.ByteString
+        getFunctionNameBytes() {
+      java.lang.Object ref = functionName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        functionName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ARGUMENTS_BCS_FIELD_NUMBER = 13;
+    private com.google.protobuf.LazyStringList argumentsBcs_;
+    /**
+     * <pre>
+     **
+     * List of hex-encoded string of BCS bytes representing script function arguments.
+     * This field does not contain type information.
+     * </pre>
+     *
+     * <code>repeated string arguments_bcs = 13;</code>
+     */
+    public com.google.protobuf.ProtocolStringList
+        getArgumentsBcsList() {
+      return argumentsBcs_;
+    }
+    /**
+     * <pre>
+     **
+     * List of hex-encoded string of BCS bytes representing script function arguments.
+     * This field does not contain type information.
+     * </pre>
+     *
+     * <code>repeated string arguments_bcs = 13;</code>
+     */
+    public int getArgumentsBcsCount() {
+      return argumentsBcs_.size();
+    }
+    /**
+     * <pre>
+     **
+     * List of hex-encoded string of BCS bytes representing script function arguments.
+     * This field does not contain type information.
+     * </pre>
+     *
+     * <code>repeated string arguments_bcs = 13;</code>
+     */
+    public java.lang.String getArgumentsBcs(int index) {
+      return argumentsBcs_.get(index);
+    }
+    /**
+     * <pre>
+     **
+     * List of hex-encoded string of BCS bytes representing script function arguments.
+     * This field does not contain type information.
+     * </pre>
+     *
+     * <code>repeated string arguments_bcs = 13;</code>
+     */
+    public com.google.protobuf.ByteString
+        getArgumentsBcsBytes(int index) {
+      return argumentsBcs_.getByteString(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -16535,6 +19115,18 @@ public final class JsonRpc {
       }
       if (!getMetadataSignatureBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 9, metadataSignature_);
+      }
+      if (!getModuleAddressBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 10, moduleAddress_);
+      }
+      if (!getModuleNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 11, moduleName_);
+      }
+      if (!getFunctionNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 12, functionName_);
+      }
+      for (int i = 0; i < argumentsBcs_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 13, argumentsBcs_.getRaw(i));
       }
     }
 
@@ -16581,6 +19173,23 @@ public final class JsonRpc {
       if (!getMetadataSignatureBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, metadataSignature_);
       }
+      if (!getModuleAddressBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, moduleAddress_);
+      }
+      if (!getModuleNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, moduleName_);
+      }
+      if (!getFunctionNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(12, functionName_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < argumentsBcs_.size(); i++) {
+          dataSize += computeStringSizeNoTag(argumentsBcs_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getArgumentsBcsList().size();
+      }
       memoizedSize = size;
       return size;
     }
@@ -16615,6 +19224,14 @@ public final class JsonRpc {
           .equals(other.getMetadata());
       result = result && getMetadataSignature()
           .equals(other.getMetadataSignature());
+      result = result && getModuleAddress()
+          .equals(other.getModuleAddress());
+      result = result && getModuleName()
+          .equals(other.getModuleName());
+      result = result && getFunctionName()
+          .equals(other.getFunctionName());
+      result = result && getArgumentsBcsList()
+          .equals(other.getArgumentsBcsList());
       return result;
     }
 
@@ -16648,6 +19265,16 @@ public final class JsonRpc {
       hash = (53 * hash) + getMetadata().hashCode();
       hash = (37 * hash) + METADATA_SIGNATURE_FIELD_NUMBER;
       hash = (53 * hash) + getMetadataSignature().hashCode();
+      hash = (37 * hash) + MODULE_ADDRESS_FIELD_NUMBER;
+      hash = (53 * hash) + getModuleAddress().hashCode();
+      hash = (37 * hash) + MODULE_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getModuleName().hashCode();
+      hash = (37 * hash) + FUNCTION_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getFunctionName().hashCode();
+      if (getArgumentsBcsCount() > 0) {
+        hash = (37 * hash) + ARGUMENTS_BCS_FIELD_NUMBER;
+        hash = (53 * hash) + getArgumentsBcsList().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -16784,6 +19411,14 @@ public final class JsonRpc {
 
         metadataSignature_ = "";
 
+        moduleAddress_ = "";
+
+        moduleName_ = "";
+
+        functionName_ = "";
+
+        argumentsBcs_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00001000);
         return this;
       }
 
@@ -16825,6 +19460,14 @@ public final class JsonRpc {
         result.currency_ = currency_;
         result.metadata_ = metadata_;
         result.metadataSignature_ = metadataSignature_;
+        result.moduleAddress_ = moduleAddress_;
+        result.moduleName_ = moduleName_;
+        result.functionName_ = functionName_;
+        if (((bitField0_ & 0x00001000) == 0x00001000)) {
+          argumentsBcs_ = argumentsBcs_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00001000);
+        }
+        result.argumentsBcs_ = argumentsBcs_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -16914,6 +19557,28 @@ public final class JsonRpc {
           metadataSignature_ = other.metadataSignature_;
           onChanged();
         }
+        if (!other.getModuleAddress().isEmpty()) {
+          moduleAddress_ = other.moduleAddress_;
+          onChanged();
+        }
+        if (!other.getModuleName().isEmpty()) {
+          moduleName_ = other.moduleName_;
+          onChanged();
+        }
+        if (!other.getFunctionName().isEmpty()) {
+          functionName_ = other.functionName_;
+          onChanged();
+        }
+        if (!other.argumentsBcs_.isEmpty()) {
+          if (argumentsBcs_.isEmpty()) {
+            argumentsBcs_ = other.argumentsBcs_;
+            bitField0_ = (bitField0_ & ~0x00001000);
+          } else {
+            ensureArgumentsBcsIsMutable();
+            argumentsBcs_.addAll(other.argumentsBcs_);
+          }
+          onChanged();
+        }
         onChanged();
         return this;
       }
@@ -16945,8 +19610,8 @@ public final class JsonRpc {
       /**
        * <pre>
        **
-       * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
-       * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+       * Name of the script code, see https://github.com/diem/diem/blob/main/language/diem-framework/script_documentation/script_documentation.md for all available script names.
+       * Type is set as "unknown" if script code can't be recognized, "script_function" if it was a script function, or the transaction payload is not a script.
        * It is possible server side does not know the code and the code is valid.
        * </pre>
        *
@@ -16967,8 +19632,8 @@ public final class JsonRpc {
       /**
        * <pre>
        **
-       * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
-       * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+       * Name of the script code, see https://github.com/diem/diem/blob/main/language/diem-framework/script_documentation/script_documentation.md for all available script names.
+       * Type is set as "unknown" if script code can't be recognized, "script_function" if it was a script function, or the transaction payload is not a script.
        * It is possible server side does not know the code and the code is valid.
        * </pre>
        *
@@ -16990,8 +19655,8 @@ public final class JsonRpc {
       /**
        * <pre>
        **
-       * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
-       * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+       * Name of the script code, see https://github.com/diem/diem/blob/main/language/diem-framework/script_documentation/script_documentation.md for all available script names.
+       * Type is set as "unknown" if script code can't be recognized, "script_function" if it was a script function, or the transaction payload is not a script.
        * It is possible server side does not know the code and the code is valid.
        * </pre>
        *
@@ -17010,8 +19675,8 @@ public final class JsonRpc {
       /**
        * <pre>
        **
-       * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
-       * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+       * Name of the script code, see https://github.com/diem/diem/blob/main/language/diem-framework/script_documentation/script_documentation.md for all available script names.
+       * Type is set as "unknown" if script code can't be recognized, "script_function" if it was a script function, or the transaction payload is not a script.
        * It is possible server side does not know the code and the code is valid.
        * </pre>
        *
@@ -17026,8 +19691,8 @@ public final class JsonRpc {
       /**
        * <pre>
        **
-       * Name of the script code, see https://github.com/diem/diem/blob/master/language/stdlib/transaction_scripts/doc/transaction_script_documentation.md for all available script names.
-       * Type is set as "unknown" if script code can't be recognized, or transaction payload is not a script.
+       * Name of the script code, see https://github.com/diem/diem/blob/main/language/diem-framework/script_documentation/script_documentation.md for all available script names.
+       * Type is set as "unknown" if script code can't be recognized, "script_function" if it was a script function, or the transaction payload is not a script.
        * It is possible server side does not know the code and the code is valid.
        * </pre>
        *
@@ -17714,7 +20379,7 @@ public final class JsonRpc {
        * <pre>
        **
        * Metadata of the transaction, LCS serialized hex-encoded string.
-       * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+       * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
        * </pre>
        *
        * <code>optional string metadata = 8;</code>
@@ -17735,7 +20400,7 @@ public final class JsonRpc {
        * <pre>
        **
        * Metadata of the transaction, LCS serialized hex-encoded string.
-       * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+       * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
        * </pre>
        *
        * <code>optional string metadata = 8;</code>
@@ -17757,7 +20422,7 @@ public final class JsonRpc {
        * <pre>
        **
        * Metadata of the transaction, LCS serialized hex-encoded string.
-       * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+       * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
        * </pre>
        *
        * <code>optional string metadata = 8;</code>
@@ -17776,7 +20441,7 @@ public final class JsonRpc {
        * <pre>
        **
        * Metadata of the transaction, LCS serialized hex-encoded string.
-       * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+       * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
        * </pre>
        *
        * <code>optional string metadata = 8;</code>
@@ -17791,7 +20456,7 @@ public final class JsonRpc {
        * <pre>
        **
        * Metadata of the transaction, LCS serialized hex-encoded string.
-       * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+       * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
        * </pre>
        *
        * <code>optional string metadata = 8;</code>
@@ -17813,7 +20478,7 @@ public final class JsonRpc {
        * <pre>
        **
        * Hex-encoded metadata signature, use this to validate metadata.
-       * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+       * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
        * </pre>
        *
        * <code>optional string metadata_signature = 9;</code>
@@ -17834,7 +20499,7 @@ public final class JsonRpc {
        * <pre>
        **
        * Hex-encoded metadata signature, use this to validate metadata.
-       * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+       * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
        * </pre>
        *
        * <code>optional string metadata_signature = 9;</code>
@@ -17856,7 +20521,7 @@ public final class JsonRpc {
        * <pre>
        **
        * Hex-encoded metadata signature, use this to validate metadata.
-       * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+       * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
        * </pre>
        *
        * <code>optional string metadata_signature = 9;</code>
@@ -17875,7 +20540,7 @@ public final class JsonRpc {
        * <pre>
        **
        * Hex-encoded metadata signature, use this to validate metadata.
-       * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+       * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
        * </pre>
        *
        * <code>optional string metadata_signature = 9;</code>
@@ -17890,7 +20555,7 @@ public final class JsonRpc {
        * <pre>
        **
        * Hex-encoded metadata signature, use this to validate metadata.
-       * See [LIP-4](https://dip.diem.com/dip-4/) for more details.
+       * See [DIP-4](https://dip.diem.com/dip-4/) for more details.
        * </pre>
        *
        * <code>optional string metadata_signature = 9;</code>
@@ -17903,6 +20568,446 @@ public final class JsonRpc {
   checkByteStringIsUtf8(value);
         
         metadataSignature_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object moduleAddress_ = "";
+      /**
+       * <pre>
+       **
+       * Hex encoded account address as a string
+       * </pre>
+       *
+       * <code>optional string module_address = 10;</code>
+       */
+      public java.lang.String getModuleAddress() {
+        java.lang.Object ref = moduleAddress_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          moduleAddress_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * Hex encoded account address as a string
+       * </pre>
+       *
+       * <code>optional string module_address = 10;</code>
+       */
+      public com.google.protobuf.ByteString
+          getModuleAddressBytes() {
+        java.lang.Object ref = moduleAddress_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          moduleAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * Hex encoded account address as a string
+       * </pre>
+       *
+       * <code>optional string module_address = 10;</code>
+       */
+      public Builder setModuleAddress(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        moduleAddress_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * Hex encoded account address as a string
+       * </pre>
+       *
+       * <code>optional string module_address = 10;</code>
+       */
+      public Builder clearModuleAddress() {
+        
+        moduleAddress_ = getDefaultInstance().getModuleAddress();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * Hex encoded account address as a string
+       * </pre>
+       *
+       * <code>optional string module_address = 10;</code>
+       */
+      public Builder setModuleAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        moduleAddress_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object moduleName_ = "";
+      /**
+       * <pre>
+       **
+       * The module name published under `module_address` where the script function
+       * being called is defined.
+       * </pre>
+       *
+       * <code>optional string module_name = 11;</code>
+       */
+      public java.lang.String getModuleName() {
+        java.lang.Object ref = moduleName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          moduleName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * The module name published under `module_address` where the script function
+       * being called is defined.
+       * </pre>
+       *
+       * <code>optional string module_name = 11;</code>
+       */
+      public com.google.protobuf.ByteString
+          getModuleNameBytes() {
+        java.lang.Object ref = moduleName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          moduleName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * The module name published under `module_address` where the script function
+       * being called is defined.
+       * </pre>
+       *
+       * <code>optional string module_name = 11;</code>
+       */
+      public Builder setModuleName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        moduleName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * The module name published under `module_address` where the script function
+       * being called is defined.
+       * </pre>
+       *
+       * <code>optional string module_name = 11;</code>
+       */
+      public Builder clearModuleName() {
+        
+        moduleName_ = getDefaultInstance().getModuleName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * The module name published under `module_address` where the script function
+       * being called is defined.
+       * </pre>
+       *
+       * <code>optional string module_name = 11;</code>
+       */
+      public Builder setModuleNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        moduleName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object functionName_ = "";
+      /**
+       * <pre>
+       **
+       * The name of the function being called, and that is defined in the module
+       * with name `module_name` published under the `module_address` account address.
+       * </pre>
+       *
+       * <code>optional string function_name = 12;</code>
+       */
+      public java.lang.String getFunctionName() {
+        java.lang.Object ref = functionName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          functionName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * The name of the function being called, and that is defined in the module
+       * with name `module_name` published under the `module_address` account address.
+       * </pre>
+       *
+       * <code>optional string function_name = 12;</code>
+       */
+      public com.google.protobuf.ByteString
+          getFunctionNameBytes() {
+        java.lang.Object ref = functionName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          functionName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       **
+       * The name of the function being called, and that is defined in the module
+       * with name `module_name` published under the `module_address` account address.
+       * </pre>
+       *
+       * <code>optional string function_name = 12;</code>
+       */
+      public Builder setFunctionName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        functionName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * The name of the function being called, and that is defined in the module
+       * with name `module_name` published under the `module_address` account address.
+       * </pre>
+       *
+       * <code>optional string function_name = 12;</code>
+       */
+      public Builder clearFunctionName() {
+        
+        functionName_ = getDefaultInstance().getFunctionName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * The name of the function being called, and that is defined in the module
+       * with name `module_name` published under the `module_address` account address.
+       * </pre>
+       *
+       * <code>optional string function_name = 12;</code>
+       */
+      public Builder setFunctionNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        functionName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringList argumentsBcs_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureArgumentsBcsIsMutable() {
+        if (!((bitField0_ & 0x00001000) == 0x00001000)) {
+          argumentsBcs_ = new com.google.protobuf.LazyStringArrayList(argumentsBcs_);
+          bitField0_ |= 0x00001000;
+         }
+      }
+      /**
+       * <pre>
+       **
+       * List of hex-encoded string of BCS bytes representing script function arguments.
+       * This field does not contain type information.
+       * </pre>
+       *
+       * <code>repeated string arguments_bcs = 13;</code>
+       */
+      public com.google.protobuf.ProtocolStringList
+          getArgumentsBcsList() {
+        return argumentsBcs_.getUnmodifiableView();
+      }
+      /**
+       * <pre>
+       **
+       * List of hex-encoded string of BCS bytes representing script function arguments.
+       * This field does not contain type information.
+       * </pre>
+       *
+       * <code>repeated string arguments_bcs = 13;</code>
+       */
+      public int getArgumentsBcsCount() {
+        return argumentsBcs_.size();
+      }
+      /**
+       * <pre>
+       **
+       * List of hex-encoded string of BCS bytes representing script function arguments.
+       * This field does not contain type information.
+       * </pre>
+       *
+       * <code>repeated string arguments_bcs = 13;</code>
+       */
+      public java.lang.String getArgumentsBcs(int index) {
+        return argumentsBcs_.get(index);
+      }
+      /**
+       * <pre>
+       **
+       * List of hex-encoded string of BCS bytes representing script function arguments.
+       * This field does not contain type information.
+       * </pre>
+       *
+       * <code>repeated string arguments_bcs = 13;</code>
+       */
+      public com.google.protobuf.ByteString
+          getArgumentsBcsBytes(int index) {
+        return argumentsBcs_.getByteString(index);
+      }
+      /**
+       * <pre>
+       **
+       * List of hex-encoded string of BCS bytes representing script function arguments.
+       * This field does not contain type information.
+       * </pre>
+       *
+       * <code>repeated string arguments_bcs = 13;</code>
+       */
+      public Builder setArgumentsBcs(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureArgumentsBcsIsMutable();
+        argumentsBcs_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of hex-encoded string of BCS bytes representing script function arguments.
+       * This field does not contain type information.
+       * </pre>
+       *
+       * <code>repeated string arguments_bcs = 13;</code>
+       */
+      public Builder addArgumentsBcs(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureArgumentsBcsIsMutable();
+        argumentsBcs_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of hex-encoded string of BCS bytes representing script function arguments.
+       * This field does not contain type information.
+       * </pre>
+       *
+       * <code>repeated string arguments_bcs = 13;</code>
+       */
+      public Builder addAllArgumentsBcs(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureArgumentsBcsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, argumentsBcs_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of hex-encoded string of BCS bytes representing script function arguments.
+       * This field does not contain type information.
+       * </pre>
+       *
+       * <code>repeated string arguments_bcs = 13;</code>
+       */
+      public Builder clearArgumentsBcs() {
+        argumentsBcs_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00001000);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       **
+       * List of hex-encoded string of BCS bytes representing script function arguments.
+       * This field does not contain type information.
+       * </pre>
+       *
+       * <code>repeated string arguments_bcs = 13;</code>
+       */
+      public Builder addArgumentsBcsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        ensureArgumentsBcsIsMutable();
+        argumentsBcs_.add(value);
         onChanged();
         return this;
       }
@@ -19523,7 +22628,7 @@ public final class JsonRpc {
 
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string ledger_info_with_signatures = 1;</code>
@@ -19531,7 +22636,7 @@ public final class JsonRpc {
     java.lang.String getLedgerInfoWithSignatures();
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string ledger_info_with_signatures = 1;</code>
@@ -19541,7 +22646,7 @@ public final class JsonRpc {
 
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string epoch_change_proof = 2;</code>
@@ -19549,7 +22654,7 @@ public final class JsonRpc {
     java.lang.String getEpochChangeProof();
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string epoch_change_proof = 2;</code>
@@ -19559,7 +22664,7 @@ public final class JsonRpc {
 
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string ledger_consistency_proof = 3;</code>
@@ -19567,7 +22672,7 @@ public final class JsonRpc {
     java.lang.String getLedgerConsistencyProof();
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string ledger_consistency_proof = 3;</code>
@@ -19576,6 +22681,11 @@ public final class JsonRpc {
         getLedgerConsistencyProofBytes();
   }
   /**
+   * <pre>
+   **
+   * This is for experimental API get_state_proof response. It is unstable and likely to be changed.
+   * </pre>
+   *
    * Protobuf type {@code jsonrpc.StateProof}
    */
   public  static final class StateProof extends
@@ -19662,7 +22772,7 @@ public final class JsonRpc {
     private volatile java.lang.Object ledgerInfoWithSignatures_;
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string ledger_info_with_signatures = 1;</code>
@@ -19681,7 +22791,7 @@ public final class JsonRpc {
     }
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string ledger_info_with_signatures = 1;</code>
@@ -19704,7 +22814,7 @@ public final class JsonRpc {
     private volatile java.lang.Object epochChangeProof_;
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string epoch_change_proof = 2;</code>
@@ -19723,7 +22833,7 @@ public final class JsonRpc {
     }
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string epoch_change_proof = 2;</code>
@@ -19746,7 +22856,7 @@ public final class JsonRpc {
     private volatile java.lang.Object ledgerConsistencyProof_;
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string ledger_consistency_proof = 3;</code>
@@ -19765,7 +22875,7 @@ public final class JsonRpc {
     }
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string ledger_consistency_proof = 3;</code>
@@ -19942,6 +23052,11 @@ public final class JsonRpc {
       return builder;
     }
     /**
+     * <pre>
+     **
+     * This is for experimental API get_state_proof response. It is unstable and likely to be changed.
+     * </pre>
+     *
      * Protobuf type {@code jsonrpc.StateProof}
      */
     public static final class Builder extends
@@ -20090,7 +23205,7 @@ public final class JsonRpc {
       private java.lang.Object ledgerInfoWithSignatures_ = "";
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string ledger_info_with_signatures = 1;</code>
@@ -20109,7 +23224,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string ledger_info_with_signatures = 1;</code>
@@ -20129,7 +23244,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string ledger_info_with_signatures = 1;</code>
@@ -20146,7 +23261,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string ledger_info_with_signatures = 1;</code>
@@ -20159,7 +23274,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string ledger_info_with_signatures = 1;</code>
@@ -20179,7 +23294,7 @@ public final class JsonRpc {
       private java.lang.Object epochChangeProof_ = "";
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string epoch_change_proof = 2;</code>
@@ -20198,7 +23313,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string epoch_change_proof = 2;</code>
@@ -20218,7 +23333,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string epoch_change_proof = 2;</code>
@@ -20235,7 +23350,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string epoch_change_proof = 2;</code>
@@ -20248,7 +23363,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string epoch_change_proof = 2;</code>
@@ -20268,7 +23383,7 @@ public final class JsonRpc {
       private java.lang.Object ledgerConsistencyProof_ = "";
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string ledger_consistency_proof = 3;</code>
@@ -20287,7 +23402,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string ledger_consistency_proof = 3;</code>
@@ -20307,7 +23422,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string ledger_consistency_proof = 3;</code>
@@ -20324,7 +23439,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string ledger_consistency_proof = 3;</code>
@@ -20337,7 +23452,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string ledger_consistency_proof = 3;</code>
@@ -20413,7 +23528,7 @@ public final class JsonRpc {
 
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string blob = 2;</code>
@@ -20421,7 +23536,7 @@ public final class JsonRpc {
     java.lang.String getBlob();
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string blob = 2;</code>
@@ -20431,7 +23546,7 @@ public final class JsonRpc {
 
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional .jsonrpc.AccountStateProof proof = 3;</code>
@@ -20439,7 +23554,7 @@ public final class JsonRpc {
     boolean hasProof();
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional .jsonrpc.AccountStateProof proof = 3;</code>
@@ -20447,7 +23562,7 @@ public final class JsonRpc {
     com.diem.jsonrpc.JsonRpc.AccountStateProof getProof();
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional .jsonrpc.AccountStateProof proof = 3;</code>
@@ -20455,6 +23570,11 @@ public final class JsonRpc {
     com.diem.jsonrpc.JsonRpc.AccountStateProofOrBuilder getProofOrBuilder();
   }
   /**
+   * <pre>
+   **
+   * This is for experimental API get_account_state_with_proof response. It is unstable and likely to be changed.
+   * </pre>
+   *
    * Protobuf type {@code jsonrpc.AccountStateWithProof}
    */
   public  static final class AccountStateWithProof extends
@@ -20555,7 +23675,7 @@ public final class JsonRpc {
     private volatile java.lang.Object blob_;
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string blob = 2;</code>
@@ -20574,7 +23694,7 @@ public final class JsonRpc {
     }
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string blob = 2;</code>
@@ -20597,7 +23717,7 @@ public final class JsonRpc {
     private com.diem.jsonrpc.JsonRpc.AccountStateProof proof_;
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional .jsonrpc.AccountStateProof proof = 3;</code>
@@ -20607,7 +23727,7 @@ public final class JsonRpc {
     }
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional .jsonrpc.AccountStateProof proof = 3;</code>
@@ -20617,7 +23737,7 @@ public final class JsonRpc {
     }
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional .jsonrpc.AccountStateProof proof = 3;</code>
@@ -20792,6 +23912,11 @@ public final class JsonRpc {
       return builder;
     }
     /**
+     * <pre>
+     **
+     * This is for experimental API get_account_state_with_proof response. It is unstable and likely to be changed.
+     * </pre>
+     *
      * Protobuf type {@code jsonrpc.AccountStateWithProof}
      */
     public static final class Builder extends
@@ -20972,7 +24097,7 @@ public final class JsonRpc {
       private java.lang.Object blob_ = "";
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string blob = 2;</code>
@@ -20991,7 +24116,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string blob = 2;</code>
@@ -21011,7 +24136,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string blob = 2;</code>
@@ -21028,7 +24153,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string blob = 2;</code>
@@ -21041,7 +24166,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string blob = 2;</code>
@@ -21063,7 +24188,7 @@ public final class JsonRpc {
           com.diem.jsonrpc.JsonRpc.AccountStateProof, com.diem.jsonrpc.JsonRpc.AccountStateProof.Builder, com.diem.jsonrpc.JsonRpc.AccountStateProofOrBuilder> proofBuilder_;
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional .jsonrpc.AccountStateProof proof = 3;</code>
@@ -21073,7 +24198,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional .jsonrpc.AccountStateProof proof = 3;</code>
@@ -21087,7 +24212,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional .jsonrpc.AccountStateProof proof = 3;</code>
@@ -21107,7 +24232,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional .jsonrpc.AccountStateProof proof = 3;</code>
@@ -21125,7 +24250,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional .jsonrpc.AccountStateProof proof = 3;</code>
@@ -21147,7 +24272,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional .jsonrpc.AccountStateProof proof = 3;</code>
@@ -21165,7 +24290,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional .jsonrpc.AccountStateProof proof = 3;</code>
@@ -21177,7 +24302,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional .jsonrpc.AccountStateProof proof = 3;</code>
@@ -21192,7 +24317,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional .jsonrpc.AccountStateProof proof = 3;</code>
@@ -21265,7 +24390,7 @@ public final class JsonRpc {
 
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string ledger_info_to_transaction_info_proof = 1;</code>
@@ -21273,7 +24398,7 @@ public final class JsonRpc {
     java.lang.String getLedgerInfoToTransactionInfoProof();
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string ledger_info_to_transaction_info_proof = 1;</code>
@@ -21283,7 +24408,7 @@ public final class JsonRpc {
 
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string transaction_info = 2;</code>
@@ -21291,7 +24416,7 @@ public final class JsonRpc {
     java.lang.String getTransactionInfo();
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string transaction_info = 2;</code>
@@ -21301,7 +24426,7 @@ public final class JsonRpc {
 
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string transaction_info_to_account_proof = 3;</code>
@@ -21309,7 +24434,7 @@ public final class JsonRpc {
     java.lang.String getTransactionInfoToAccountProof();
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string transaction_info_to_account_proof = 3;</code>
@@ -21318,6 +24443,11 @@ public final class JsonRpc {
         getTransactionInfoToAccountProofBytes();
   }
   /**
+   * <pre>
+   **
+   * This is for experimental API get_account_state_with_proof response. It is unstable and likely to be changed.
+   * </pre>
+   *
    * Protobuf type {@code jsonrpc.AccountStateProof}
    */
   public  static final class AccountStateProof extends
@@ -21404,7 +24534,7 @@ public final class JsonRpc {
     private volatile java.lang.Object ledgerInfoToTransactionInfoProof_;
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string ledger_info_to_transaction_info_proof = 1;</code>
@@ -21423,7 +24553,7 @@ public final class JsonRpc {
     }
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string ledger_info_to_transaction_info_proof = 1;</code>
@@ -21446,7 +24576,7 @@ public final class JsonRpc {
     private volatile java.lang.Object transactionInfo_;
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string transaction_info = 2;</code>
@@ -21465,7 +24595,7 @@ public final class JsonRpc {
     }
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string transaction_info = 2;</code>
@@ -21488,7 +24618,7 @@ public final class JsonRpc {
     private volatile java.lang.Object transactionInfoToAccountProof_;
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string transaction_info_to_account_proof = 3;</code>
@@ -21507,7 +24637,7 @@ public final class JsonRpc {
     }
     /**
      * <pre>
-     * hex-encoded lcs bytes
+     * hex-encoded bcs bytes
      * </pre>
      *
      * <code>optional string transaction_info_to_account_proof = 3;</code>
@@ -21684,6 +24814,11 @@ public final class JsonRpc {
       return builder;
     }
     /**
+     * <pre>
+     **
+     * This is for experimental API get_account_state_with_proof response. It is unstable and likely to be changed.
+     * </pre>
+     *
      * Protobuf type {@code jsonrpc.AccountStateProof}
      */
     public static final class Builder extends
@@ -21832,7 +24967,7 @@ public final class JsonRpc {
       private java.lang.Object ledgerInfoToTransactionInfoProof_ = "";
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string ledger_info_to_transaction_info_proof = 1;</code>
@@ -21851,7 +24986,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string ledger_info_to_transaction_info_proof = 1;</code>
@@ -21871,7 +25006,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string ledger_info_to_transaction_info_proof = 1;</code>
@@ -21888,7 +25023,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string ledger_info_to_transaction_info_proof = 1;</code>
@@ -21901,7 +25036,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string ledger_info_to_transaction_info_proof = 1;</code>
@@ -21921,7 +25056,7 @@ public final class JsonRpc {
       private java.lang.Object transactionInfo_ = "";
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string transaction_info = 2;</code>
@@ -21940,7 +25075,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string transaction_info = 2;</code>
@@ -21960,7 +25095,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string transaction_info = 2;</code>
@@ -21977,7 +25112,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string transaction_info = 2;</code>
@@ -21990,7 +25125,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string transaction_info = 2;</code>
@@ -22010,7 +25145,7 @@ public final class JsonRpc {
       private java.lang.Object transactionInfoToAccountProof_ = "";
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string transaction_info_to_account_proof = 3;</code>
@@ -22029,7 +25164,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string transaction_info_to_account_proof = 3;</code>
@@ -22049,7 +25184,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string transaction_info_to_account_proof = 3;</code>
@@ -22066,7 +25201,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string transaction_info_to_account_proof = 3;</code>
@@ -22079,7 +25214,7 @@ public final class JsonRpc {
       }
       /**
        * <pre>
-       * hex-encoded lcs bytes
+       * hex-encoded bcs bytes
        * </pre>
        *
        * <code>optional string transaction_info_to_account_proof = 3;</code>
@@ -22160,6 +25295,16 @@ public final class JsonRpc {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_jsonrpc_AccountRole_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_jsonrpc_PreburnQueue_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_jsonrpc_PreburnQueue_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_jsonrpc_PreburnWithMetadata_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_jsonrpc_PreburnWithMetadata_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_jsonrpc_Event_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -22229,7 +25374,7 @@ public final class JsonRpc {
   static {
     java.lang.String[] descriptorData = {
       "\n\rjsonrpc.proto\022\007jsonrpc\"*\n\006Amount\022\016\n\006am" +
-      "ount\030\001 \001(\004\022\020\n\010currency\030\002 \001(\t\"\343\003\n\007Account" +
+      "ount\030\001 \001(\004\022\020\n\010currency\030\002 \001(\t\"\364\003\n\007Account" +
       "\022\017\n\007address\030\001 \001(\t\022!\n\010balances\030\002 \003(\0132\017.js" +
       "onrpc.Amount\022(\n\017sequence_number\030\003 \001(\004R\017s" +
       "equence_number\022.\n\022authentication_key\030\004 \001" +
@@ -22241,108 +25386,118 @@ public final class JsonRpc {
       "gated_withdrawal_capability\030\010 \001(\010R\037deleg" +
       "ated_withdrawal_capability\0222\n\tis_frozen\030" +
       "\t \001(\010R\037delegated_withdrawal_capability\022\"" +
-      "\n\004role\030\n \001(\0132\024.jsonrpc.AccountRole\"\214\004\n\013A" +
-      "ccountRole\022\014\n\004type\030\001 \001(\t\0220\n\023parent_vasp_" +
-      "address\030\002 \001(\tR\023parent_vasp_address\022\036\n\nhu" +
-      "man_name\030\003 \001(\tR\nhuman_name\022\032\n\010base_url\030\004" +
-      " \001(\tR\010base_url\022(\n\017expiration_time\030\005 \001(\004R" +
-      "\017expiration_time\022&\n\016compliance_key\030\006 \001(\t" +
-      "R\016compliance_key\022N\n\"compliance_key_rotat",
-      "ion_events_key\030\007 \001(\tR\"compliance_key_rot" +
-      "ation_events_key\022B\n\034base_url_rotation_ev" +
-      "ents_key\030\010 \001(\tR\034base_url_rotation_events" +
-      "_key\022\"\n\014num_children\030\t \001(\004R\014num_children" +
-      "\022:\n\030received_mint_events_key\030\n \001(\tR\030rece" +
-      "ived_mint_events_key\022;\n\020preburn_balances" +
-      "\030\013 \003(\0132\017.jsonrpc.AmountR\020preburn_balance" +
-      "s\"\222\001\n\005Event\022\013\n\003key\030\001 \001(\t\022(\n\017sequence_num" +
-      "ber\030\002 \001(\004R\017sequence_number\0220\n\023transactio" +
-      "n_version\030\003 \001(\004R\023transaction_version\022 \n\004",
-      "data\030\004 \001(\0132\022.jsonrpc.EventData\"\230\005\n\tEvent" +
-      "Data\022\014\n\004type\030\001 \001(\t\022\037\n\006amount\030\002 \001(\0132\017.jso" +
-      "nrpc.Amount\022(\n\017preburn_address\030\003 \001(\tR\017pr" +
-      "eburn_address\022$\n\rcurrency_code\030\004 \001(\tR\rcu" +
-      "rrency_code\022:\n\030new_to_xdx_exchange_rate\030" +
-      "\005 \001(\002R\030new_to_xdx_exchange_rate\022\016\n\006sende" +
-      "r\030\006 \001(\t\022\020\n\010receiver\030\007 \001(\t\022\020\n\010metadata\030\010 " +
-      "\001(\t\022\r\n\005epoch\030\n \001(\004\022\r\n\005round\030\013 \001(\004\022\020\n\010pro" +
-      "poser\030\014 \001(\t\022$\n\rproposed_time\030\r \001(\004R\rprop" +
-      "osed_time\0220\n\023destination_address\030\016 \001(\tR\023",
-      "destination_address\022<\n\031new_compliance_pu" +
-      "blic_key\030\017 \001(\tR\031new_compliance_public_ke" +
-      "y\022\"\n\014new_base_url\030\020 \001(\tR\014new_base_url\0222\n" +
-      "\024time_rotated_seconds\030\021 \001(\004R\024time_rotate" +
-      "d_seconds\022(\n\017created_address\030\022 \001(\tR\017crea" +
-      "ted_address\022\030\n\007role_id\030\023 \001(\004R\007role_id\022:\n" +
-      "\030committed_timestamp_secs\030\024 \001(\004R\030committ" +
-      "ed_timestamp_secs\"\322\002\n\010Metadata\022\017\n\007versio" +
-      "n\030\001 \001(\004\022\021\n\ttimestamp\030\002 \001(\004\022\032\n\010chain_id\030\003" +
-      " \001(\rR\010chain_id\0226\n\026script_hash_allow_list",
-      "\030\004 \003(\tR\026script_hash_allow_list\022<\n\031module" +
-      "_publishing_allowed\030\005 \001(\010R\031module_publis" +
-      "hing_allowed\022\"\n\014diem_version\030\006 \001(\004R\014diem" +
-      "_version\0224\n\025accumulator_root_hash\030\007 \001(\tR" +
-      "\025accumulator_root_hash\0226\n\026dual_attestati" +
-      "on_limit\030\010 \001(\004R\026dual_attestation_limit\"\327" +
-      "\001\n\013Transaction\022\017\n\007version\030\001 \001(\004\022-\n\013trans" +
-      "action\030\002 \001(\0132\030.jsonrpc.TransactionData\022\014" +
-      "\n\004hash\030\003 \001(\t\022\r\n\005bytes\030\004 \001(\t\022\036\n\006events\030\005 " +
-      "\003(\0132\016.jsonrpc.Event\022/\n\tvm_status\030\006 \001(\0132\021",
-      ".jsonrpc.VMStatusR\tvm_status\022\032\n\010gas_used" +
-      "\030\007 \001(\004R\010gas_used\"\235\001\n\025MoveAbortExplainati" +
-      "on\022\020\n\010category\030\001 \001(\t\0222\n\024category_descrip" +
-      "tion\030\002 \001(\tR\024category_description\022\016\n\006reas" +
-      "on\030\003 \001(\t\022.\n\022reason_description\030\004 \001(\tR\022re" +
-      "ason_description\"\311\001\n\010VMStatus\022\014\n\004type\030\001 " +
-      "\001(\t\022\020\n\010location\030\002 \001(\t\022\036\n\nabort_code\030\003 \001(" +
-      "\004R\nabort_code\022&\n\016function_index\030\004 \001(\rR\016f" +
-      "unction_index\022 \n\013code_offset\030\005 \001(\rR\013code" +
-      "_offset\0223\n\013explanation\030\006 \001(\0132\036.jsonrpc.M",
-      "oveAbortExplaination\"\227\004\n\017TransactionData" +
-      "\022\014\n\004type\030\001 \001(\t\022(\n\017timestamp_usecs\030\002 \001(\004R" +
-      "\017timestamp_usecs\022\016\n\006sender\030\003 \001(\t\022*\n\020sign" +
-      "ature_scheme\030\004 \001(\tR\020signature_scheme\022\021\n\t" +
-      "signature\030\005 \001(\t\022\036\n\npublic_key\030\006 \001(\tR\npub" +
-      "lic_key\022(\n\017sequence_number\030\007 \001(\004R\017sequen" +
-      "ce_number\022\032\n\010chain_id\030\010 \001(\rR\010chain_id\022&\n" +
-      "\016max_gas_amount\030\t \001(\004R\016max_gas_amount\022&\n" +
-      "\016gas_unit_price\030\n \001(\004R\016gas_unit_price\022\"\n" +
-      "\014gas_currency\030\013 \001(\tR\014gas_currency\022<\n\031exp",
-      "iration_timestamp_secs\030\014 \001(\004R\031expiration" +
-      "_timestamp_secs\022 \n\013script_hash\030\r \001(\tR\013sc" +
-      "ript_hash\022\"\n\014script_bytes\030\016 \001(\tR\014script_" +
-      "bytes\022\037\n\006script\030\017 \001(\0132\017.jsonrpc.Script\"\325" +
-      "\001\n\006Script\022\014\n\004type\030\001 \001(\t\022\014\n\004code\030\002 \001(\t\022\021\n" +
-      "\targuments\030\003 \003(\t\022&\n\016type_arguments\030\004 \003(\t" +
-      "R\016type_arguments\022\020\n\010receiver\030\005 \001(\t\022\016\n\006am" +
-      "ount\030\006 \001(\004\022\020\n\010currency\030\007 \001(\t\022\020\n\010metadata" +
-      "\030\010 \001(\t\022.\n\022metadata_signature\030\t \001(\tR\022meta" +
-      "data_signature\"\250\003\n\014CurrencyInfo\022\014\n\004code\030",
-      "\001 \001(\t\022&\n\016scaling_factor\030\002 \001(\004R\016scaling_f" +
-      "actor\022(\n\017fractional_part\030\003 \001(\004R\017fraction" +
-      "al_part\0222\n\024to_xdx_exchange_rate\030\004 \001(\002R\024t" +
-      "o_xdx_exchange_rate\022(\n\017mint_events_key\030\005" +
-      " \001(\tR\017mint_events_key\022(\n\017burn_events_key" +
-      "\030\006 \001(\tR\017burn_events_key\022.\n\022preburn_event" +
-      "s_key\030\007 \001(\tR\022preburn_events_key\0226\n\026cance" +
-      "l_burn_events_key\030\010 \001(\tR\026cancel_burn_eve" +
-      "nts_key\022H\n\037exchange_rate_update_events_k" +
-      "ey\030\t \001(\tR\037exchange_rate_update_events_ke",
-      "y\"\272\001\n\nStateProof\022@\n\033ledger_info_with_sig" +
-      "natures\030\001 \001(\tR\033ledger_info_with_signatur" +
-      "es\022.\n\022epoch_change_proof\030\002 \001(\tR\022epoch_ch" +
-      "ange_proof\022:\n\030ledger_consistency_proof\030\003" +
-      " \001(\tR\030ledger_consistency_proof\"a\n\025Accoun" +
-      "tStateWithProof\022\017\n\007version\030\001 \001(\004\022\014\n\004blob" +
-      "\030\002 \001(\t\022)\n\005proof\030\003 \001(\0132\032.jsonrpc.AccountS" +
-      "tateProof\"\343\001\n\021AccountStateProof\022T\n%ledge" +
-      "r_info_to_transaction_info_proof\030\001 \001(\tR%" +
-      "ledger_info_to_transaction_info_proof\022*\n",
-      "\020transaction_info\030\002 \001(\tR\020transaction_inf" +
-      "o\022L\n!transaction_info_to_account_proof\030\003" +
-      " \001(\tR!transaction_info_to_account_proofB" +
-      "4\n\020com.diem.jsonrpcB\007JsonRpcZ\027github.com" +
-      "/diem/jsonrpcb\006proto3"
+      "\n\004role\030\n \001(\0132\024.jsonrpc.AccountRole\022\017\n\007ve" +
+      "rsion\030\013 \001(\004\"\313\004\n\013AccountRole\022\014\n\004type\030\001 \001(" +
+      "\t\0220\n\023parent_vasp_address\030\002 \001(\tR\023parent_v" +
+      "asp_address\022\036\n\nhuman_name\030\003 \001(\tR\nhuman_n" +
+      "ame\022\032\n\010base_url\030\004 \001(\tR\010base_url\022(\n\017expir" +
+      "ation_time\030\005 \001(\004R\017expiration_time\022&\n\016com" +
+      "pliance_key\030\006 \001(\tR\016compliance_key\022N\n\"com",
+      "pliance_key_rotation_events_key\030\007 \001(\tR\"c" +
+      "ompliance_key_rotation_events_key\022B\n\034bas" +
+      "e_url_rotation_events_key\030\010 \001(\tR\034base_ur" +
+      "l_rotation_events_key\022\"\n\014num_children\030\t " +
+      "\001(\004R\014num_children\022:\n\030received_mint_event" +
+      "s_key\030\n \001(\tR\030received_mint_events_key\022;\n" +
+      "\020preburn_balances\030\013 \003(\0132\017.jsonrpc.Amount" +
+      "R\020preburn_balances\022=\n\016preburn_queues\030\014 \003" +
+      "(\0132\025.jsonrpc.PreburnQueueR\016preburn_queue" +
+      "s\"d\n\014PreburnQueue\022\032\n\010currency\030\001 \001(\tR\010cur",
+      "rency\0228\n\010preburns\030\002 \003(\0132\034.jsonrpc.Prebur" +
+      "nWithMetadataR\010preburns\"\\\n\023PreburnWithMe" +
+      "tadata\022)\n\007preburn\030\001 \001(\0132\017.jsonrpc.Amount" +
+      "R\007preburn\022\032\n\010metadata\030\002 \001(\tR\010metadata\"\222\001" +
+      "\n\005Event\022\013\n\003key\030\001 \001(\t\022(\n\017sequence_number\030" +
+      "\002 \001(\004R\017sequence_number\0220\n\023transaction_ve" +
+      "rsion\030\003 \001(\004R\023transaction_version\022 \n\004data" +
+      "\030\004 \001(\0132\022.jsonrpc.EventData\"\247\005\n\tEventData" +
+      "\022\014\n\004type\030\001 \001(\t\022\037\n\006amount\030\002 \001(\0132\017.jsonrpc" +
+      ".Amount\022(\n\017preburn_address\030\003 \001(\tR\017prebur",
+      "n_address\022$\n\rcurrency_code\030\004 \001(\tR\rcurren" +
+      "cy_code\022:\n\030new_to_xdx_exchange_rate\030\005 \001(" +
+      "\002R\030new_to_xdx_exchange_rate\022\016\n\006sender\030\006 " +
+      "\001(\t\022\020\n\010receiver\030\007 \001(\t\022\020\n\010metadata\030\010 \001(\t\022" +
+      "\r\n\005epoch\030\n \001(\004\022\r\n\005round\030\013 \001(\004\022\020\n\010propose" +
+      "r\030\014 \001(\t\022$\n\rproposed_time\030\r \001(\004R\rproposed" +
+      "_time\0220\n\023destination_address\030\016 \001(\tR\023dest" +
+      "ination_address\022<\n\031new_compliance_public" +
+      "_key\030\017 \001(\tR\031new_compliance_public_key\022\"\n" +
+      "\014new_base_url\030\020 \001(\tR\014new_base_url\0222\n\024tim",
+      "e_rotated_seconds\030\021 \001(\004R\024time_rotated_se" +
+      "conds\022(\n\017created_address\030\022 \001(\tR\017created_" +
+      "address\022\030\n\007role_id\030\023 \001(\004R\007role_id\022:\n\030com" +
+      "mitted_timestamp_secs\030\024 \001(\004R\030committed_t" +
+      "imestamp_secs\022\r\n\005bytes\030\025 \001(\t\"\322\002\n\010Metadat" +
+      "a\022\017\n\007version\030\001 \001(\004\022\021\n\ttimestamp\030\002 \001(\004\022\032\n" +
+      "\010chain_id\030\003 \001(\rR\010chain_id\0226\n\026script_hash" +
+      "_allow_list\030\004 \003(\tR\026script_hash_allow_lis" +
+      "t\022<\n\031module_publishing_allowed\030\005 \001(\010R\031mo" +
+      "dule_publishing_allowed\022\"\n\014diem_version\030",
+      "\006 \001(\004R\014diem_version\0224\n\025accumulator_root_" +
+      "hash\030\007 \001(\tR\025accumulator_root_hash\0226\n\026dua" +
+      "l_attestation_limit\030\010 \001(\004R\026dual_attestat" +
+      "ion_limit\"\327\001\n\013Transaction\022\017\n\007version\030\001 \001" +
+      "(\004\022-\n\013transaction\030\002 \001(\0132\030.jsonrpc.Transa" +
+      "ctionData\022\014\n\004hash\030\003 \001(\t\022\r\n\005bytes\030\004 \001(\t\022\036" +
+      "\n\006events\030\005 \003(\0132\016.jsonrpc.Event\022/\n\tvm_sta" +
+      "tus\030\006 \001(\0132\021.jsonrpc.VMStatusR\tvm_status\022" +
+      "\032\n\010gas_used\030\007 \001(\004R\010gas_used\"\235\001\n\025MoveAbor" +
+      "tExplaination\022\020\n\010category\030\001 \001(\t\0222\n\024categ",
+      "ory_description\030\002 \001(\tR\024category_descript" +
+      "ion\022\016\n\006reason\030\003 \001(\t\022.\n\022reason_descriptio" +
+      "n\030\004 \001(\tR\022reason_description\"\311\001\n\010VMStatus" +
+      "\022\014\n\004type\030\001 \001(\t\022\020\n\010location\030\002 \001(\t\022\036\n\nabor" +
+      "t_code\030\003 \001(\004R\nabort_code\022&\n\016function_ind" +
+      "ex\030\004 \001(\rR\016function_index\022 \n\013code_offset\030" +
+      "\005 \001(\rR\013code_offset\0223\n\013explanation\030\006 \001(\0132" +
+      "\036.jsonrpc.MoveAbortExplaination\"\227\004\n\017Tran" +
+      "sactionData\022\014\n\004type\030\001 \001(\t\022(\n\017timestamp_u" +
+      "secs\030\002 \001(\004R\017timestamp_usecs\022\016\n\006sender\030\003 ",
+      "\001(\t\022*\n\020signature_scheme\030\004 \001(\tR\020signature" +
+      "_scheme\022\021\n\tsignature\030\005 \001(\t\022\036\n\npublic_key" +
+      "\030\006 \001(\tR\npublic_key\022(\n\017sequence_number\030\007 " +
+      "\001(\004R\017sequence_number\022\032\n\010chain_id\030\010 \001(\rR\010" +
+      "chain_id\022&\n\016max_gas_amount\030\t \001(\004R\016max_ga" +
+      "s_amount\022&\n\016gas_unit_price\030\n \001(\004R\016gas_un" +
+      "it_price\022\"\n\014gas_currency\030\013 \001(\tR\014gas_curr" +
+      "ency\022<\n\031expiration_timestamp_secs\030\014 \001(\004R" +
+      "\031expiration_timestamp_secs\022 \n\013script_has" +
+      "h\030\r \001(\tR\013script_hash\022\"\n\014script_bytes\030\016 \001",
+      "(\tR\014script_bytes\022\037\n\006script\030\017 \001(\0132\017.jsonr" +
+      "pc.Script\"\277\002\n\006Script\022\014\n\004type\030\001 \001(\t\022\014\n\004co" +
+      "de\030\002 \001(\t\022\021\n\targuments\030\003 \003(\t\022&\n\016type_argu" +
+      "ments\030\004 \003(\tR\016type_arguments\022\020\n\010receiver\030" +
+      "\005 \001(\t\022\016\n\006amount\030\006 \001(\004\022\020\n\010currency\030\007 \001(\t\022" +
+      "\020\n\010metadata\030\010 \001(\t\022.\n\022metadata_signature\030" +
+      "\t \001(\tR\022metadata_signature\022\026\n\016module_addr" +
+      "ess\030\n \001(\t\022\023\n\013module_name\030\013 \001(\t\022\025\n\rfuncti" +
+      "on_name\030\014 \001(\t\022$\n\rarguments_bcs\030\r \003(\tR\rar" +
+      "guments_bcs\"\250\003\n\014CurrencyInfo\022\014\n\004code\030\001 \001",
+      "(\t\022&\n\016scaling_factor\030\002 \001(\004R\016scaling_fact" +
+      "or\022(\n\017fractional_part\030\003 \001(\004R\017fractional_" +
+      "part\0222\n\024to_xdx_exchange_rate\030\004 \001(\002R\024to_x" +
+      "dx_exchange_rate\022(\n\017mint_events_key\030\005 \001(" +
+      "\tR\017mint_events_key\022(\n\017burn_events_key\030\006 " +
+      "\001(\tR\017burn_events_key\022.\n\022preburn_events_k" +
+      "ey\030\007 \001(\tR\022preburn_events_key\0226\n\026cancel_b" +
+      "urn_events_key\030\010 \001(\tR\026cancel_burn_events" +
+      "_key\022H\n\037exchange_rate_update_events_key\030" +
+      "\t \001(\tR\037exchange_rate_update_events_key\"\272",
+      "\001\n\nStateProof\022@\n\033ledger_info_with_signat" +
+      "ures\030\001 \001(\tR\033ledger_info_with_signatures\022" +
+      ".\n\022epoch_change_proof\030\002 \001(\tR\022epoch_chang" +
+      "e_proof\022:\n\030ledger_consistency_proof\030\003 \001(" +
+      "\tR\030ledger_consistency_proof\"a\n\025AccountSt" +
+      "ateWithProof\022\017\n\007version\030\001 \001(\004\022\014\n\004blob\030\002 " +
+      "\001(\t\022)\n\005proof\030\003 \001(\0132\032.jsonrpc.AccountStat" +
+      "eProof\"\343\001\n\021AccountStateProof\022T\n%ledger_i" +
+      "nfo_to_transaction_info_proof\030\001 \001(\tR%led" +
+      "ger_info_to_transaction_info_proof\022*\n\020tr",
+      "ansaction_info\030\002 \001(\tR\020transaction_info\022L" +
+      "\n!transaction_info_to_account_proof\030\003 \001(" +
+      "\tR!transaction_info_to_account_proofB4\n\020" +
+      "com.diem.jsonrpcB\007JsonRpcZ\027github.com/di" +
+      "em/jsonrpcb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -22367,81 +25522,93 @@ public final class JsonRpc {
     internal_static_jsonrpc_Account_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jsonrpc_Account_descriptor,
-        new java.lang.String[] { "Address", "Balances", "SequenceNumber", "AuthenticationKey", "SentEventsKey", "ReceivedEventsKey", "DelegatedKeyRotationCapability", "DelegatedWithdrawalCapability", "IsFrozen", "Role", });
+        new java.lang.String[] { "Address", "Balances", "SequenceNumber", "AuthenticationKey", "SentEventsKey", "ReceivedEventsKey", "DelegatedKeyRotationCapability", "DelegatedWithdrawalCapability", "IsFrozen", "Role", "Version", });
     internal_static_jsonrpc_AccountRole_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_jsonrpc_AccountRole_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jsonrpc_AccountRole_descriptor,
-        new java.lang.String[] { "Type", "ParentVaspAddress", "HumanName", "BaseUrl", "ExpirationTime", "ComplianceKey", "ComplianceKeyRotationEventsKey", "BaseUrlRotationEventsKey", "NumChildren", "ReceivedMintEventsKey", "PreburnBalances", });
-    internal_static_jsonrpc_Event_descriptor =
+        new java.lang.String[] { "Type", "ParentVaspAddress", "HumanName", "BaseUrl", "ExpirationTime", "ComplianceKey", "ComplianceKeyRotationEventsKey", "BaseUrlRotationEventsKey", "NumChildren", "ReceivedMintEventsKey", "PreburnBalances", "PreburnQueues", });
+    internal_static_jsonrpc_PreburnQueue_descriptor =
       getDescriptor().getMessageTypes().get(3);
+    internal_static_jsonrpc_PreburnQueue_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_jsonrpc_PreburnQueue_descriptor,
+        new java.lang.String[] { "Currency", "Preburns", });
+    internal_static_jsonrpc_PreburnWithMetadata_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_jsonrpc_PreburnWithMetadata_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_jsonrpc_PreburnWithMetadata_descriptor,
+        new java.lang.String[] { "Preburn", "Metadata", });
+    internal_static_jsonrpc_Event_descriptor =
+      getDescriptor().getMessageTypes().get(5);
     internal_static_jsonrpc_Event_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jsonrpc_Event_descriptor,
         new java.lang.String[] { "Key", "SequenceNumber", "TransactionVersion", "Data", });
     internal_static_jsonrpc_EventData_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_jsonrpc_EventData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jsonrpc_EventData_descriptor,
-        new java.lang.String[] { "Type", "Amount", "PreburnAddress", "CurrencyCode", "NewToXdxExchangeRate", "Sender", "Receiver", "Metadata", "Epoch", "Round", "Proposer", "ProposedTime", "DestinationAddress", "NewCompliancePublicKey", "NewBaseUrl", "TimeRotatedSeconds", "CreatedAddress", "RoleId", "CommittedTimestampSecs", });
+        new java.lang.String[] { "Type", "Amount", "PreburnAddress", "CurrencyCode", "NewToXdxExchangeRate", "Sender", "Receiver", "Metadata", "Epoch", "Round", "Proposer", "ProposedTime", "DestinationAddress", "NewCompliancePublicKey", "NewBaseUrl", "TimeRotatedSeconds", "CreatedAddress", "RoleId", "CommittedTimestampSecs", "Bytes", });
     internal_static_jsonrpc_Metadata_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_jsonrpc_Metadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jsonrpc_Metadata_descriptor,
         new java.lang.String[] { "Version", "Timestamp", "ChainId", "ScriptHashAllowList", "ModulePublishingAllowed", "DiemVersion", "AccumulatorRootHash", "DualAttestationLimit", });
     internal_static_jsonrpc_Transaction_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_jsonrpc_Transaction_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jsonrpc_Transaction_descriptor,
         new java.lang.String[] { "Version", "Transaction", "Hash", "Bytes", "Events", "VmStatus", "GasUsed", });
     internal_static_jsonrpc_MoveAbortExplaination_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_jsonrpc_MoveAbortExplaination_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jsonrpc_MoveAbortExplaination_descriptor,
         new java.lang.String[] { "Category", "CategoryDescription", "Reason", "ReasonDescription", });
     internal_static_jsonrpc_VMStatus_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_jsonrpc_VMStatus_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jsonrpc_VMStatus_descriptor,
         new java.lang.String[] { "Type", "Location", "AbortCode", "FunctionIndex", "CodeOffset", "Explanation", });
     internal_static_jsonrpc_TransactionData_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_jsonrpc_TransactionData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jsonrpc_TransactionData_descriptor,
         new java.lang.String[] { "Type", "TimestampUsecs", "Sender", "SignatureScheme", "Signature", "PublicKey", "SequenceNumber", "ChainId", "MaxGasAmount", "GasUnitPrice", "GasCurrency", "ExpirationTimestampSecs", "ScriptHash", "ScriptBytes", "Script", });
     internal_static_jsonrpc_Script_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_jsonrpc_Script_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jsonrpc_Script_descriptor,
-        new java.lang.String[] { "Type", "Code", "Arguments", "TypeArguments", "Receiver", "Amount", "Currency", "Metadata", "MetadataSignature", });
+        new java.lang.String[] { "Type", "Code", "Arguments", "TypeArguments", "Receiver", "Amount", "Currency", "Metadata", "MetadataSignature", "ModuleAddress", "ModuleName", "FunctionName", "ArgumentsBcs", });
     internal_static_jsonrpc_CurrencyInfo_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_jsonrpc_CurrencyInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jsonrpc_CurrencyInfo_descriptor,
         new java.lang.String[] { "Code", "ScalingFactor", "FractionalPart", "ToXdxExchangeRate", "MintEventsKey", "BurnEventsKey", "PreburnEventsKey", "CancelBurnEventsKey", "ExchangeRateUpdateEventsKey", });
     internal_static_jsonrpc_StateProof_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_jsonrpc_StateProof_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jsonrpc_StateProof_descriptor,
         new java.lang.String[] { "LedgerInfoWithSignatures", "EpochChangeProof", "LedgerConsistencyProof", });
     internal_static_jsonrpc_AccountStateWithProof_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_jsonrpc_AccountStateWithProof_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jsonrpc_AccountStateWithProof_descriptor,
         new java.lang.String[] { "Version", "Blob", "Proof", });
     internal_static_jsonrpc_AccountStateProof_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_jsonrpc_AccountStateProof_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_jsonrpc_AccountStateProof_descriptor,
