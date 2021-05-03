@@ -118,8 +118,9 @@ task gen {
                     ' --language java' +
                     ' --module-name com.diem.stdlib' +
                     ' --with-diem-types "testsuite/generate-format/tests/staged/diem.yaml"' +
+                    ' --with-custom-diem-code language/transaction-builder/generator/examples/java/custom_diem_code/*.java' +
                     ' --target-source-dir "./../src/main/java"' +
-                    ' "language/diem-framework/compiled/legacy/transaction_scripts/abi"'
+                    ' "language/diem-framework/releases/legacy" "language/diem-framework/releases/artifacts/current"'
         }
     }
 }

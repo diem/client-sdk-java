@@ -1,7 +1,7 @@
 package com.diem.stdlib;
 
 
-public abstract class ScriptCall {
+public abstract class ScriptFunctionCall {
 
     /**
      * <p><b>Summary</b></p>
@@ -17,10 +17,10 @@ public abstract class ScriptCall {
      * already have a {@code DiemAccount::Balance<Currency>} published under it.
      *
      * <p><b>Parameters</b></p>
-     * | Name       | Type      | Description                                                                                                                                         |
-     * | ------     | ------    | -------------                                                                                                                                       |
-     * | {@code Currency} | Type      | The Move type for the {@code Currency} being added to the sending account of the transaction. {@code Currency} must be an already-registered currency on-chain. |
-     * | {@code account}  | {@code &signer} | The signer of the sending account of the transaction.                                                                                               |
+     * | Name       | Type     | Description                                                                                                                                         |
+     * | ------     | ------   | -------------                                                                                                                                       |
+     * | {@code Currency} | Type     | The Move type for the {@code Currency} being added to the sending account of the transaction. {@code Currency} must be an already-registered currency on-chain. |
+     * | {@code account}  | {@code signer} | The signer of the sending account of the transaction.                                                                                               |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category              | Error Reason                             | Description                                                                |
@@ -30,11 +30,11 @@ public abstract class ScriptCall {
      * | {@code Errors::ALREADY_PUBLISHED} | {@code DiemAccount::EADD_EXISTING_CURRENCY}   | A balance for {@code Currency} is already published under the sending {@code account}. |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::create_child_vasp_account}</li></ul>
-     * <ul><li>{@code Script::create_parent_vasp_account}</li></ul>
-     * <ul><li>{@code Script::peer_to_peer_with_metadata}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_child_vasp_account}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_parent_vasp_account}</li></ul>
+     * <ul><li>{@code PaymentScripts::peer_to_peer_with_metadata}</li></ul>
      */
-    public static final class AddCurrencyToAccount extends ScriptCall {
+    public static final class AddCurrencyToAccount extends ScriptFunctionCall {
         public final com.diem.types.TypeTag currency;
 
         public AddCurrencyToAccount(com.diem.types.TypeTag currency) {
@@ -86,16 +86,16 @@ public abstract class ScriptCall {
      * rotation capability, and must be a VASP account. The account at {@code recovery_address}
      * must also be a VASP account belonging to the same VASP as the {@code to_recover_account}.
      * Additionally the account at {@code recovery_address} must have already initialized itself as
-     * a recovery account address using the {@code Script::create_recovery_address} transaction script.
+     * a recovery account address using the {@code AccountAdministrationScripts::create_recovery_address} transaction script.
      *
      * The sending account's ({@code to_recover_account}) key rotation capability is
      * removed in this transaction and stored in the {@code RecoveryAddress::RecoveryAddress}
      * resource stored under the account at {@code recovery_address}.
      *
      * <p><b>Parameters</b></p>
-     * | Name                 | Type      | Description                                                                                                |
-     * | ------               | ------    | -------------                                                                                              |
-     * | {@code to_recover_account} | {@code &signer} | The signer reference of the sending account of this transaction.                                           |
+     * | Name                 | Type      | Description                                                                                               |
+     * | ------               | ------    | -------------                                                                                             |
+     * | {@code to_recover_account} | {@code signer}  | The signer of the sending account of this transaction.                                                    |
      * | {@code recovery_address}   | {@code address} | The account address where the {@code to_recover_account}'s {@code DiemAccount::KeyRotationCapability} will be stored. |
      *
      * <p><b>Common Abort Conditions</b></p>
@@ -107,10 +107,10 @@ public abstract class ScriptCall {
      * | {@code Errors::LIMIT_EXCEEDED}   | {@code  RecoveryAddress::EMAX_KEYS_REGISTERED}                  | {@code RecoveryAddress::MAX_REGISTERED_KEYS} have already been registered with this {@code recovery_address}. |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::create_recovery_address}</li></ul>
-     * <ul><li>{@code Script::rotate_authentication_key_with_recovery_address}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::create_recovery_address}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_authentication_key_with_recovery_address}</li></ul>
      */
-    public static final class AddRecoveryRotationCapability extends ScriptCall {
+    public static final class AddRecoveryRotationCapability extends ScriptFunctionCall {
         public final com.diem.types.AccountAddress recovery_address;
 
         public AddRecoveryRotationCapability(com.diem.types.AccountAddress recovery_address) {
@@ -163,35 +163,36 @@ public abstract class ScriptCall {
      * <p><b>Parameters</b></p>
      * | Name                | Type         | Description                                                                                                                        |
      * | ------              | ------       | -------------                                                                                                                      |
-     * | {@code dr_account}        | {@code &signer}    | The signer reference of the sending account of this transaction. Must be the Diem Root signer.                                    |
+     * | {@code dr_account}        | {@code signer}     | The signer of the sending account of this transaction. Must be the Diem Root signer.                                               |
      * | {@code sliding_nonce}     | {@code u64}        | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                                                         |
      * | {@code validator_name}    | {@code vector<u8>} | ASCII-encoded human name for the validator. Must match the human name in the {@code ValidatorConfig::ValidatorConfig} for the validator. |
      * | {@code validator_address} | {@code address}    | The validator account address to be added to the validator set.                                                                    |
      *
      * <p><b>Common Abort Conditions</b></p>
-     * | Error Category             | Error Reason                                  | Description                                                                                                                               |
-     * | ----------------           | --------------                                | -------------                                                                                                                             |
-     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                | A {@code SlidingNonce} resource is not published under {@code dr_account}.                                                                            |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not.                                                |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                | The {@code sliding_nonce} is too far in the future.                                                                                             |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}       | The {@code sliding_nonce} has been previously recorded.                                                                                         |
-     * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::EDIEM_ROOT}                  | The sending account is not the Diem Root account.                                                                                        |
-     * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::EDIEM_ROOT}                          | The sending account is not the Diem Root account.                                                                                        |
-     * | 0                          | 0                                             | The provided {@code validator_name} does not match the already-recorded human name for the validator.                                           |
+     * | Error Category             | Error Reason                                 | Description                                                                                                                               |
+     * | ----------------           | --------------                               | -------------                                                                                                                             |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}               | A {@code SlidingNonce} resource is not published under {@code dr_account}.                                                                            |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}               | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not.                                                |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}               | The {@code sliding_nonce} is too far in the future.                                                                                             |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}      | The {@code sliding_nonce} has been previously recorded.                                                                                         |
+     * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::EDIEM_ROOT}                  | The sending account is not the Diem Root account.                                                                                         |
+     * | {@code Errors::REQUIRES_ROLE}    | {@code Roles::EDIEM_ROOT}                          | The sending account is not the Diem Root account.                                                                                         |
+     * | 0                          | 0                                            | The provided {@code validator_name} does not match the already-recorded human name for the validator.                                           |
      * | {@code Errors::INVALID_ARGUMENT} | {@code DiemSystem::EINVALID_PROSPECTIVE_VALIDATOR} | The validator to be added does not have a {@code ValidatorConfig::ValidatorConfig} resource published under it, or its {@code config} field is empty. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code DiemSystem::EALREADY_A_VALIDATOR}           | The {@code validator_address} account is already a registered validator.                                                                        |
      * | {@code Errors::INVALID_STATE}    | {@code DiemConfig::EINVALID_BLOCK_TIME}            | An invalid time value was encountered in reconfiguration. Unlikely to occur.                                                              |
+     * | {@code Errors::LIMIT_EXCEEDED}   | {@code DiemSystem::EMAX_VALIDATORS}                | The validator set is already at its maximum size. The validator could not be added.                                                       |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::create_validator_account}</li></ul>
-     * <ul><li>{@code Script::create_validator_operator_account}</li></ul>
-     * <ul><li>{@code Script::register_validator_config}</li></ul>
-     * <ul><li>{@code Script::remove_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator_with_nonce_admin}</li></ul>
-     * <ul><li>{@code Script::set_validator_config_and_reconfigure}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_validator_account}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_validator_operator_account}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::register_validator_config}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::remove_validator_and_reconfigure}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_operator}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_operator_with_nonce_admin}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_config_and_reconfigure}</li></ul>
      */
-    public static final class AddValidatorAndReconfigure extends ScriptCall {
+    public static final class AddValidatorAndReconfigure extends ScriptFunctionCall {
         public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final com.novi.serde.Bytes validator_name;
         public final com.diem.types.AccountAddress validator_address;
@@ -241,106 +242,6 @@ public abstract class ScriptCall {
 
     /**
      * <p><b>Summary</b></p>
-     * Burns all coins held in the preburn resource at the specified
-     * preburn address and removes them from the system. The sending account must
-     * be the Treasury Compliance account.
-     * The account that holds the preburn resource will normally be a Designated
-     * Dealer, but there are no enforced requirements that it be one.
-     *
-     * <p><b>Technical Description</b></p>
-     * This transaction permanently destroys all the coins of {@code Token} type
-     * stored in the {@code Diem::Preburn<Token>} resource published under the
-     * {@code preburn_address} account address.
-     *
-     * This transaction will only succeed if the sending {@code account} has a
-     * {@code Diem::BurnCapability<Token>}, and a {@code Diem::Preburn<Token>} resource
-     * exists under {@code preburn_address}, with a non-zero {@code to_burn} field. After the successful execution
-     * of this transaction the {@code total_value} field in the
-     * {@code Diem::CurrencyInfo<Token>} resource published under {@code 0xA550C18} will be
-     * decremented by the value of the {@code to_burn} field of the preburn resource
-     * under {@code preburn_address} immediately before this transaction, and the
-     * {@code to_burn} field of the preburn resource will have a zero value.
-     *
-     * <p><b>Events</b></p>
-     * The successful execution of this transaction will emit a {@code Diem::BurnEvent} on the event handle
-     * held in the {@code Diem::CurrencyInfo<Token>} resource's {@code burn_events} published under
-     * {@code 0xA550C18}.
-     *
-     * <p><b>Parameters</b></p>
-     * | Name              | Type      | Description                                                                                                                  |
-     * | ------            | ------    | -------------                                                                                                                |
-     * | {@code Token}           | Type      | The Move type for the {@code Token} currency being burned. {@code Token} must be an already-registered currency on-chain.                |
-     * | {@code tc_account}      | {@code &signer} | The signer reference of the sending account of this transaction, must have a burn capability for {@code Token} published under it. |
-     * | {@code sliding_nonce}   | {@code u64}     | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                                                   |
-     * | {@code preburn_address} | {@code address} | The address where the coins to-be-burned are currently held.                                                                 |
-     *
-     * <p><b>Common Abort Conditions</b></p>
-     * | Error Category                | Error Reason                            | Description                                                                                           |
-     * | ----------------              | --------------                          | -------------                                                                                         |
-     * | {@code Errors::NOT_PUBLISHED}       | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code account}.                                           |
-     * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not.            |
-     * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                                         |
-     * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                                     |
-     * | {@code Errors::REQUIRES_CAPABILITY} | {@code Diem::EBURN_CAPABILITY}               | The sending {@code account} does not have a {@code Diem::BurnCapability<Token>} published under it.              |
-     * | {@code Errors::NOT_PUBLISHED}       | {@code Diem::EPREBURN}                       | The account at {@code preburn_address} does not have a {@code Diem::Preburn<Token>} resource published under it. |
-     * | {@code Errors::INVALID_STATE}       | {@code Diem::EPREBURN_EMPTY}                 | The {@code Diem::Preburn<Token>} resource is empty (has a value of 0).                                     |
-     * | {@code Errors::NOT_PUBLISHED}       | {@code Diem::ECURRENCY_INFO}                 | The specified {@code Token} is not a registered currency on-chain.                                          |
-     *
-     * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::burn_txn_fees}</li></ul>
-     * <ul><li>{@code Script::cancel_burn}</li></ul>
-     * <ul><li>{@code Script::preburn}</li></ul>
-     */
-    public static final class Burn extends ScriptCall {
-        public final com.diem.types.TypeTag token;
-        public final @com.novi.serde.Unsigned Long sliding_nonce;
-        public final com.diem.types.AccountAddress preburn_address;
-
-        public Burn(com.diem.types.TypeTag token, @com.novi.serde.Unsigned Long sliding_nonce, com.diem.types.AccountAddress preburn_address) {
-            java.util.Objects.requireNonNull(token, "token must not be null");
-            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
-            java.util.Objects.requireNonNull(preburn_address, "preburn_address must not be null");
-            this.token = token;
-            this.sliding_nonce = sliding_nonce;
-            this.preburn_address = preburn_address;
-        }
-
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null) return false;
-            if (getClass() != obj.getClass()) return false;
-            Burn other = (Burn) obj;
-            if (!java.util.Objects.equals(this.token, other.token)) { return false; }
-            if (!java.util.Objects.equals(this.sliding_nonce, other.sliding_nonce)) { return false; }
-            if (!java.util.Objects.equals(this.preburn_address, other.preburn_address)) { return false; }
-            return true;
-        }
-
-        public int hashCode() {
-            int value = 7;
-            value = 31 * value + (this.token != null ? this.token.hashCode() : 0);
-            value = 31 * value + (this.sliding_nonce != null ? this.sliding_nonce.hashCode() : 0);
-            value = 31 * value + (this.preburn_address != null ? this.preburn_address.hashCode() : 0);
-            return value;
-        }
-
-        public static final class Builder {
-            public com.diem.types.TypeTag token;
-            public @com.novi.serde.Unsigned Long sliding_nonce;
-            public com.diem.types.AccountAddress preburn_address;
-
-            public Burn build() {
-                return new Burn(
-                    token,
-                    sliding_nonce,
-                    preburn_address
-                );
-            }
-        }
-    }
-
-    /**
-     * <p><b>Summary</b></p>
      * Burns the transaction fees collected in the {@code CoinType} currency so that the
      * Diem association may reclaim the backing coins off-chain. May only be sent
      * by the Treasury Compliance account.
@@ -360,10 +261,10 @@ public abstract class ScriptCall {
      * {@code 0xA550C18}.
      *
      * <p><b>Parameters</b></p>
-     * | Name         | Type      | Description                                                                                                                                         |
-     * | ------       | ------    | -------------                                                                                                                                       |
-     * | {@code CoinType}   | Type      | The Move type for the {@code CoinType} being added to the sending account of the transaction. {@code CoinType} must be an already-registered currency on-chain. |
-     * | {@code tc_account} | {@code &signer} | The signer reference of the sending account of this transaction. Must be the Treasury Compliance account.                                           |
+     * | Name         | Type     | Description                                                                                                                                         |
+     * | ------       | ------   | -------------                                                                                                                                       |
+     * | {@code CoinType}   | Type     | The Move type for the {@code CoinType} being added to the sending account of the transaction. {@code CoinType} must be an already-registered currency on-chain. |
+     * | {@code tc_account} | {@code signer} | The signer of the sending account of this transaction. Must be the Treasury Compliance account.                                                     |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category             | Error Reason                          | Description                                                 |
@@ -373,10 +274,10 @@ public abstract class ScriptCall {
      * | {@code Errors::INVALID_ARGUMENT} | {@code Diem::ECOIN}                        | The collected fees in {@code CoinType} are zero.                  |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::burn}</li></ul>
-     * <ul><li>{@code Script::cancel_burn}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::burn_with_amount}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::cancel_burn_with_amount}</li></ul>
      */
-    public static final class BurnTxnFees extends ScriptCall {
+    public static final class BurnTxnFees extends ScriptFunctionCall {
         public final com.diem.types.TypeTag coin_type;
 
         public BurnTxnFees(com.diem.types.TypeTag coin_type) {
@@ -412,8 +313,119 @@ public abstract class ScriptCall {
 
     /**
      * <p><b>Summary</b></p>
-     * Cancels and returns all coins held in the preburn area under
-     * {@code preburn_address} and returns the funds to the {@code preburn_address}'s balance.
+     * Burns the coins held in a preburn resource in the preburn queue at the
+     * specified preburn address, which are equal to the {@code amount} specified in the
+     * transaction. Finds the first relevant outstanding preburn request with
+     * matching amount and removes the contained coins from the system. The sending
+     * account must be the Treasury Compliance account.
+     * The account that holds the preburn queue resource will normally be a Designated
+     * Dealer, but there are no enforced requirements that it be one.
+     *
+     * <p><b>Technical Description</b></p>
+     * This transaction permanently destroys all the coins of {@code Token} type
+     * stored in the {@code Diem::Preburn<Token>} resource published under the
+     * {@code preburn_address} account address.
+     *
+     * This transaction will only succeed if the sending {@code account} has a
+     * {@code Diem::BurnCapability<Token>}, and a {@code Diem::Preburn<Token>} resource
+     * exists under {@code preburn_address}, with a non-zero {@code to_burn} field. After the successful execution
+     * of this transaction the {@code total_value} field in the
+     * {@code Diem::CurrencyInfo<Token>} resource published under {@code 0xA550C18} will be
+     * decremented by the value of the {@code to_burn} field of the preburn resource
+     * under {@code preburn_address} immediately before this transaction, and the
+     * {@code to_burn} field of the preburn resource will have a zero value.
+     *
+     * <p><b>Events</b></p>
+     * The successful execution of this transaction will emit a {@code Diem::BurnEvent} on the event handle
+     * held in the {@code Diem::CurrencyInfo<Token>} resource's {@code burn_events} published under
+     * {@code 0xA550C18}.
+     *
+     * <p><b>Parameters</b></p>
+     * | Name              | Type      | Description                                                                                                        |
+     * | ------            | ------    | -------------                                                                                                      |
+     * | {@code Token}           | Type      | The Move type for the {@code Token} currency being burned. {@code Token} must be an already-registered currency on-chain.      |
+     * | {@code tc_account}      | {@code signer}  | The signer of the sending account of this transaction, must have a burn capability for {@code Token} published under it. |
+     * | {@code sliding_nonce}   | {@code u64}     | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                                         |
+     * | {@code preburn_address} | {@code address} | The address where the coins to-be-burned are currently held.                                                       |
+     * | {@code amount}          | {@code u64}     | The amount to be burned.                                                                                           |
+     *
+     * <p><b>Common Abort Conditions</b></p>
+     * | Error Category                | Error Reason                            | Description                                                                                                                         |
+     * | ----------------              | --------------                          | -------------                                                                                                                       |
+     * | {@code Errors::NOT_PUBLISHED}       | {@code SlidingNonce::ESLIDING_NONCE}          | A {@code SlidingNonce} resource is not published under {@code account}.                                                                         |
+     * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_TOO_OLD}          | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not.                                          |
+     * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_TOO_NEW}          | The {@code sliding_nonce} is too far in the future.                                                                                       |
+     * | {@code Errors::INVALID_ARGUMENT}    | {@code SlidingNonce::ENONCE_ALREADY_RECORDED} | The {@code sliding_nonce} has been previously recorded.                                                                                   |
+     * | {@code Errors::REQUIRES_CAPABILITY} | {@code Diem::EBURN_CAPABILITY}                | The sending {@code account} does not have a {@code Diem::BurnCapability<Token>} published under it.                                             |
+     * | {@code Errors::INVALID_STATE}       | {@code Diem::EPREBURN_NOT_FOUND}              | The {@code Diem::PreburnQueue<Token>} resource under {@code preburn_address} does not contain a preburn request with a value matching {@code amount}. |
+     * | {@code Errors::NOT_PUBLISHED}       | {@code Diem::EPREBURN_QUEUE}                  | The account at {@code preburn_address} does not have a {@code Diem::PreburnQueue<Token>} resource published under it.                           |
+     * | {@code Errors::NOT_PUBLISHED}       | {@code Diem::ECURRENCY_INFO}                  | The specified {@code Token} is not a registered currency on-chain.                                                                        |
+     *
+     * <p><b>Related Scripts</b></p>
+     * <ul><li>{@code TreasuryComplianceScripts::burn_txn_fees}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::cancel_burn_with_amount}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::preburn}</li></ul>
+     */
+    public static final class BurnWithAmount extends ScriptFunctionCall {
+        public final com.diem.types.TypeTag token;
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
+        public final com.diem.types.AccountAddress preburn_address;
+        public final @com.novi.serde.Unsigned Long amount;
+
+        public BurnWithAmount(com.diem.types.TypeTag token, @com.novi.serde.Unsigned Long sliding_nonce, com.diem.types.AccountAddress preburn_address, @com.novi.serde.Unsigned Long amount) {
+            java.util.Objects.requireNonNull(token, "token must not be null");
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(preburn_address, "preburn_address must not be null");
+            java.util.Objects.requireNonNull(amount, "amount must not be null");
+            this.token = token;
+            this.sliding_nonce = sliding_nonce;
+            this.preburn_address = preburn_address;
+            this.amount = amount;
+        }
+
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null) return false;
+            if (getClass() != obj.getClass()) return false;
+            BurnWithAmount other = (BurnWithAmount) obj;
+            if (!java.util.Objects.equals(this.token, other.token)) { return false; }
+            if (!java.util.Objects.equals(this.sliding_nonce, other.sliding_nonce)) { return false; }
+            if (!java.util.Objects.equals(this.preburn_address, other.preburn_address)) { return false; }
+            if (!java.util.Objects.equals(this.amount, other.amount)) { return false; }
+            return true;
+        }
+
+        public int hashCode() {
+            int value = 7;
+            value = 31 * value + (this.token != null ? this.token.hashCode() : 0);
+            value = 31 * value + (this.sliding_nonce != null ? this.sliding_nonce.hashCode() : 0);
+            value = 31 * value + (this.preburn_address != null ? this.preburn_address.hashCode() : 0);
+            value = 31 * value + (this.amount != null ? this.amount.hashCode() : 0);
+            return value;
+        }
+
+        public static final class Builder {
+            public com.diem.types.TypeTag token;
+            public @com.novi.serde.Unsigned Long sliding_nonce;
+            public com.diem.types.AccountAddress preburn_address;
+            public @com.novi.serde.Unsigned Long amount;
+
+            public BurnWithAmount build() {
+                return new BurnWithAmount(
+                    token,
+                    sliding_nonce,
+                    preburn_address,
+                    amount
+                );
+            }
+        }
+    }
+
+    /**
+     * <p><b>Summary</b></p>
+     * Cancels and returns the coins held in the preburn area under
+     * {@code preburn_address}, which are equal to the {@code amount} specified in the transaction. Finds the first preburn
+     * resource with the matching amount and returns the funds to the {@code preburn_address}'s balance.
      * Can only be successfully sent by an account with Treasury Compliance role.
      *
      * <p><b>Technical Description</b></p>
@@ -439,43 +451,48 @@ public abstract class ScriptCall {
      * | Name              | Type      | Description                                                                                                                          |
      * | ------            | ------    | -------------                                                                                                                        |
      * | {@code Token}           | Type      | The Move type for the {@code Token} currenty that burning is being cancelled for. {@code Token} must be an already-registered currency on-chain. |
-     * | {@code account}         | {@code &signer} | The signer reference of the sending account of this transaction, must have a burn capability for {@code Token} published under it.         |
+     * | {@code account}         | {@code signer}  | The signer of the sending account of this transaction, must have a burn capability for {@code Token} published under it.                   |
      * | {@code preburn_address} | {@code address} | The address where the coins to-be-burned are currently held.                                                                         |
+     * | {@code amount}          | {@code u64}     | The amount to be cancelled.                                                                                                          |
      *
      * <p><b>Common Abort Conditions</b></p>
-     * | Error Category                | Error Reason                                     | Description                                                                                           |
-     * | ----------------              | --------------                                   | -------------                                                                                         |
-     * | {@code Errors::REQUIRES_CAPABILITY} | {@code Diem::EBURN_CAPABILITY}                        | The sending {@code account} does not have a {@code Diem::BurnCapability<Token>} published under it.              |
-     * | {@code Errors::NOT_PUBLISHED}       | {@code Diem::EPREBURN}                                | The account at {@code preburn_address} does not have a {@code Diem::Preburn<Token>} resource published under it. |
-     * | {@code Errors::NOT_PUBLISHED}       | {@code Diem::ECURRENCY_INFO}                          | The specified {@code Token} is not a registered currency on-chain.                                          |
-     * | {@code Errors::INVALID_ARGUMENT}    | {@code DiemAccount::ECOIN_DEPOSIT_IS_ZERO}            | The value held in the preburn resource was zero.                                                      |
-     * | {@code Errors::INVALID_ARGUMENT}    | {@code DiemAccount::EPAYEE_CANT_ACCEPT_CURRENCY_TYPE} | The account at {@code preburn_address} doesn't have a balance resource for {@code Token}.                         |
-     * | {@code Errors::LIMIT_EXCEEDED}      | {@code DiemAccount::EDEPOSIT_EXCEEDS_LIMITS}          | The depositing of the funds held in the prebun area would exceed the {@code account}'s account limits.      |
-     * | {@code Errors::INVALID_STATE}       | {@code DualAttestation::EPAYEE_COMPLIANCE_KEY_NOT_SET} | The {@code account} does not have a compliance key set on it but dual attestion checking was performed.     |
+     * | Error Category                | Error Reason                                     | Description                                                                                                                         |
+     * | ----------------              | --------------                                   | -------------                                                                                                                       |
+     * | {@code Errors::REQUIRES_CAPABILITY} | {@code Diem::EBURN_CAPABILITY}                         | The sending {@code account} does not have a {@code Diem::BurnCapability<Token>} published under it.                                             |
+     * | {@code Errors::INVALID_STATE}       | {@code Diem::EPREBURN_NOT_FOUND}                       | The {@code Diem::PreburnQueue<Token>} resource under {@code preburn_address} does not contain a preburn request with a value matching {@code amount}. |
+     * | {@code Errors::NOT_PUBLISHED}       | {@code Diem::EPREBURN_QUEUE}                           | The account at {@code preburn_address} does not have a {@code Diem::PreburnQueue<Token>} resource published under it.                           |
+     * | {@code Errors::NOT_PUBLISHED}       | {@code Diem::ECURRENCY_INFO}                           | The specified {@code Token} is not a registered currency on-chain.                                                                        |
+     * | {@code Errors::INVALID_ARGUMENT}    | {@code DiemAccount::EPAYEE_CANT_ACCEPT_CURRENCY_TYPE}  | The account at {@code preburn_address} doesn't have a balance resource for {@code Token}.                                                       |
+     * | {@code Errors::LIMIT_EXCEEDED}      | {@code DiemAccount::EDEPOSIT_EXCEEDS_LIMITS}           | The depositing of the funds held in the prebun area would exceed the {@code account}'s account limits.                                    |
+     * | {@code Errors::INVALID_STATE}       | {@code DualAttestation::EPAYEE_COMPLIANCE_KEY_NOT_SET} | The {@code account} does not have a compliance key set on it but dual attestion checking was performed.                                   |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::burn_txn_fees}</li></ul>
-     * <ul><li>{@code Script::burn}</li></ul>
-     * <ul><li>{@code Script::preburn}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::burn_txn_fees}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::burn_with_amount}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::preburn}</li></ul>
      */
-    public static final class CancelBurn extends ScriptCall {
+    public static final class CancelBurnWithAmount extends ScriptFunctionCall {
         public final com.diem.types.TypeTag token;
         public final com.diem.types.AccountAddress preburn_address;
+        public final @com.novi.serde.Unsigned Long amount;
 
-        public CancelBurn(com.diem.types.TypeTag token, com.diem.types.AccountAddress preburn_address) {
+        public CancelBurnWithAmount(com.diem.types.TypeTag token, com.diem.types.AccountAddress preburn_address, @com.novi.serde.Unsigned Long amount) {
             java.util.Objects.requireNonNull(token, "token must not be null");
             java.util.Objects.requireNonNull(preburn_address, "preburn_address must not be null");
+            java.util.Objects.requireNonNull(amount, "amount must not be null");
             this.token = token;
             this.preburn_address = preburn_address;
+            this.amount = amount;
         }
 
         public boolean equals(Object obj) {
             if (this == obj) return true;
             if (obj == null) return false;
             if (getClass() != obj.getClass()) return false;
-            CancelBurn other = (CancelBurn) obj;
+            CancelBurnWithAmount other = (CancelBurnWithAmount) obj;
             if (!java.util.Objects.equals(this.token, other.token)) { return false; }
             if (!java.util.Objects.equals(this.preburn_address, other.preburn_address)) { return false; }
+            if (!java.util.Objects.equals(this.amount, other.amount)) { return false; }
             return true;
         }
 
@@ -483,17 +500,20 @@ public abstract class ScriptCall {
             int value = 7;
             value = 31 * value + (this.token != null ? this.token.hashCode() : 0);
             value = 31 * value + (this.preburn_address != null ? this.preburn_address.hashCode() : 0);
+            value = 31 * value + (this.amount != null ? this.amount.hashCode() : 0);
             return value;
         }
 
         public static final class Builder {
             public com.diem.types.TypeTag token;
             public com.diem.types.AccountAddress preburn_address;
+            public @com.novi.serde.Unsigned Long amount;
 
-            public CancelBurn build() {
-                return new CancelBurn(
+            public CancelBurnWithAmount build() {
+                return new CancelBurnWithAmount(
                     token,
-                    preburn_address
+                    preburn_address,
+                    amount
                 );
             }
         }
@@ -507,7 +527,8 @@ public abstract class ScriptCall {
      * <p><b>Technical Description</b></p>
      * Creates a {@code ChildVASP} account for the sender {@code parent_vasp} at {@code child_address} with a balance of
      * {@code child_initial_balance} in {@code CoinType} and an initial authentication key of
-     * {@code auth_key_prefix | child_address}.
+     * {@code auth_key_prefix | child_address}. Authentication key prefixes, and how to construct them from an ed25519 public key is described
+     * [here](https://developers.diem.com/docs/core/accounts/#addresses-authentication-keys-and-cryptographic-keys).
      *
      * If {@code add_all_currencies} is true, the child address will have a zero balance in all available
      * currencies in the system.
@@ -517,19 +538,22 @@ public abstract class ScriptCall {
      * child accounts of the creating Parent VASP account.
      *
      * <p><b>Events</b></p>
-     * Successful execution with a {@code child_initial_balance} greater than zero will emit:
-     * <ul><li>A {@code DiemAccount::SentPaymentEvent} with the {@code payer} field being the Parent VASP's address,</li></ul>
-     * and payee field being {@code child_address}. This is emitted on the Parent VASP's
-     * {@code DiemAccount::DiemAccount} {@code sent_events} handle.
-     * <ul><li>A {@code DiemAccount::ReceivedPaymentEvent} with the  {@code payer} field being the Parent VASP's address,</li></ul>
-     * and payee field being {@code child_address}. This is emitted on the new Child VASPS's
-     * {@code DiemAccount::DiemAccount} {@code received_events} handle.
+     * Successful execution will emit:
+     * <ul><li>A {@code DiemAccount::CreateAccountEvent} with the {@code created} field being {@code child_address},</li></ul>
+     * and the {@code rold_id} field being {@code Roles::CHILD_VASP_ROLE_ID}. This is emitted on the
+     * {@code DiemAccount::AccountOperationsCapability} {@code creation_events} handle.
+     *
+     * Successful execution with a {@code child_initial_balance} greater than zero will additionaly emit:
+     * <ul><li>A {@code DiemAccount::SentPaymentEvent} with the {@code payee} field being {@code child_address}.</li></ul>
+     * This is emitted on the Parent VASP's {@code DiemAccount::DiemAccount} {@code sent_events} handle.
+     * <ul><li>A {@code DiemAccount::ReceivedPaymentEvent} with the  {@code payer} field being the Parent VASP's address.</li></ul>
+     * This is emitted on the new Child VASPS's {@code DiemAccount::DiemAccount} {@code received_events} handle.
      *
      * <p><b>Parameters</b></p>
      * | Name                    | Type         | Description                                                                                                                                 |
      * | ------                  | ------       | -------------                                                                                                                               |
      * | {@code CoinType}              | Type         | The Move type for the {@code CoinType} that the child account should be created with. {@code CoinType} must be an already-registered currency on-chain. |
-     * | {@code parent_vasp}           | {@code &signer}    | The signer reference of the sending account. Must be a Parent VASP account.                                                                 |
+     * | {@code parent_vasp}           | {@code signer}     | The reference of the sending account. Must be a Parent VASP account.                                                                        |
      * | {@code child_address}         | {@code address}    | Address of the to-be-created Child VASP account.                                                                                            |
      * | {@code auth_key_prefix}       | {@code vector<u8>} | The authentication key prefix that will be used initially for the newly created account.                                                    |
      * | {@code add_all_currencies}    | {@code bool}       | Whether to publish balance resources for all known currencies when the account is created.                                                  |
@@ -549,13 +573,13 @@ public abstract class ScriptCall {
      * | {@code Errors::INVALID_ARGUMENT}  | {@code DiemAccount::ECANNOT_CREATE_AT_VM_RESERVED}            | The {@code child_address} is the reserved address 0x0.                                         |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::create_parent_vasp_account}</li></ul>
-     * <ul><li>{@code Script::add_currency_to_account}</li></ul>
-     * <ul><li>{@code Script::rotate_authentication_key}</li></ul>
-     * <ul><li>{@code Script::add_recovery_rotation_capability}</li></ul>
-     * <ul><li>{@code Script::create_recovery_address}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_parent_vasp_account}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::add_currency_to_account}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_authentication_key}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::add_recovery_rotation_capability}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::create_recovery_address}</li></ul>
      */
-    public static final class CreateChildVaspAccount extends ScriptCall {
+    public static final class CreateChildVaspAccount extends ScriptFunctionCall {
         public final com.diem.types.TypeTag coin_type;
         public final com.diem.types.AccountAddress child_address;
         public final com.novi.serde.Bytes auth_key_prefix;
@@ -627,16 +651,24 @@ public abstract class ScriptCall {
      * {@code auth_key_prefix} | {@code addr} and a 0 balance of type {@code Currency}. If {@code add_all_currencies} is true,
      * 0 balances for all available currencies in the system will also be added. This can only be
      * invoked by an account with the TreasuryCompliance role.
+     * Authentication keys, prefixes, and how to construct them from an ed25519 public key are described
+     * [here](https://developers.diem.com/docs/core/accounts/#addresses-authentication-keys-and-cryptographic-keys).
      *
      * At the time of creation the account is also initialized with default mint tiers of (500_000,
      * 5000_000, 50_000_000, 500_000_000), and preburn areas for each currency that is added to the
      * account.
      *
+     * <p><b>Events</b></p>
+     * Successful execution will emit:
+     * <ul><li>A {@code DiemAccount::CreateAccountEvent} with the {@code created} field being {@code addr},</li></ul>
+     * and the {@code rold_id} field being {@code Roles::DESIGNATED_DEALER_ROLE_ID}. This is emitted on the
+     * {@code DiemAccount::AccountOperationsCapability} {@code creation_events} handle.
+     *
      * <p><b>Parameters</b></p>
      * | Name                 | Type         | Description                                                                                                                                         |
      * | ------               | ------       | -------------                                                                                                                                       |
      * | {@code Currency}           | Type         | The Move type for the {@code Currency} that the Designated Dealer should be initialized with. {@code Currency} must be an already-registered currency on-chain. |
-     * | {@code tc_account}         | {@code &signer}    | The signer reference of the sending account of this transaction. Must be the Treasury Compliance account.                                           |
+     * | {@code tc_account}         | {@code signer}     | The signer of the sending account of this transaction. Must be the Treasury Compliance account.                                                     |
      * | {@code sliding_nonce}      | {@code u64}        | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                                                                          |
      * | {@code addr}               | {@code address}    | Address of the to-be-created Designated Dealer account.                                                                                             |
      * | {@code auth_key_prefix}    | {@code vector<u8>} | The authentication key prefix that will be used initially for the newly created account.                                                            |
@@ -657,11 +689,11 @@ public abstract class ScriptCall {
      * | {@code Errors::ALREADY_PUBLISHED} | {@code Roles::EROLE_ID}                       | The {@code addr} address is already taken.                                                       |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::tiered_mint}</li></ul>
-     * <ul><li>{@code Script::peer_to_peer_with_metadata}</li></ul>
-     * <ul><li>{@code Script::rotate_dual_attestation_info}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::tiered_mint}</li></ul>
+     * <ul><li>{@code PaymentScripts::peer_to_peer_with_metadata}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_dual_attestation_info}</li></ul>
      */
-    public static final class CreateDesignatedDealer extends ScriptCall {
+    public static final class CreateDesignatedDealer extends ScriptFunctionCall {
         public final com.diem.types.TypeTag currency;
         public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final com.diem.types.AccountAddress addr;
@@ -740,12 +772,20 @@ public abstract class ScriptCall {
      * {@code add_all_currencies} is true, 0 balances for all available currencies in the system will
      * also be added. This can only be invoked by an TreasuryCompliance account.
      * {@code sliding_nonce} is a unique nonce for operation, see {@code SlidingNonce} for details.
+     * Authentication keys, prefixes, and how to construct them from an ed25519 public key are described
+     * [here](https://developers.diem.com/docs/core/accounts/#addresses-authentication-keys-and-cryptographic-keys).
+     *
+     * <p><b>Events</b></p>
+     * Successful execution will emit:
+     * <ul><li>A {@code DiemAccount::CreateAccountEvent} with the {@code created} field being {@code new_account_address},</li></ul>
+     * and the {@code rold_id} field being {@code Roles::PARENT_VASP_ROLE_ID}. This is emitted on the
+     * {@code DiemAccount::AccountOperationsCapability} {@code creation_events} handle.
      *
      * <p><b>Parameters</b></p>
      * | Name                  | Type         | Description                                                                                                                                                    |
      * | ------                | ------       | -------------                                                                                                                                                  |
      * | {@code CoinType}            | Type         | The Move type for the {@code CoinType} currency that the Parent VASP account should be initialized with. {@code CoinType} must be an already-registered currency on-chain. |
-     * | {@code tc_account}          | {@code &signer}    | The signer reference of the sending account of this transaction. Must be the Treasury Compliance account.                                                      |
+     * | {@code tc_account}          | {@code signer}     | The signer of the sending account of this transaction. Must be the Treasury Compliance account.                                                                |
      * | {@code sliding_nonce}       | {@code u64}        | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                                                                                     |
      * | {@code new_account_address} | {@code address}    | Address of the to-be-created Parent VASP account.                                                                                                              |
      * | {@code auth_key_prefix}     | {@code vector<u8>} | The authentication key prefix that will be used initially for the newly created account.                                                                       |
@@ -765,14 +805,14 @@ public abstract class ScriptCall {
      * | {@code Errors::ALREADY_PUBLISHED} | {@code Roles::EROLE_ID}                       | The {@code new_account_address} address is already taken.                                        |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::create_child_vasp_account}</li></ul>
-     * <ul><li>{@code Script::add_currency_to_account}</li></ul>
-     * <ul><li>{@code Script::rotate_authentication_key}</li></ul>
-     * <ul><li>{@code Script::add_recovery_rotation_capability}</li></ul>
-     * <ul><li>{@code Script::create_recovery_address}</li></ul>
-     * <ul><li>{@code Script::rotate_dual_attestation_info}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_child_vasp_account}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::add_currency_to_account}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_authentication_key}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::add_recovery_rotation_capability}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::create_recovery_address}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_dual_attestation_info}</li></ul>
      */
-    public static final class CreateParentVaspAccount extends ScriptCall {
+    public static final class CreateParentVaspAccount extends ScriptFunctionCall {
         public final com.diem.types.TypeTag coin_type;
         public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final com.diem.types.AccountAddress new_account_address;
@@ -844,7 +884,8 @@ public abstract class ScriptCall {
     /**
      * <p><b>Summary</b></p>
      * Initializes the sending account as a recovery address that may be used by
-     * the VASP that it belongs to. The sending account must be a VASP account.
+     * other accounts belonging to the same VASP as {@code account}.
+     * The sending account must be a VASP account, and can be either a child or parent VASP account.
      * Multiple recovery addresses can exist for a single VASP, but accounts in
      * each must be disjoint.
      *
@@ -856,9 +897,9 @@ public abstract class ScriptCall {
      * may be used as a recovery account for those accounts.
      *
      * <p><b>Parameters</b></p>
-     * | Name      | Type      | Description                                           |
-     * | ------    | ------    | -------------                                         |
-     * | {@code account} | {@code &signer} | The signer of the sending account of the transaction. |
+     * | Name      | Type     | Description                                           |
+     * | ------    | ------   | -------------                                         |
+     * | {@code account} | {@code signer} | The signer of the sending account of the transaction. |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category              | Error Reason                                               | Description                                                                                   |
@@ -872,7 +913,7 @@ public abstract class ScriptCall {
      * <ul><li>{@code Script::add_recovery_rotation_capability}</li></ul>
      * <ul><li>{@code Script::rotate_authentication_key_with_recovery_address}</li></ul>
      */
-    public static final class CreateRecoveryAddress extends ScriptCall {
+    public static final class CreateRecoveryAddress extends ScriptFunctionCall {
         public CreateRecoveryAddress() {
         }
 
@@ -910,15 +951,23 @@ public abstract class ScriptCall {
      * {@code ValidatorConfig::ValidatorConfig} is set to the passed in {@code human_name}.
      * This script does not add the validator to the validator set or the system,
      * but only creates the account.
+     * Authentication keys, prefixes, and how to construct them from an ed25519 public key are described
+     * [here](https://developers.diem.com/docs/core/accounts/#addresses-authentication-keys-and-cryptographic-keys).
+     *
+     * <p><b>Events</b></p>
+     * Successful execution will emit:
+     * <ul><li>A {@code DiemAccount::CreateAccountEvent} with the {@code created} field being {@code new_account_address},</li></ul>
+     * and the {@code rold_id} field being {@code Roles::VALIDATOR_ROLE_ID}. This is emitted on the
+     * {@code DiemAccount::AccountOperationsCapability} {@code creation_events} handle.
      *
      * <p><b>Parameters</b></p>
-     * | Name                  | Type         | Description                                                                                     |
-     * | ------                | ------       | -------------                                                                                   |
-     * | {@code dr_account}          | {@code &signer}    | The signer reference of the sending account of this transaction. Must be the Diem Root signer. |
-     * | {@code sliding_nonce}       | {@code u64}        | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                      |
-     * | {@code new_account_address} | {@code address}    | Address of the to-be-created Validator account.                                                 |
-     * | {@code auth_key_prefix}     | {@code vector<u8>} | The authentication key prefix that will be used initially for the newly created account.        |
-     * | {@code human_name}          | {@code vector<u8>} | ASCII-encoded human name for the validator.                                                     |
+     * | Name                  | Type         | Description                                                                              |
+     * | ------                | ------       | -------------                                                                            |
+     * | {@code dr_account}          | {@code signer}     | The signer of the sending account of this transaction. Must be the Diem Root signer.     |
+     * | {@code sliding_nonce}       | {@code u64}        | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.               |
+     * | {@code new_account_address} | {@code address}    | Address of the to-be-created Validator account.                                          |
+     * | {@code auth_key_prefix}     | {@code vector<u8>} | The authentication key prefix that will be used initially for the newly created account. |
+     * | {@code human_name}          | {@code vector<u8>} | ASCII-encoded human name for the validator.                                              |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category              | Error Reason                            | Description                                                                                |
@@ -932,15 +981,15 @@ public abstract class ScriptCall {
      * | {@code Errors::ALREADY_PUBLISHED} | {@code Roles::EROLE_ID}                       | The {@code new_account_address} address is already taken.                                        |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::add_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::create_validator_operator_account}</li></ul>
-     * <ul><li>{@code Script::register_validator_config}</li></ul>
-     * <ul><li>{@code Script::remove_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator_with_nonce_admin}</li></ul>
-     * <ul><li>{@code Script::set_validator_config_and_reconfigure}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_validator_operator_account}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::add_validator_and_reconfigure}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::register_validator_config}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::remove_validator_and_reconfigure}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_operator}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_operator_with_nonce_admin}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_config_and_reconfigure}</li></ul>
      */
-    public static final class CreateValidatorAccount extends ScriptCall {
+    public static final class CreateValidatorAccount extends ScriptFunctionCall {
         public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final com.diem.types.AccountAddress new_account_address;
         public final com.novi.serde.Bytes auth_key_prefix;
@@ -1005,15 +1054,23 @@ public abstract class ScriptCall {
      * {@code auth_key_prefix} | {@code new_account_address}. It publishes a
      * {@code ValidatorOperatorConfig::ValidatorOperatorConfig} resource with the specified {@code human_name}.
      * This script does not assign the validator operator to any validator accounts but only creates the account.
+     * Authentication key prefixes, and how to construct them from an ed25519 public key are described
+     * [here](https://developers.diem.com/docs/core/accounts/#addresses-authentication-keys-and-cryptographic-keys).
+     *
+     * <p><b>Events</b></p>
+     * Successful execution will emit:
+     * <ul><li>A {@code DiemAccount::CreateAccountEvent} with the {@code created} field being {@code new_account_address},</li></ul>
+     * and the {@code rold_id} field being {@code Roles::VALIDATOR_OPERATOR_ROLE_ID}. This is emitted on the
+     * {@code DiemAccount::AccountOperationsCapability} {@code creation_events} handle.
      *
      * <p><b>Parameters</b></p>
-     * | Name                  | Type         | Description                                                                                     |
-     * | ------                | ------       | -------------                                                                                   |
-     * | {@code dr_account}          | {@code &signer}    | The signer reference of the sending account of this transaction. Must be the Diem Root signer. |
-     * | {@code sliding_nonce}       | {@code u64}        | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                      |
-     * | {@code new_account_address} | {@code address}    | Address of the to-be-created Validator account.                                                 |
-     * | {@code auth_key_prefix}     | {@code vector<u8>} | The authentication key prefix that will be used initially for the newly created account.        |
-     * | {@code human_name}          | {@code vector<u8>} | ASCII-encoded human name for the validator.                                                     |
+     * | Name                  | Type         | Description                                                                              |
+     * | ------                | ------       | -------------                                                                            |
+     * | {@code dr_account}          | {@code signer}     | The signer of the sending account of this transaction. Must be the Diem Root signer.     |
+     * | {@code sliding_nonce}       | {@code u64}        | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.               |
+     * | {@code new_account_address} | {@code address}    | Address of the to-be-created Validator account.                                          |
+     * | {@code auth_key_prefix}     | {@code vector<u8>} | The authentication key prefix that will be used initially for the newly created account. |
+     * | {@code human_name}          | {@code vector<u8>} | ASCII-encoded human name for the validator.                                              |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category              | Error Reason                            | Description                                                                                |
@@ -1027,15 +1084,15 @@ public abstract class ScriptCall {
      * | {@code Errors::ALREADY_PUBLISHED} | {@code Roles::EROLE_ID}                       | The {@code new_account_address} address is already taken.                                        |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::create_validator_account}</li></ul>
-     * <ul><li>{@code Script::add_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::register_validator_config}</li></ul>
-     * <ul><li>{@code Script::remove_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator_with_nonce_admin}</li></ul>
-     * <ul><li>{@code Script::set_validator_config_and_reconfigure}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_validator_account}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::add_validator_and_reconfigure}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::register_validator_config}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::remove_validator_and_reconfigure}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_operator}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_operator_with_nonce_admin}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_config_and_reconfigure}</li></ul>
      */
-    public static final class CreateValidatorOperatorAccount extends ScriptCall {
+    public static final class CreateValidatorOperatorAccount extends ScriptFunctionCall {
         public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final com.diem.types.AccountAddress new_account_address;
         public final com.novi.serde.Bytes auth_key_prefix;
@@ -1114,11 +1171,11 @@ public abstract class ScriptCall {
      * under {@code 0xA550C18} with the {@code frozen_address} being the {@code to_freeze_account}.
      *
      * <p><b>Parameters</b></p>
-     * | Name                | Type      | Description                                                                                               |
-     * | ------              | ------    | -------------                                                                                             |
-     * | {@code tc_account}        | {@code &signer} | The signer reference of the sending account of this transaction. Must be the Treasury Compliance account. |
-     * | {@code sliding_nonce}     | {@code u64}     | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                                |
-     * | {@code to_freeze_account} | {@code address} | The account address to be frozen.                                                                         |
+     * | Name                | Type      | Description                                                                                     |
+     * | ------              | ------    | -------------                                                                                   |
+     * | {@code tc_account}        | {@code signer}  | The signer of the sending account of this transaction. Must be the Treasury Compliance account. |
+     * | {@code sliding_nonce}     | {@code u64}     | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                      |
+     * | {@code to_freeze_account} | {@code address} | The account address to be frozen.                                                               |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category             | Error Reason                                 | Description                                                                                |
@@ -1133,9 +1190,9 @@ public abstract class ScriptCall {
      * | {@code Errors::INVALID_ARGUMENT} | {@code AccountFreezing::ECANNOT_FREEZE_DIEM_ROOT} | {@code to_freeze_account} was the Diem Root account ({@code 0xA550C18}).                              |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::unfreeze_account}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::unfreeze_account}</li></ul>
      */
-    public static final class FreezeAccount extends ScriptCall {
+    public static final class FreezeAccount extends ScriptFunctionCall {
         public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final com.diem.types.AccountAddress to_freeze_account;
 
@@ -1178,6 +1235,64 @@ public abstract class ScriptCall {
 
     /**
      * <p><b>Summary</b></p>
+     * Initializes the Diem consensus config that is stored on-chain.  This
+     * transaction can only be sent from the Diem Root account.
+     *
+     * <p><b>Technical Description</b></p>
+     * Initializes the {@code DiemConsensusConfig} on-chain config to empty and allows future updates from DiemRoot via
+     * {@code update_diem_consensus_config}. This doesn't emit a {@code DiemConfig::NewEpochEvent}.
+     *
+     * <p><b>Parameters</b></p>
+     * | Name            | Type      | Description                                                                |
+     * | ------          | ------    | -------------                                                              |
+     * | {@code account}       | {@code signer} | Signer of the sending account. Must be the Diem Root account.               |
+     * | {@code sliding_nonce} | {@code u64}     | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction. |
+     *
+     * <p><b>Common Abort Conditions</b></p>
+     * | Error Category             | Error Reason                                  | Description                                                                                |
+     * | ----------------           | --------------                                | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                | A {@code SlidingNonce} resource is not published under {@code account}.                                |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                | The {@code sliding_nonce} is too far in the future.                                              |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}       | The {@code sliding_nonce} has been previously recorded.                                          |
+     * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::EDIEM_ROOT}                   | {@code account} is not the Diem Root account.                                                    |
+     */
+    public static final class InitializeDiemConsensusConfig extends ScriptFunctionCall {
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
+
+        public InitializeDiemConsensusConfig(@com.novi.serde.Unsigned Long sliding_nonce) {
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            this.sliding_nonce = sliding_nonce;
+        }
+
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null) return false;
+            if (getClass() != obj.getClass()) return false;
+            InitializeDiemConsensusConfig other = (InitializeDiemConsensusConfig) obj;
+            if (!java.util.Objects.equals(this.sliding_nonce, other.sliding_nonce)) { return false; }
+            return true;
+        }
+
+        public int hashCode() {
+            int value = 7;
+            value = 31 * value + (this.sliding_nonce != null ? this.sliding_nonce.hashCode() : 0);
+            return value;
+        }
+
+        public static final class Builder {
+            public @com.novi.serde.Unsigned Long sliding_nonce;
+
+            public InitializeDiemConsensusConfig build() {
+                return new InitializeDiemConsensusConfig(
+                    sliding_nonce
+                );
+            }
+        }
+    }
+
+    /**
+     * <p><b>Summary</b></p>
      * Transfers a given number of coins in a specified currency from one account to another.
      * Transfers over a specified amount defined on-chain that are between two different VASPs, or
      * other accounts that have opted-in will be subject to on-chain checks to ensure the receiver has
@@ -1188,8 +1303,11 @@ public abstract class ScriptCall {
      * <p><b>Technical Description</b></p>
      *
      * Transfers {@code amount} coins of type {@code Currency} from {@code payer} to {@code payee} with (optional) associated
-     * {@code metadata} and an (optional) {@code metadata_signature} on the message
-     * {@code metadata} | {@code Signer::address_of(payer)} | {@code amount} | {@code DualAttestation::DOMAIN_SEPARATOR}.
+     * {@code metadata} and an (optional) {@code metadata_signature} on the message of the form
+     * {@code metadata} | {@code Signer::address_of(payer)} | {@code amount} | {@code DualAttestation::DOMAIN_SEPARATOR}, that
+     * has been signed by the {@code payee}'s private key associated with the {@code compliance_public_key} held in
+     * the {@code payee}'s {@code DualAttestation::Credential}. Both the {@code Signer::address_of(payer)} and {@code amount} fields
+     * in the {@code metadata_signature} must be BCS-encoded bytes, and {@code |} denotes concatenation.
      * The {@code metadata} and {@code metadata_signature} parameters are only required if {@code amount} {@code >=}
      * {@code DualAttestation::get_cur_microdiem_limit} XDX and {@code payer} and {@code payee} are distinct VASPs.
      * However, a transaction sender can opt in to dual attestation even when it is not required
@@ -1205,7 +1323,7 @@ public abstract class ScriptCall {
      * | Name                 | Type         | Description                                                                                                                  |
      * | ------               | ------       | -------------                                                                                                                |
      * | {@code Currency}           | Type         | The Move type for the {@code Currency} being sent in this transaction. {@code Currency} must be an already-registered currency on-chain. |
-     * | {@code payer}              | {@code &signer}    | The signer reference of the sending account that coins are being transferred from.                                           |
+     * | {@code payer}              | {@code signer}     | The signer of the sending account that coins are being transferred from.                                                     |
      * | {@code payee}              | {@code address}    | The address of the account the coins are being transferred to.                                                               |
      * | {@code metadata}           | {@code vector<u8>} | Optional metadata about this payment.                                                                                        |
      * | {@code metadata_signature} | {@code vector<u8>} | Optional signature over {@code metadata} and payment information. See                                                              |
@@ -1213,23 +1331,23 @@ public abstract class ScriptCall {
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category             | Error Reason                                     | Description                                                                                                                         |
      * | ----------------           | --------------                                   | -------------                                                                                                                       |
-     * | {@code Errors::NOT_PUBLISHED}    | {@code DiemAccount::EPAYER_DOESNT_HOLD_CURRENCY}      | {@code payer} doesn't hold a balance in {@code Currency}.                                                                                       |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code DiemAccount::EINSUFFICIENT_BALANCE}            | {@code amount} is greater than {@code payer}'s balance in {@code Currency}.                                                                           |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code DiemAccount::ECOIN_DEPOSIT_IS_ZERO}            | {@code amount} is zero.                                                                                                                   |
-     * | {@code Errors::NOT_PUBLISHED}    | {@code DiemAccount::EPAYEE_DOES_NOT_EXIST}            | No account exists at the {@code payee} address.                                                                                           |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code DiemAccount::EPAYEE_CANT_ACCEPT_CURRENCY_TYPE} | An account exists at {@code payee}, but it does not accept payments in {@code Currency}.                                                        |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code DiemAccount::EPAYER_DOESNT_HOLD_CURRENCY}       | {@code payer} doesn't hold a balance in {@code Currency}.                                                                                       |
+     * | {@code Errors::LIMIT_EXCEEDED}   | {@code DiemAccount::EINSUFFICIENT_BALANCE}             | {@code amount} is greater than {@code payer}'s balance in {@code Currency}.                                                                           |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code DiemAccount::ECOIN_DEPOSIT_IS_ZERO}             | {@code amount} is zero.                                                                                                                   |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code DiemAccount::EPAYEE_DOES_NOT_EXIST}             | No account exists at the {@code payee} address.                                                                                           |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code DiemAccount::EPAYEE_CANT_ACCEPT_CURRENCY_TYPE}  | An account exists at {@code payee}, but it does not accept payments in {@code Currency}.                                                        |
      * | {@code Errors::INVALID_STATE}    | {@code AccountFreezing::EACCOUNT_FROZEN}               | The {@code payee} account is frozen.                                                                                                      |
      * | {@code Errors::INVALID_ARGUMENT} | {@code DualAttestation::EMALFORMED_METADATA_SIGNATURE} | {@code metadata_signature} is not 64 bytes.                                                                                               |
      * | {@code Errors::INVALID_ARGUMENT} | {@code DualAttestation::EINVALID_METADATA_SIGNATURE}   | {@code metadata_signature} does not verify on the against the {@code payee'}s {@code DualAttestation::Credential} {@code compliance_public_key} public key. |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code DiemAccount::EWITHDRAWAL_EXCEEDS_LIMITS}       | {@code payer} has exceeded its daily withdrawal limits for the backing coins of XDX.                                                      |
-     * | {@code Errors::LIMIT_EXCEEDED}   | {@code DiemAccount::EDEPOSIT_EXCEEDS_LIMITS}          | {@code payee} has exceeded its daily deposit limits for XDX.                                                                              |
+     * | {@code Errors::LIMIT_EXCEEDED}   | {@code DiemAccount::EWITHDRAWAL_EXCEEDS_LIMITS}        | {@code payer} has exceeded its daily withdrawal limits for the backing coins of XDX.                                                      |
+     * | {@code Errors::LIMIT_EXCEEDED}   | {@code DiemAccount::EDEPOSIT_EXCEEDS_LIMITS}           | {@code payee} has exceeded its daily deposit limits for XDX.                                                                              |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::create_child_vasp_account}</li></ul>
-     * <ul><li>{@code Script::create_parent_vasp_account}</li></ul>
-     * <ul><li>{@code Script::add_currency_to_account}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_child_vasp_account}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_parent_vasp_account}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::add_currency_to_account}</li></ul>
      */
-    public static final class PeerToPeerWithMetadata extends ScriptCall {
+    public static final class PeerToPeerWithMetadata extends ScriptFunctionCall {
         public final com.diem.types.TypeTag currency;
         public final com.diem.types.AccountAddress payee;
         public final @com.novi.serde.Unsigned Long amount;
@@ -1313,11 +1431,11 @@ public abstract class ScriptCall {
      * {@code preburn_address} set to {@code account}'s address.
      *
      * <p><b>Parameters</b></p>
-     * | Name      | Type      | Description                                                                                                                      |
-     * | ------    | ------    | -------------                                                                                                                    |
-     * | {@code Token}   | Type      | The Move type for the {@code Token} currency being moved to the preburn area. {@code Token} must be an already-registered currency on-chain. |
-     * | {@code account} | {@code &signer} | The signer reference of the sending account.                                                                                     |
-     * | {@code amount}  | {@code u64}     | The amount in {@code Token} to be moved to the preburn area.                                                                           |
+     * | Name      | Type     | Description                                                                                                                      |
+     * | ------    | ------   | -------------                                                                                                                    |
+     * | {@code Token}   | Type     | The Move type for the {@code Token} currency being moved to the preburn area. {@code Token} must be an already-registered currency on-chain. |
+     * | {@code account} | {@code signer} | The signer of the sending account.                                                                                               |
+     * | {@code amount}  | {@code u64}    | The amount in {@code Token} to be moved to the preburn area.                                                                           |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category           | Error Reason                                             | Description                                                                             |
@@ -1332,11 +1450,11 @@ public abstract class ScriptCall {
      * | {@code Errors::REQUIRES_ROLE}  | {@code Roles::EDESIGNATED_DEALER}                              | The {@code account} did not have the role of DesignatedDealer.                                |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::cancel_burn}</li></ul>
-     * <ul><li>{@code Script::burn}</li></ul>
-     * <ul><li>{@code Script::burn_txn_fees}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::cancel_burn_with_amount}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::burn_with_amount}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::burn_txn_fees}</li></ul>
      */
-    public static final class Preburn extends ScriptCall {
+    public static final class Preburn extends ScriptFunctionCall {
         public final com.diem.types.TypeTag token;
         public final @com.novi.serde.Unsigned Long amount;
 
@@ -1379,21 +1497,22 @@ public abstract class ScriptCall {
 
     /**
      * <p><b>Summary</b></p>
-     * Rotates the authentication key of the sending account to the
-     * newly-specified public key and publishes a new shared authentication key
-     * under the sender's account. Any account can send this transaction.
+     * Rotates the authentication key of the sending account to the newly-specified ed25519 public key and
+     * publishes a new shared authentication key derived from that public key under the sender's account.
+     * Any account can send this transaction.
      *
      * <p><b>Technical Description</b></p>
-     * Rotates the authentication key of the sending account to {@code public_key},
+     * Rotates the authentication key of the sending account to the
+     * [authentication key derived from {@code public_key}](https://developers.diem.com/docs/core/accounts/#addresses-authentication-keys-and-cryptographic-keys)
      * and publishes a {@code SharedEd25519PublicKey::SharedEd25519PublicKey} resource
      * containing the 32-byte ed25519 {@code public_key} and the {@code DiemAccount::KeyRotationCapability} for
      * {@code account} under {@code account}.
      *
      * <p><b>Parameters</b></p>
-     * | Name         | Type         | Description                                                                               |
-     * | ------       | ------       | -------------                                                                             |
-     * | {@code account}    | {@code &signer}    | The signer reference of the sending account of the transaction.                           |
-     * | {@code public_key} | {@code vector<u8>} | 32-byte Ed25519 public key for {@code account}' authentication key to be rotated to and stored. |
+     * | Name         | Type         | Description                                                                                        |
+     * | ------       | ------       | -------------                                                                                      |
+     * | {@code account}    | {@code signer}     | The signer of the sending account of the transaction.                                              |
+     * | {@code public_key} | {@code vector<u8>} | A valid 32-byte Ed25519 public key for {@code account}'s authentication key to be rotated to and stored. |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category              | Error Reason                                               | Description                                                                                         |
@@ -1403,9 +1522,9 @@ public abstract class ScriptCall {
      * | {@code Errors::INVALID_ARGUMENT}  | {@code SharedEd25519PublicKey::EMALFORMED_PUBLIC_KEY}            | {@code public_key} is an invalid ed25519 public key.                                                      |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::rotate_shared_ed25519_public_key}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_shared_ed25519_public_key}</li></ul>
      */
-    public static final class PublishSharedEd25519PublicKey extends ScriptCall {
+    public static final class PublishSharedEd25519PublicKey extends ScriptFunctionCall {
         public final com.novi.serde.Bytes public_key;
 
         public PublishSharedEd25519PublicKey(com.novi.serde.Bytes public_key) {
@@ -1453,13 +1572,13 @@ public abstract class ScriptCall {
      * only "locally" under the {@code validator_account} account address.
      *
      * <p><b>Parameters</b></p>
-     * | Name                          | Type         | Description                                                                                                                  |
-     * | ------                        | ------       | -------------                                                                                                                |
-     * | {@code validator_operator_account}  | {@code &signer}    | Signer reference of the sending account. Must be the registered validator operator for the validator at {@code validator_address}. |
-     * | {@code validator_account}           | {@code address}    | The address of the validator's {@code ValidatorConfig::ValidatorConfig} resource being updated.                                    |
-     * | {@code consensus_pubkey}            | {@code vector<u8>} | New Ed25519 public key to be used in the updated {@code ValidatorConfig::ValidatorConfig}.                                         |
-     * | {@code validator_network_addresses} | {@code vector<u8>} | New set of {@code validator_network_addresses} to be used in the updated {@code ValidatorConfig::ValidatorConfig}.                       |
-     * | {@code fullnode_network_addresses}  | {@code vector<u8>} | New set of {@code fullnode_network_addresses} to be used in the updated {@code ValidatorConfig::ValidatorConfig}.                        |
+     * | Name                          | Type         | Description                                                                                                        |
+     * | ------                        | ------       | -------------                                                                                                      |
+     * | {@code validator_operator_account}  | {@code signer}     | Signer of the sending account. Must be the registered validator operator for the validator at {@code validator_address}. |
+     * | {@code validator_account}           | {@code address}    | The address of the validator's {@code ValidatorConfig::ValidatorConfig} resource being updated.                          |
+     * | {@code consensus_pubkey}            | {@code vector<u8>} | New Ed25519 public key to be used in the updated {@code ValidatorConfig::ValidatorConfig}.                               |
+     * | {@code validator_network_addresses} | {@code vector<u8>} | New set of {@code validator_network_addresses} to be used in the updated {@code ValidatorConfig::ValidatorConfig}.             |
+     * | {@code fullnode_network_addresses}  | {@code vector<u8>} | New set of {@code fullnode_network_addresses} to be used in the updated {@code ValidatorConfig::ValidatorConfig}.              |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category             | Error Reason                                   | Description                                                                                           |
@@ -1469,15 +1588,15 @@ public abstract class ScriptCall {
      * | {@code Errors::INVALID_ARGUMENT} | {@code ValidatorConfig::EINVALID_CONSENSUS_KEY}      | {@code consensus_pubkey} is not a valid ed25519 public key.                                                 |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::create_validator_account}</li></ul>
-     * <ul><li>{@code Script::create_validator_operator_account}</li></ul>
-     * <ul><li>{@code Script::add_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::remove_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator_with_nonce_admin}</li></ul>
-     * <ul><li>{@code Script::set_validator_config_and_reconfigure}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_validator_account}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_validator_operator_account}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::add_validator_and_reconfigure}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::remove_validator_and_reconfigure}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_operator}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_operator_with_nonce_admin}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_config_and_reconfigure}</li></ul>
      */
-    public static final class RegisterValidatorConfig extends ScriptCall {
+    public static final class RegisterValidatorConfig extends ScriptFunctionCall {
         public final com.diem.types.AccountAddress validator_account;
         public final com.novi.serde.Bytes consensus_pubkey;
         public final com.novi.serde.Bytes validator_network_addresses;
@@ -1548,7 +1667,7 @@ public abstract class ScriptCall {
      * <p><b>Parameters</b></p>
      * | Name                | Type         | Description                                                                                                                        |
      * | ------              | ------       | -------------                                                                                                                      |
-     * | {@code dr_account}        | {@code &signer}    | The signer reference of the sending account of this transaction. Must be the Diem Root signer.                                    |
+     * | {@code dr_account}        | {@code signer}     | The signer of the sending account of this transaction. Must be the Diem Root signer.                                               |
      * | {@code sliding_nonce}     | {@code u64}        | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                                                         |
      * | {@code validator_name}    | {@code vector<u8>} | ASCII-encoded human name for the validator. Must match the human name in the {@code ValidatorConfig::ValidatorConfig} for the validator. |
      * | {@code validator_address} | {@code address}    | The validator account address to be removed from the validator set.                                                                |
@@ -1568,15 +1687,15 @@ public abstract class ScriptCall {
      * | {@code Errors::INVALID_STATE}    | {@code DiemConfig::EINVALID_BLOCK_TIME}      | An invalid time value was encountered in reconfiguration. Unlikely to occur.                    |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::create_validator_account}</li></ul>
-     * <ul><li>{@code Script::create_validator_operator_account}</li></ul>
-     * <ul><li>{@code Script::register_validator_config}</li></ul>
-     * <ul><li>{@code Script::add_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator_with_nonce_admin}</li></ul>
-     * <ul><li>{@code Script::set_validator_config_and_reconfigure}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_validator_account}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_validator_operator_account}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::register_validator_config}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::add_validator_and_reconfigure}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_operator}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_operator_with_nonce_admin}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_config_and_reconfigure}</li></ul>
      */
-    public static final class RemoveValidatorAndReconfigure extends ScriptCall {
+    public static final class RemoveValidatorAndReconfigure extends ScriptFunctionCall {
         public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final com.novi.serde.Bytes validator_name;
         public final com.diem.types.AccountAddress validator_address;
@@ -1626,32 +1745,32 @@ public abstract class ScriptCall {
 
     /**
      * <p><b>Summary</b></p>
-     * Rotates the transaction sender's authentication key to the supplied new authentication key. May
-     * be sent by any account.
+     * Rotates the {@code account}'s authentication key to the supplied new authentication key. May be sent by any account.
      *
      * <p><b>Technical Description</b></p>
-     * Rotate the {@code account}'s {@code DiemAccount::DiemAccount} {@code authentication_key} field to {@code new_key}.
-     * {@code new_key} must be a valid ed25519 public key, and {@code account} must not have previously delegated
-     * its {@code DiemAccount::KeyRotationCapability}.
+     * Rotate the {@code account}'s {@code DiemAccount::DiemAccount} {@code authentication_key}
+     * field to {@code new_key}. {@code new_key} must be a valid authentication key that
+     * corresponds to an ed25519 public key as described [here](https://developers.diem.com/docs/core/accounts/#addresses-authentication-keys-and-cryptographic-keys),
+     * and {@code account} must not have previously delegated its {@code DiemAccount::KeyRotationCapability}.
      *
      * <p><b>Parameters</b></p>
-     * | Name      | Type         | Description                                                 |
-     * | ------    | ------       | -------------                                               |
-     * | {@code account} | {@code &signer}    | Signer reference of the sending account of the transaction. |
-     * | {@code new_key} | {@code vector<u8>} | New ed25519 public key to be used for {@code account}.            |
+     * | Name      | Type         | Description                                       |
+     * | ------    | ------       | -------------                                     |
+     * | {@code account} | {@code signer}     | Signer of the sending account of the transaction. |
+     * | {@code new_key} | {@code vector<u8>} | New authentication key to be used for {@code account}.  |
      *
      * <p><b>Common Abort Conditions</b></p>
-     * | Error Category             | Error Reason                                               | Description                                                                              |
-     * | ----------------           | --------------                                             | -------------                                                                            |
-     * | {@code Errors::INVALID_STATE}    | {@code DiemAccount::EKEY_ROTATION_CAPABILITY_ALREADY_EXTRACTED} | {@code account} has already delegated/extracted its {@code DiemAccount::KeyRotationCapability}.     |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code DiemAccount::EMALFORMED_AUTHENTICATION_KEY}              | {@code new_key} was an invalid length.                                                         |
+     * | Error Category             | Error Reason                                              | Description                                                                         |
+     * | ----------------           | --------------                                            | -------------                                                                       |
+     * | {@code Errors::INVALID_STATE}    | {@code DiemAccount::EKEY_ROTATION_CAPABILITY_ALREADY_EXTRACTED} | {@code account} has already delegated/extracted its {@code DiemAccount::KeyRotationCapability}. |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code DiemAccount::EMALFORMED_AUTHENTICATION_KEY}              | {@code new_key} was an invalid length.                                                    |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::rotate_authentication_key_with_nonce}</li></ul>
-     * <ul><li>{@code Script::rotate_authentication_key_with_nonce_admin}</li></ul>
-     * <ul><li>{@code Script::rotate_authentication_key_with_recovery_address}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_authentication_key_with_nonce}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_authentication_key_with_nonce_admin}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_authentication_key_with_recovery_address}</li></ul>
      */
-    public static final class RotateAuthenticationKey extends ScriptCall {
+    public static final class RotateAuthenticationKey extends ScriptFunctionCall {
         public final com.novi.serde.Bytes new_key;
 
         public RotateAuthenticationKey(com.novi.serde.Bytes new_key) {
@@ -1692,16 +1811,17 @@ public abstract class ScriptCall {
      * Compliance or Diem Root accounts).
      *
      * <p><b>Technical Description</b></p>
-     * Rotates the {@code account}'s {@code DiemAccount::DiemAccount} {@code authentication_key} field to {@code new_key}.
-     * {@code new_key} must be a valid ed25519 public key, and {@code account} must not have previously delegated
-     * its {@code DiemAccount::KeyRotationCapability}.
+     * Rotates the {@code account}'s {@code DiemAccount::DiemAccount} {@code authentication_key}
+     * field to {@code new_key}. {@code new_key} must be a valid authentication key that
+     * corresponds to an ed25519 public key as described [here](https://developers.diem.com/docs/core/accounts/#addresses-authentication-keys-and-cryptographic-keys),
+     * and {@code account} must not have previously delegated its {@code DiemAccount::KeyRotationCapability}.
      *
      * <p><b>Parameters</b></p>
      * | Name            | Type         | Description                                                                |
      * | ------          | ------       | -------------                                                              |
-     * | {@code account}       | {@code &signer}    | Signer reference of the sending account of the transaction.                |
+     * | {@code account}       | {@code signer}     | Signer of the sending account of the transaction.                          |
      * | {@code sliding_nonce} | {@code u64}        | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction. |
-     * | {@code new_key}       | {@code vector<u8>} | New ed25519 public key to be used for {@code account}.                           |
+     * | {@code new_key}       | {@code vector<u8>} | New authentication key to be used for {@code account}.                           |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category             | Error Reason                                               | Description                                                                                |
@@ -1714,11 +1834,11 @@ public abstract class ScriptCall {
      * | {@code Errors::INVALID_ARGUMENT} | {@code DiemAccount::EMALFORMED_AUTHENTICATION_KEY}              | {@code new_key} was an invalid length.                                                           |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::rotate_authentication_key}</li></ul>
-     * <ul><li>{@code Script::rotate_authentication_key_with_nonce_admin}</li></ul>
-     * <ul><li>{@code Script::rotate_authentication_key_with_recovery_address}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_authentication_key}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_authentication_key_with_nonce_admin}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_authentication_key_with_recovery_address}</li></ul>
      */
-    public static final class RotateAuthenticationKeyWithNonce extends ScriptCall {
+    public static final class RotateAuthenticationKeyWithNonce extends ScriptFunctionCall {
         public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final com.novi.serde.Bytes new_key;
 
@@ -1766,33 +1886,34 @@ public abstract class ScriptCall {
      *
      * <p><b>Technical Description</b></p>
      * Rotate the {@code account}'s {@code DiemAccount::DiemAccount} {@code authentication_key} field to {@code new_key}.
-     * {@code new_key} must be a valid ed25519 public key, and {@code account} must not have previously delegated
-     * its {@code DiemAccount::KeyRotationCapability}.
+     * {@code new_key} must be a valid authentication key that corresponds to an ed25519
+     * public key as described [here](https://developers.diem.com/docs/core/accounts/#addresses-authentication-keys-and-cryptographic-keys),
+     * and {@code account} must not have previously delegated its {@code DiemAccount::KeyRotationCapability}.
      *
      * <p><b>Parameters</b></p>
-     * | Name            | Type         | Description                                                                                                  |
-     * | ------          | ------       | -------------                                                                                                |
-     * | {@code dr_account}    | {@code &signer}    | The signer reference of the sending account of the write set transaction. May only be the Diem Root signer. |
-     * | {@code account}       | {@code &signer}    | Signer reference of account specified in the {@code execute_as} field of the write set transaction.                |
-     * | {@code sliding_nonce} | {@code u64}        | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction for Diem Root.                    |
-     * | {@code new_key}       | {@code vector<u8>} | New ed25519 public key to be used for {@code account}.                                                             |
+     * | Name            | Type         | Description                                                                                       |
+     * | ------          | ------       | -------------                                                                                     |
+     * | {@code dr_account}    | {@code signer}     | The signer of the sending account of the write set transaction. May only be the Diem Root signer. |
+     * | {@code account}       | {@code signer}     | Signer of account specified in the {@code execute_as} field of the write set transaction.               |
+     * | {@code sliding_nonce} | {@code u64}        | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction for Diem Root.          |
+     * | {@code new_key}       | {@code vector<u8>} | New authentication key to be used for {@code account}.                                                  |
      *
      * <p><b>Common Abort Conditions</b></p>
-     * | Error Category             | Error Reason                                               | Description                                                                                                |
-     * | ----------------           | --------------                                             | -------------                                                                                              |
-     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                             | A {@code SlidingNonce} resource is not published under {@code dr_account}.                                             |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                             | The {@code sliding_nonce} in {@code dr_account} is too old and it's impossible to determine if it's duplicated or not. |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                             | The {@code sliding_nonce} in {@code dr_account} is too far in the future.                                              |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}                    | The {@code sliding_nonce} in{@code  dr_account} has been previously recorded.                                          |
-     * | {@code Errors::INVALID_STATE}    | {@code DiemAccount::EKEY_ROTATION_CAPABILITY_ALREADY_EXTRACTED} | {@code account} has already delegated/extracted its {@code DiemAccount::KeyRotationCapability}.                       |
+     * | Error Category             | Error Reason                                              | Description                                                                                                |
+     * | ----------------           | --------------                                            | -------------                                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                            | A {@code SlidingNonce} resource is not published under {@code dr_account}.                                             |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                            | The {@code sliding_nonce} in {@code dr_account} is too old and it's impossible to determine if it's duplicated or not. |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                            | The {@code sliding_nonce} in {@code dr_account} is too far in the future.                                              |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}                   | The {@code sliding_nonce} in{@code  dr_account} has been previously recorded.                                          |
+     * | {@code Errors::INVALID_STATE}    | {@code DiemAccount::EKEY_ROTATION_CAPABILITY_ALREADY_EXTRACTED} | {@code account} has already delegated/extracted its {@code DiemAccount::KeyRotationCapability}.                        |
      * | {@code Errors::INVALID_ARGUMENT} | {@code DiemAccount::EMALFORMED_AUTHENTICATION_KEY}              | {@code new_key} was an invalid length.                                                                           |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::rotate_authentication_key}</li></ul>
-     * <ul><li>{@code Script::rotate_authentication_key_with_nonce}</li></ul>
-     * <ul><li>{@code Script::rotate_authentication_key_with_recovery_address}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_authentication_key}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_authentication_key_with_nonce}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_authentication_key_with_recovery_address}</li></ul>
      */
-    public static final class RotateAuthenticationKeyWithNonceAdmin extends ScriptCall {
+    public static final class RotateAuthenticationKeyWithNonceAdmin extends ScriptFunctionCall {
         public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final com.novi.serde.Bytes new_key;
 
@@ -1837,37 +1958,38 @@ public abstract class ScriptCall {
      * <p><b>Summary</b></p>
      * Rotates the authentication key of a specified account that is part of a recovery address to a
      * new authentication key. Only used for accounts that are part of a recovery address (see
-     * {@code Script::add_recovery_rotation_capability} for account restrictions).
+     * {@code AccountAdministrationScripts::add_recovery_rotation_capability} for account restrictions).
      *
      * <p><b>Technical Description</b></p>
      * Rotates the authentication key of the {@code to_recover} account to {@code new_key} using the
      * {@code DiemAccount::KeyRotationCapability} stored in the {@code RecoveryAddress::RecoveryAddress} resource
-     * published under {@code recovery_address}. This transaction can be sent either by the {@code to_recover}
-     * account, or by the account where the {@code RecoveryAddress::RecoveryAddress} resource is published
-     * that contains {@code to_recover}'s {@code DiemAccount::KeyRotationCapability}.
+     * published under {@code recovery_address}. {@code new_key} must be a valide authentication key as described
+     * [here](https://developers.diem.com/docs/core/accounts/#addresses-authentication-keys-and-cryptographic-keys).
+     * This transaction can be sent either by the {@code to_recover} account, or by the account where the
+     * {@code RecoveryAddress::RecoveryAddress} resource is published that contains {@code to_recover}'s {@code DiemAccount::KeyRotationCapability}.
      *
      * <p><b>Parameters</b></p>
-     * | Name               | Type         | Description                                                                                                                    |
-     * | ------             | ------       | -------------                                                                                                                  |
-     * | {@code account}          | {@code &signer}    | Signer reference of the sending account of the transaction.                                                                    |
+     * | Name               | Type         | Description                                                                                                                   |
+     * | ------             | ------       | -------------                                                                                                                 |
+     * | {@code account}          | {@code signer}     | Signer of the sending account of the transaction.                                                                             |
      * | {@code recovery_address} | {@code address}    | Address where {@code RecoveryAddress::RecoveryAddress} that holds {@code to_recover}'s {@code DiemAccount::KeyRotationCapability} is published. |
-     * | {@code to_recover}       | {@code address}    | The address of the account whose authentication key will be updated.                                                           |
-     * | {@code new_key}          | {@code vector<u8>} | New ed25519 public key to be used for the account at the {@code to_recover} address.                                                 |
+     * | {@code to_recover}       | {@code address}    | The address of the account whose authentication key will be updated.                                                          |
+     * | {@code new_key}          | {@code vector<u8>} | New authentication key to be used for the account at the {@code to_recover} address.                                                |
      *
      * <p><b>Common Abort Conditions</b></p>
-     * | Error Category             | Error Reason                                  | Description                                                                                                                                          |
-     * | ----------------           | --------------                                | -------------                                                                                                                                        |
-     * | {@code Errors::NOT_PUBLISHED}    | {@code RecoveryAddress::ERECOVERY_ADDRESS}          | {@code recovery_address} does not have a {@code RecoveryAddress::RecoveryAddress} resource published under it.                                                   |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code RecoveryAddress::ECANNOT_ROTATE_KEY}         | The address of {@code account} is not {@code recovery_address} or {@code to_recover}.                                                                                  |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code RecoveryAddress::EACCOUNT_NOT_RECOVERABLE}   | {@code to_recover}'s {@code DiemAccount::KeyRotationCapability}  is not in the {@code RecoveryAddress::RecoveryAddress}  resource published under {@code recovery_address}. |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code DiemAccount::EMALFORMED_AUTHENTICATION_KEY} | {@code new_key} was an invalid length.                                                                                                                     |
+     * | Error Category             | Error Reason                                 | Description                                                                                                                                         |
+     * | ----------------           | --------------                               | -------------                                                                                                                                       |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code RecoveryAddress::ERECOVERY_ADDRESS}         | {@code recovery_address} does not have a {@code RecoveryAddress::RecoveryAddress} resource published under it.                                                  |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code RecoveryAddress::ECANNOT_ROTATE_KEY}        | The address of {@code account} is not {@code recovery_address} or {@code to_recover}.                                                                                 |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code RecoveryAddress::EACCOUNT_NOT_RECOVERABLE}  | {@code to_recover}'s {@code DiemAccount::KeyRotationCapability}  is not in the {@code RecoveryAddress::RecoveryAddress}  resource published under {@code recovery_address}. |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code DiemAccount::EMALFORMED_AUTHENTICATION_KEY} | {@code new_key} was an invalid length.                                                                                                                    |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::rotate_authentication_key}</li></ul>
-     * <ul><li>{@code Script::rotate_authentication_key_with_nonce}</li></ul>
-     * <ul><li>{@code Script::rotate_authentication_key_with_nonce_admin}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_authentication_key}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_authentication_key_with_nonce}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_authentication_key_with_nonce_admin}</li></ul>
      */
-    public static final class RotateAuthenticationKeyWithRecoveryAddress extends ScriptCall {
+    public static final class RotateAuthenticationKeyWithRecoveryAddress extends ScriptFunctionCall {
         public final com.diem.types.AccountAddress recovery_address;
         public final com.diem.types.AccountAddress to_recover;
         public final com.novi.serde.Bytes new_key;
@@ -1938,7 +2060,7 @@ public abstract class ScriptCall {
      * <p><b>Parameters</b></p>
      * | Name      | Type         | Description                                                               |
      * | ------    | ------       | -------------                                                             |
-     * | {@code account} | {@code &signer}    | Signer reference of the sending account of the transaction.               |
+     * | {@code account} | {@code signer}     | Signer of the sending account of the transaction.                         |
      * | {@code new_url} | {@code vector<u8>} | ASCII-encoded url to be used for off-chain communication with {@code account}.  |
      * | {@code new_key} | {@code vector<u8>} | New ed25519 public key to be used for on-chain dual attestation checking. |
      *
@@ -1949,11 +2071,11 @@ public abstract class ScriptCall {
      * | {@code Errors::INVALID_ARGUMENT} | {@code DualAttestation::EINVALID_PUBLIC_KEY} | {@code new_key} is not a valid ed25519 public key.                               |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::create_parent_vasp_account}</li></ul>
-     * <ul><li>{@code Script::create_designated_dealer}</li></ul>
-     * <ul><li>{@code Script::rotate_dual_attestation_info}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_parent_vasp_account}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_designated_dealer}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_dual_attestation_info}</li></ul>
      */
-    public static final class RotateDualAttestationInfo extends ScriptCall {
+    public static final class RotateDualAttestationInfo extends ScriptFunctionCall {
         public final com.novi.serde.Bytes new_url;
         public final com.novi.serde.Bytes new_key;
 
@@ -1998,19 +2120,20 @@ public abstract class ScriptCall {
      * <p><b>Summary</b></p>
      * Rotates the authentication key in a {@code SharedEd25519PublicKey}. This transaction can be sent by
      * any account that has previously published a shared ed25519 public key using
-     * {@code Script::publish_shared_ed25519_public_key}.
+     * {@code AccountAdministrationScripts::publish_shared_ed25519_public_key}.
      *
      * <p><b>Technical Description</b></p>
-     * This first rotates the public key stored in {@code account}'s
+     * {@code public_key} must be a valid ed25519 public key.  This transaction first rotates the public key stored in {@code account}'s
      * {@code SharedEd25519PublicKey::SharedEd25519PublicKey} resource to {@code public_key}, after which it
-     * rotates the authentication key using the capability stored in {@code account}'s
-     * {@code SharedEd25519PublicKey::SharedEd25519PublicKey} to a new value derived from {@code public_key}
+     * rotates the {@code account}'s authentication key to the new authentication key derived from {@code public_key} as defined
+     * [here](https://developers.diem.com/docs/core/accounts/#addresses-authentication-keys-and-cryptographic-keys)
+     * using the {@code DiemAccount::KeyRotationCapability} stored in {@code account}'s {@code SharedEd25519PublicKey::SharedEd25519PublicKey}.
      *
      * <p><b>Parameters</b></p>
-     * | Name         | Type         | Description                                                     |
-     * | ------       | ------       | -------------                                                   |
-     * | {@code account}    | {@code &signer}    | The signer reference of the sending account of the transaction. |
-     * | {@code public_key} | {@code vector<u8>} | 32-byte Ed25519 public key.                                     |
+     * | Name         | Type         | Description                                           |
+     * | ------       | ------       | -------------                                         |
+     * | {@code account}    | {@code signer}     | The signer of the sending account of the transaction. |
+     * | {@code public_key} | {@code vector<u8>} | 32-byte Ed25519 public key.                           |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category             | Error Reason                                    | Description                                                                                   |
@@ -2019,9 +2142,9 @@ public abstract class ScriptCall {
      * | {@code Errors::INVALID_ARGUMENT} | {@code SharedEd25519PublicKey::EMALFORMED_PUBLIC_KEY} | {@code public_key} is an invalid ed25519 public key.                                                |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::publish_shared_ed25519_public_key}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::publish_shared_ed25519_public_key}</li></ul>
      */
-    public static final class RotateSharedEd25519PublicKey extends ScriptCall {
+    public static final class RotateSharedEd25519PublicKey extends ScriptFunctionCall {
         public final com.novi.serde.Bytes public_key;
 
         public RotateSharedEd25519PublicKey(com.novi.serde.Bytes public_key) {
@@ -2057,6 +2180,153 @@ public abstract class ScriptCall {
 
     /**
      * <p><b>Summary</b></p>
+     * Updates the gas constants stored on chain and used by the VM for gas
+     * metering. This transaction can only be sent from the Diem Root account.
+     *
+     * <p><b>Technical Description</b></p>
+     * Updates the on-chain config holding the {@code DiemVMConfig} and emits a
+     * {@code DiemConfig::NewEpochEvent} to trigger a reconfiguration of the system.
+     *
+     * <p><b>Parameters</b></p>
+     * | Name                                | Type     | Description                                                                                            |
+     * | ------                              | ------   | -------------                                                                                          |
+     * | {@code account}                           | {@code signer} | Signer of the sending account. Must be the Diem Root account.                                          |
+     * | {@code sliding_nonce}                     | {@code u64}    | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                             |
+     * | {@code global_memory_per_byte_cost}       | {@code u64}    | The new cost to read global memory per-byte to be used for gas metering.                               |
+     * | {@code global_memory_per_byte_write_cost} | {@code u64}    | The new cost to write global memory per-byte to be used for gas metering.                              |
+     * | {@code min_transaction_gas_units}         | {@code u64}    | The new flat minimum amount of gas required for any transaction.                                       |
+     * | {@code large_transaction_cutoff}          | {@code u64}    | The new size over which an additional charge will be assessed for each additional byte.                |
+     * | {@code intrinsic_gas_per_byte}            | {@code u64}    | The new number of units of gas that to be charged per-byte over the new {@code large_transaction_cutoff}.    |
+     * | {@code maximum_number_of_gas_units}       | {@code u64}    | The new maximum number of gas units that can be set in a transaction.                                  |
+     * | {@code min_price_per_gas_unit}            | {@code u64}    | The new minimum gas price that can be set for a transaction.                                           |
+     * | {@code max_price_per_gas_unit}            | {@code u64}    | The new maximum gas price that can be set for a transaction.                                           |
+     * | {@code max_transaction_size_in_bytes}     | {@code u64}    | The new maximum size of a transaction that can be processed.                                           |
+     * | {@code gas_unit_scaling_factor}           | {@code u64}    | The new scaling factor to use when scaling between external and internal gas units.                    |
+     * | {@code default_account_size}              | {@code u64}    | The new default account size to use when assessing final costs for reads and writes to global storage. |
+     *
+     * <p><b>Common Abort Conditions</b></p>
+     * | Error Category             | Error Reason                                | Description                                                                                |
+     * | ----------------           | --------------                              | -------------                                                                              |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code DiemVMConfig::EGAS_CONSTANT_INCONSISTENCY} | The provided gas constants are inconsistent.                                               |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}              | A {@code SlidingNonce} resource is not published under {@code account}.                                |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}              | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}              | The {@code sliding_nonce} is too far in the future.                                              |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}     | The {@code sliding_nonce} has been previously recorded.                                          |
+     * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::EDIEM_ROOT}                 | {@code account} is not the Diem Root account.                                                    |
+     */
+    public static final class SetGasConstants extends ScriptFunctionCall {
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
+        public final @com.novi.serde.Unsigned Long global_memory_per_byte_cost;
+        public final @com.novi.serde.Unsigned Long global_memory_per_byte_write_cost;
+        public final @com.novi.serde.Unsigned Long min_transaction_gas_units;
+        public final @com.novi.serde.Unsigned Long large_transaction_cutoff;
+        public final @com.novi.serde.Unsigned Long intrinsic_gas_per_byte;
+        public final @com.novi.serde.Unsigned Long maximum_number_of_gas_units;
+        public final @com.novi.serde.Unsigned Long min_price_per_gas_unit;
+        public final @com.novi.serde.Unsigned Long max_price_per_gas_unit;
+        public final @com.novi.serde.Unsigned Long max_transaction_size_in_bytes;
+        public final @com.novi.serde.Unsigned Long gas_unit_scaling_factor;
+        public final @com.novi.serde.Unsigned Long default_account_size;
+
+        public SetGasConstants(@com.novi.serde.Unsigned Long sliding_nonce, @com.novi.serde.Unsigned Long global_memory_per_byte_cost, @com.novi.serde.Unsigned Long global_memory_per_byte_write_cost, @com.novi.serde.Unsigned Long min_transaction_gas_units, @com.novi.serde.Unsigned Long large_transaction_cutoff, @com.novi.serde.Unsigned Long intrinsic_gas_per_byte, @com.novi.serde.Unsigned Long maximum_number_of_gas_units, @com.novi.serde.Unsigned Long min_price_per_gas_unit, @com.novi.serde.Unsigned Long max_price_per_gas_unit, @com.novi.serde.Unsigned Long max_transaction_size_in_bytes, @com.novi.serde.Unsigned Long gas_unit_scaling_factor, @com.novi.serde.Unsigned Long default_account_size) {
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(global_memory_per_byte_cost, "global_memory_per_byte_cost must not be null");
+            java.util.Objects.requireNonNull(global_memory_per_byte_write_cost, "global_memory_per_byte_write_cost must not be null");
+            java.util.Objects.requireNonNull(min_transaction_gas_units, "min_transaction_gas_units must not be null");
+            java.util.Objects.requireNonNull(large_transaction_cutoff, "large_transaction_cutoff must not be null");
+            java.util.Objects.requireNonNull(intrinsic_gas_per_byte, "intrinsic_gas_per_byte must not be null");
+            java.util.Objects.requireNonNull(maximum_number_of_gas_units, "maximum_number_of_gas_units must not be null");
+            java.util.Objects.requireNonNull(min_price_per_gas_unit, "min_price_per_gas_unit must not be null");
+            java.util.Objects.requireNonNull(max_price_per_gas_unit, "max_price_per_gas_unit must not be null");
+            java.util.Objects.requireNonNull(max_transaction_size_in_bytes, "max_transaction_size_in_bytes must not be null");
+            java.util.Objects.requireNonNull(gas_unit_scaling_factor, "gas_unit_scaling_factor must not be null");
+            java.util.Objects.requireNonNull(default_account_size, "default_account_size must not be null");
+            this.sliding_nonce = sliding_nonce;
+            this.global_memory_per_byte_cost = global_memory_per_byte_cost;
+            this.global_memory_per_byte_write_cost = global_memory_per_byte_write_cost;
+            this.min_transaction_gas_units = min_transaction_gas_units;
+            this.large_transaction_cutoff = large_transaction_cutoff;
+            this.intrinsic_gas_per_byte = intrinsic_gas_per_byte;
+            this.maximum_number_of_gas_units = maximum_number_of_gas_units;
+            this.min_price_per_gas_unit = min_price_per_gas_unit;
+            this.max_price_per_gas_unit = max_price_per_gas_unit;
+            this.max_transaction_size_in_bytes = max_transaction_size_in_bytes;
+            this.gas_unit_scaling_factor = gas_unit_scaling_factor;
+            this.default_account_size = default_account_size;
+        }
+
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null) return false;
+            if (getClass() != obj.getClass()) return false;
+            SetGasConstants other = (SetGasConstants) obj;
+            if (!java.util.Objects.equals(this.sliding_nonce, other.sliding_nonce)) { return false; }
+            if (!java.util.Objects.equals(this.global_memory_per_byte_cost, other.global_memory_per_byte_cost)) { return false; }
+            if (!java.util.Objects.equals(this.global_memory_per_byte_write_cost, other.global_memory_per_byte_write_cost)) { return false; }
+            if (!java.util.Objects.equals(this.min_transaction_gas_units, other.min_transaction_gas_units)) { return false; }
+            if (!java.util.Objects.equals(this.large_transaction_cutoff, other.large_transaction_cutoff)) { return false; }
+            if (!java.util.Objects.equals(this.intrinsic_gas_per_byte, other.intrinsic_gas_per_byte)) { return false; }
+            if (!java.util.Objects.equals(this.maximum_number_of_gas_units, other.maximum_number_of_gas_units)) { return false; }
+            if (!java.util.Objects.equals(this.min_price_per_gas_unit, other.min_price_per_gas_unit)) { return false; }
+            if (!java.util.Objects.equals(this.max_price_per_gas_unit, other.max_price_per_gas_unit)) { return false; }
+            if (!java.util.Objects.equals(this.max_transaction_size_in_bytes, other.max_transaction_size_in_bytes)) { return false; }
+            if (!java.util.Objects.equals(this.gas_unit_scaling_factor, other.gas_unit_scaling_factor)) { return false; }
+            if (!java.util.Objects.equals(this.default_account_size, other.default_account_size)) { return false; }
+            return true;
+        }
+
+        public int hashCode() {
+            int value = 7;
+            value = 31 * value + (this.sliding_nonce != null ? this.sliding_nonce.hashCode() : 0);
+            value = 31 * value + (this.global_memory_per_byte_cost != null ? this.global_memory_per_byte_cost.hashCode() : 0);
+            value = 31 * value + (this.global_memory_per_byte_write_cost != null ? this.global_memory_per_byte_write_cost.hashCode() : 0);
+            value = 31 * value + (this.min_transaction_gas_units != null ? this.min_transaction_gas_units.hashCode() : 0);
+            value = 31 * value + (this.large_transaction_cutoff != null ? this.large_transaction_cutoff.hashCode() : 0);
+            value = 31 * value + (this.intrinsic_gas_per_byte != null ? this.intrinsic_gas_per_byte.hashCode() : 0);
+            value = 31 * value + (this.maximum_number_of_gas_units != null ? this.maximum_number_of_gas_units.hashCode() : 0);
+            value = 31 * value + (this.min_price_per_gas_unit != null ? this.min_price_per_gas_unit.hashCode() : 0);
+            value = 31 * value + (this.max_price_per_gas_unit != null ? this.max_price_per_gas_unit.hashCode() : 0);
+            value = 31 * value + (this.max_transaction_size_in_bytes != null ? this.max_transaction_size_in_bytes.hashCode() : 0);
+            value = 31 * value + (this.gas_unit_scaling_factor != null ? this.gas_unit_scaling_factor.hashCode() : 0);
+            value = 31 * value + (this.default_account_size != null ? this.default_account_size.hashCode() : 0);
+            return value;
+        }
+
+        public static final class Builder {
+            public @com.novi.serde.Unsigned Long sliding_nonce;
+            public @com.novi.serde.Unsigned Long global_memory_per_byte_cost;
+            public @com.novi.serde.Unsigned Long global_memory_per_byte_write_cost;
+            public @com.novi.serde.Unsigned Long min_transaction_gas_units;
+            public @com.novi.serde.Unsigned Long large_transaction_cutoff;
+            public @com.novi.serde.Unsigned Long intrinsic_gas_per_byte;
+            public @com.novi.serde.Unsigned Long maximum_number_of_gas_units;
+            public @com.novi.serde.Unsigned Long min_price_per_gas_unit;
+            public @com.novi.serde.Unsigned Long max_price_per_gas_unit;
+            public @com.novi.serde.Unsigned Long max_transaction_size_in_bytes;
+            public @com.novi.serde.Unsigned Long gas_unit_scaling_factor;
+            public @com.novi.serde.Unsigned Long default_account_size;
+
+            public SetGasConstants build() {
+                return new SetGasConstants(
+                    sliding_nonce,
+                    global_memory_per_byte_cost,
+                    global_memory_per_byte_write_cost,
+                    min_transaction_gas_units,
+                    large_transaction_cutoff,
+                    intrinsic_gas_per_byte,
+                    maximum_number_of_gas_units,
+                    min_price_per_gas_unit,
+                    max_price_per_gas_unit,
+                    max_transaction_size_in_bytes,
+                    gas_unit_scaling_factor,
+                    default_account_size
+                );
+            }
+        }
+    }
+
+    /**
+     * <p><b>Summary</b></p>
      * Updates a validator's configuration, and triggers a reconfiguration of the system to update the
      * validator set with this new validator configuration.  Can only be successfully sent by a
      * Validator Operator account that is already registered with a validator.
@@ -2068,13 +2338,13 @@ public abstract class ScriptCall {
      * on-chain with the updated {@code ValidatorConfig::ValidatorConfig}.
      *
      * <p><b>Parameters</b></p>
-     * | Name                          | Type         | Description                                                                                                                  |
-     * | ------                        | ------       | -------------                                                                                                                |
-     * | {@code validator_operator_account}  | {@code &signer}    | Signer reference of the sending account. Must be the registered validator operator for the validator at {@code validator_address}. |
-     * | {@code validator_account}           | {@code address}    | The address of the validator's {@code ValidatorConfig::ValidatorConfig} resource being updated.                                    |
-     * | {@code consensus_pubkey}            | {@code vector<u8>} | New Ed25519 public key to be used in the updated {@code ValidatorConfig::ValidatorConfig}.                                         |
-     * | {@code validator_network_addresses} | {@code vector<u8>} | New set of {@code validator_network_addresses} to be used in the updated {@code ValidatorConfig::ValidatorConfig}.                       |
-     * | {@code fullnode_network_addresses}  | {@code vector<u8>} | New set of {@code fullnode_network_addresses} to be used in the updated {@code ValidatorConfig::ValidatorConfig}.                        |
+     * | Name                          | Type         | Description                                                                                                        |
+     * | ------                        | ------       | -------------                                                                                                      |
+     * | {@code validator_operator_account}  | {@code signer}     | Signer of the sending account. Must be the registered validator operator for the validator at {@code validator_address}. |
+     * | {@code validator_account}           | {@code address}    | The address of the validator's {@code ValidatorConfig::ValidatorConfig} resource being updated.                          |
+     * | {@code consensus_pubkey}            | {@code vector<u8>} | New Ed25519 public key to be used in the updated {@code ValidatorConfig::ValidatorConfig}.                               |
+     * | {@code validator_network_addresses} | {@code vector<u8>} | New set of {@code validator_network_addresses} to be used in the updated {@code ValidatorConfig::ValidatorConfig}.             |
+     * | {@code fullnode_network_addresses}  | {@code vector<u8>} | New set of {@code fullnode_network_addresses} to be used in the updated {@code ValidatorConfig::ValidatorConfig}.              |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category             | Error Reason                                   | Description                                                                                           |
@@ -2086,15 +2356,15 @@ public abstract class ScriptCall {
      * | {@code Errors::INVALID_STATE}    | {@code DiemConfig::EINVALID_BLOCK_TIME}             | An invalid time value was encountered in reconfiguration. Unlikely to occur.                          |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::create_validator_account}</li></ul>
-     * <ul><li>{@code Script::create_validator_operator_account}</li></ul>
-     * <ul><li>{@code Script::add_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::remove_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator_with_nonce_admin}</li></ul>
-     * <ul><li>{@code Script::register_validator_config}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_validator_account}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_validator_operator_account}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::add_validator_and_reconfigure}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::remove_validator_and_reconfigure}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_operator}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_operator_with_nonce_admin}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::register_validator_config}</li></ul>
      */
-    public static final class SetValidatorConfigAndReconfigure extends ScriptCall {
+    public static final class SetValidatorConfigAndReconfigure extends ScriptFunctionCall {
         public final com.diem.types.AccountAddress validator_account;
         public final com.novi.serde.Bytes consensus_pubkey;
         public final com.novi.serde.Bytes validator_network_addresses;
@@ -2167,7 +2437,7 @@ public abstract class ScriptCall {
      * <p><b>Parameters</b></p>
      * | Name               | Type         | Description                                                                                  |
      * | ------             | ------       | -------------                                                                                |
-     * | {@code account}          | {@code &signer}    | The signer reference of the sending account of the transaction.                              |
+     * | {@code account}          | {@code signer}     | The signer of the sending account of the transaction.                                        |
      * | {@code operator_name}    | {@code vector<u8>} | Validator operator's human name.                                                             |
      * | {@code operator_account} | {@code address}    | Address of the validator operator account to be added as the {@code account} validator's operator. |
      *
@@ -2181,15 +2451,15 @@ public abstract class ScriptCall {
      * | {@code Errors::NOT_PUBLISHED}    | {@code ValidatorConfig::EVALIDATOR_CONFIG}                  | A {@code ValidatorConfig::ValidatorConfig} is not published under {@code account}.                                                                                       |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::create_validator_account}</li></ul>
-     * <ul><li>{@code Script::create_validator_operator_account}</li></ul>
-     * <ul><li>{@code Script::register_validator_config}</li></ul>
-     * <ul><li>{@code Script::remove_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::add_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator_with_nonce_admin}</li></ul>
-     * <ul><li>{@code Script::set_validator_config_and_reconfigure}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_validator_account}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_validator_operator_account}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::register_validator_config}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::remove_validator_and_reconfigure}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::add_validator_and_reconfigure}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_operator_with_nonce_admin}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_config_and_reconfigure}</li></ul>
      */
-    public static final class SetValidatorOperator extends ScriptCall {
+    public static final class SetValidatorOperator extends ScriptFunctionCall {
         public final com.novi.serde.Bytes operator_name;
         public final com.diem.types.AccountAddress operator_account;
 
@@ -2246,13 +2516,13 @@ public abstract class ScriptCall {
      * the system is initiated by this script.
      *
      * <p><b>Parameters</b></p>
-     * | Name               | Type         | Description                                                                                                  |
-     * | ------             | ------       | -------------                                                                                                |
-     * | {@code dr_account}       | {@code &signer}    | The signer reference of the sending account of the write set transaction. May only be the Diem Root signer. |
-     * | {@code account}          | {@code &signer}    | Signer reference of account specified in the {@code execute_as} field of the write set transaction.                |
-     * | {@code sliding_nonce}    | {@code u64}        | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction for Diem Root.                    |
-     * | {@code operator_name}    | {@code vector<u8>} | Validator operator's human name.                                                                             |
-     * | {@code operator_account} | {@code address}    | Address of the validator operator account to be added as the {@code account} validator's operator.                 |
+     * | Name               | Type         | Description                                                                                   |
+     * | ------             | ------       | -------------                                                                                 |
+     * | {@code dr_account}       | {@code signer}     | Signer of the sending account of the write set transaction. May only be the Diem Root signer. |
+     * | {@code account}          | {@code signer}     | Signer of account specified in the {@code execute_as} field of the write set transaction.           |
+     * | {@code sliding_nonce}    | {@code u64}        | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction for Diem Root.      |
+     * | {@code operator_name}    | {@code vector<u8>} | Validator operator's human name.                                                              |
+     * | {@code operator_account} | {@code address}    | Address of the validator operator account to be added as the {@code account} validator's operator.  |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category             | Error Reason                                          | Description                                                                                                                                                  |
@@ -2269,15 +2539,15 @@ public abstract class ScriptCall {
      * | {@code Errors::NOT_PUBLISHED}    | {@code ValidatorConfig::EVALIDATOR_CONFIG}                  | A {@code ValidatorConfig::ValidatorConfig} is not published under {@code account}.                                                                                       |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::create_validator_account}</li></ul>
-     * <ul><li>{@code Script::create_validator_operator_account}</li></ul>
-     * <ul><li>{@code Script::register_validator_config}</li></ul>
-     * <ul><li>{@code Script::remove_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::add_validator_and_reconfigure}</li></ul>
-     * <ul><li>{@code Script::set_validator_operator}</li></ul>
-     * <ul><li>{@code Script::set_validator_config_and_reconfigure}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_validator_account}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_validator_operator_account}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::register_validator_config}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::remove_validator_and_reconfigure}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::add_validator_and_reconfigure}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_operator}</li></ul>
+     * <ul><li>{@code ValidatorAdministrationScripts::set_validator_config_and_reconfigure}</li></ul>
      */
-    public static final class SetValidatorOperatorWithNonceAdmin extends ScriptCall {
+    public static final class SetValidatorOperatorWithNonceAdmin extends ScriptFunctionCall {
         public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final com.novi.serde.Bytes operator_name;
         public final com.diem.types.AccountAddress operator_account;
@@ -2353,11 +2623,11 @@ public abstract class ScriptCall {
      * | Name                        | Type      | Description                                                                                                |
      * | ------                      | ------    | -------------                                                                                              |
      * | {@code CoinType}                  | Type      | The Move type for the {@code CoinType} being minted. {@code CoinType} must be an already-registered currency on-chain. |
-     * | {@code tc_account}                | {@code &signer} | The signer reference of the sending account of this transaction. Must be the Treasury Compliance account.  |
+     * | {@code tc_account}                | {@code signer}  | The signer of the sending account of this transaction. Must be the Treasury Compliance account.            |
      * | {@code sliding_nonce}             | {@code u64}     | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                                 |
      * | {@code designated_dealer_address} | {@code address} | The address of the Designated Dealer account being minted to.                                              |
      * | {@code mint_amount}               | {@code u64}     | The number of coins to be minted.                                                                          |
-     * | {@code tier_index}                | {@code u64}     | The mint tier index to use for the Designated Dealer account.                                              |
+     * | {@code tier_index}                | {@code u64}     | [Deprecated] The mint tier index to use for the Designated Dealer account. Will be ignored                 |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category                | Error Reason                                 | Description                                                                                                                  |
@@ -2370,18 +2640,16 @@ public abstract class ScriptCall {
      * | {@code Errors::REQUIRES_ROLE}       | {@code Roles::ETREASURY_COMPLIANCE}                | {@code tc_account} is not the Treasury Compliance account.                                                                         |
      * | {@code Errors::INVALID_ARGUMENT}    | {@code DesignatedDealer::EINVALID_MINT_AMOUNT}     | {@code mint_amount} is zero.                                                                                                       |
      * | {@code Errors::NOT_PUBLISHED}       | {@code DesignatedDealer::EDEALER}                  | {@code DesignatedDealer::Dealer} or {@code DesignatedDealer::TierInfo<CoinType>} resource does not exist at {@code designated_dealer_address}. |
-     * | {@code Errors::INVALID_ARGUMENT}    | {@code DesignatedDealer::EINVALID_TIER_INDEX}      | The {@code tier_index} is out of bounds.                                                                                           |
-     * | {@code Errors::INVALID_ARGUMENT}    | {@code DesignatedDealer::EINVALID_AMOUNT_FOR_TIER} | {@code mint_amount} exceeds the maximum allowed amount for {@code tier_index}.                                                           |
      * | {@code Errors::REQUIRES_CAPABILITY} | {@code Diem::EMINT_CAPABILITY}                    | {@code tc_account} does not have a {@code Diem::MintCapability<CoinType>} resource published under it.                                  |
      * | {@code Errors::INVALID_STATE}       | {@code Diem::EMINTING_NOT_ALLOWED}                | Minting is not currently allowed for {@code CoinType} coins.                                                                       |
      * | {@code Errors::LIMIT_EXCEEDED}      | {@code DiemAccount::EDEPOSIT_EXCEEDS_LIMITS}      | The depositing of the funds would exceed the {@code account}'s account limits.                                                     |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::create_designated_dealer}</li></ul>
-     * <ul><li>{@code Script::peer_to_peer_with_metadata}</li></ul>
-     * <ul><li>{@code Script::rotate_dual_attestation_info}</li></ul>
+     * <ul><li>{@code AccountCreationScripts::create_designated_dealer}</li></ul>
+     * <ul><li>{@code PaymentScripts::peer_to_peer_with_metadata}</li></ul>
+     * <ul><li>{@code AccountAdministrationScripts::rotate_dual_attestation_info}</li></ul>
      */
-    public static final class TieredMint extends ScriptCall {
+    public static final class TieredMint extends ScriptFunctionCall {
         public final com.diem.types.TypeTag coin_type;
         public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final com.diem.types.AccountAddress designated_dealer_address;
@@ -2460,11 +2728,11 @@ public abstract class ScriptCall {
      * the {@code unfrozen_address} set the {@code to_unfreeze_account}'s address.
      *
      * <p><b>Parameters</b></p>
-     * | Name                  | Type      | Description                                                                                               |
-     * | ------                | ------    | -------------                                                                                             |
-     * | {@code tc_account}          | {@code &signer} | The signer reference of the sending account of this transaction. Must be the Treasury Compliance account. |
-     * | {@code sliding_nonce}       | {@code u64}     | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                                |
-     * | {@code to_unfreeze_account} | {@code address} | The account address to be frozen.                                                                         |
+     * | Name                  | Type      | Description                                                                                     |
+     * | ------                | ------    | -------------                                                                                   |
+     * | {@code tc_account}          | {@code signer}  | The signer of the sending account of this transaction. Must be the Treasury Compliance account. |
+     * | {@code sliding_nonce}       | {@code u64}     | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                      |
+     * | {@code to_unfreeze_account} | {@code address} | The account address to be frozen.                                                               |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category             | Error Reason                            | Description                                                                                |
@@ -2476,9 +2744,9 @@ public abstract class ScriptCall {
      * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ETREASURY_COMPLIANCE}   | The sending account is not the Treasury Compliance account.                                |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::freeze_account}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::freeze_account}</li></ul>
      */
-    public static final class UnfreezeAccount extends ScriptCall {
+    public static final class UnfreezeAccount extends ScriptFunctionCall {
         public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final com.diem.types.AccountAddress to_unfreeze_account;
 
@@ -2521,6 +2789,72 @@ public abstract class ScriptCall {
 
     /**
      * <p><b>Summary</b></p>
+     * Updates the Diem consensus config that is stored on-chain and is used by the Consensus.  This
+     * transaction can only be sent from the Diem Root account.
+     *
+     * <p><b>Technical Description</b></p>
+     * Updates the {@code DiemConsensusConfig} on-chain config and emits a {@code DiemConfig::NewEpochEvent} to trigger
+     * a reconfiguration of the system.
+     *
+     * <p><b>Parameters</b></p>
+     * | Name            | Type          | Description                                                                |
+     * | ------          | ------        | -------------                                                              |
+     * | {@code account}       | {@code signer}      | Signer of the sending account. Must be the Diem Root account.              |
+     * | {@code sliding_nonce} | {@code u64}         | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction. |
+     * | {@code config}        | {@code vector<u8>}  | The serialized bytes of consensus config.                                  |
+     *
+     * <p><b>Common Abort Conditions</b></p>
+     * | Error Category             | Error Reason                                  | Description                                                                                |
+     * | ----------------           | --------------                                | -------------                                                                              |
+     * | {@code Errors::NOT_PUBLISHED}    | {@code SlidingNonce::ESLIDING_NONCE}                | A {@code SlidingNonce} resource is not published under {@code account}.                                |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                | The {@code sliding_nonce} is too far in the future.                                              |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}       | The {@code sliding_nonce} has been previously recorded.                                          |
+     * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::EDIEM_ROOT}                   | {@code account} is not the Diem Root account.                                                    |
+     */
+    public static final class UpdateDiemConsensusConfig extends ScriptFunctionCall {
+        public final @com.novi.serde.Unsigned Long sliding_nonce;
+        public final com.novi.serde.Bytes config;
+
+        public UpdateDiemConsensusConfig(@com.novi.serde.Unsigned Long sliding_nonce, com.novi.serde.Bytes config) {
+            java.util.Objects.requireNonNull(sliding_nonce, "sliding_nonce must not be null");
+            java.util.Objects.requireNonNull(config, "config must not be null");
+            this.sliding_nonce = sliding_nonce;
+            this.config = config;
+        }
+
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null) return false;
+            if (getClass() != obj.getClass()) return false;
+            UpdateDiemConsensusConfig other = (UpdateDiemConsensusConfig) obj;
+            if (!java.util.Objects.equals(this.sliding_nonce, other.sliding_nonce)) { return false; }
+            if (!java.util.Objects.equals(this.config, other.config)) { return false; }
+            return true;
+        }
+
+        public int hashCode() {
+            int value = 7;
+            value = 31 * value + (this.sliding_nonce != null ? this.sliding_nonce.hashCode() : 0);
+            value = 31 * value + (this.config != null ? this.config.hashCode() : 0);
+            return value;
+        }
+
+        public static final class Builder {
+            public @com.novi.serde.Unsigned Long sliding_nonce;
+            public com.novi.serde.Bytes config;
+
+            public UpdateDiemConsensusConfig build() {
+                return new UpdateDiemConsensusConfig(
+                    sliding_nonce,
+                    config
+                );
+            }
+        }
+    }
+
+    /**
+     * <p><b>Summary</b></p>
      * Updates the Diem major version that is stored on-chain and is used by the VM.  This
      * transaction can only be sent from the Diem Root account.
      *
@@ -2531,11 +2865,11 @@ public abstract class ScriptCall {
      * preserve backwards compatibility with previous major versions of the VM.
      *
      * <p><b>Parameters</b></p>
-     * | Name            | Type      | Description                                                                |
-     * | ------          | ------    | -------------                                                              |
-     * | {@code account}       | {@code &signer} | Signer reference of the sending account. Must be the Diem Root account.   |
-     * | {@code sliding_nonce} | {@code u64}     | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction. |
-     * | {@code major}         | {@code u64}     | The {@code major} version of the VM to be used from this transaction on.         |
+     * | Name            | Type     | Description                                                                |
+     * | ------          | ------   | -------------                                                              |
+     * | {@code account}       | {@code signer} | Signer of the sending account. Must be the Diem Root account.              |
+     * | {@code sliding_nonce} | {@code u64}    | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction. |
+     * | {@code major}         | {@code u64}    | The {@code major} version of the VM to be used from this transaction on.         |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category             | Error Reason                                  | Description                                                                                |
@@ -2544,10 +2878,10 @@ public abstract class ScriptCall {
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_OLD}                | The {@code sliding_nonce} is too old and it's impossible to determine if it's duplicated or not. |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_TOO_NEW}                | The {@code sliding_nonce} is too far in the future.                                              |
      * | {@code Errors::INVALID_ARGUMENT} | {@code SlidingNonce::ENONCE_ALREADY_RECORDED}       | The {@code sliding_nonce} has been previously recorded.                                          |
-     * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::EDIEM_ROOT}                  | {@code account} is not the Diem Root account.                                                   |
-     * | {@code Errors::INVALID_ARGUMENT} | {@code DiemVersion::EINVALID_MAJOR_VERSION_NUMBER} | {@code major} is less-than or equal to the current major version stored on-chain.                |
+     * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::EDIEM_ROOT}                   | {@code account} is not the Diem Root account.                                                    |
+     * | {@code Errors::INVALID_ARGUMENT} | {@code DiemVersion::EINVALID_MAJOR_VERSION_NUMBER}  | {@code major} is less-than or equal to the current major version stored on-chain.                |
      */
-    public static final class UpdateDiemVersion extends ScriptCall {
+    public static final class UpdateDiemVersion extends ScriptFunctionCall {
         public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final @com.novi.serde.Unsigned Long major;
 
@@ -2599,11 +2933,11 @@ public abstract class ScriptCall {
      * {@code 0xA550C18}. The amount is set in micro-XDX.
      *
      * <p><b>Parameters</b></p>
-     * | Name                  | Type      | Description                                                                                               |
-     * | ------                | ------    | -------------                                                                                             |
-     * | {@code tc_account}          | {@code &signer} | The signer reference of the sending account of this transaction. Must be the Treasury Compliance account. |
-     * | {@code sliding_nonce}       | {@code u64}     | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                                |
-     * | {@code new_micro_xdx_limit} | {@code u64}     | The new dual attestation limit to be used on-chain.                                                       |
+     * | Name                  | Type     | Description                                                                                     |
+     * | ------                | ------   | -------------                                                                                   |
+     * | {@code tc_account}          | {@code signer} | The signer of the sending account of this transaction. Must be the Treasury Compliance account. |
+     * | {@code sliding_nonce}       | {@code u64}    | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for this transaction.                      |
+     * | {@code new_micro_xdx_limit} | {@code u64}    | The new dual attestation limit to be used on-chain.                                             |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category             | Error Reason                            | Description                                                                                |
@@ -2615,10 +2949,10 @@ public abstract class ScriptCall {
      * | {@code Errors::REQUIRES_ADDRESS} | {@code CoreAddresses::ETREASURY_COMPLIANCE}   | {@code tc_account} is not the Treasury Compliance account.                                       |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::update_exchange_rate}</li></ul>
-     * <ul><li>{@code Script::update_minting_ability}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::update_exchange_rate}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::update_minting_ability}</li></ul>
      */
-    public static final class UpdateDualAttestationLimit extends ScriptCall {
+    public static final class UpdateDualAttestationLimit extends ScriptFunctionCall {
         public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final @com.novi.serde.Unsigned Long new_micro_xdx_limit;
 
@@ -2671,13 +3005,13 @@ public abstract class ScriptCall {
      * is given by {@code new_exchange_rate_numerator/new_exchange_rate_denominator}.
      *
      * <p><b>Parameters</b></p>
-     * | Name                            | Type      | Description                                                                                                                        |
-     * | ------                          | ------    | -------------                                                                                                                      |
-     * | {@code Currency}                      | Type      | The Move type for the {@code Currency} whose exchange rate is being updated. {@code Currency} must be an already-registered currency on-chain. |
-     * | {@code tc_account}                    | {@code &signer} | The signer reference of the sending account of this transaction. Must be the Treasury Compliance account.                          |
-     * | {@code sliding_nonce}                 | {@code u64}     | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for the transaction.                                                          |
-     * | {@code new_exchange_rate_numerator}   | {@code u64}     | The numerator for the new to micro-XDX exchange rate for {@code Currency}.                                                               |
-     * | {@code new_exchange_rate_denominator} | {@code u64}     | The denominator for the new to micro-XDX exchange rate for {@code Currency}.                                                             |
+     * | Name                            | Type     | Description                                                                                                                        |
+     * | ------                          | ------   | -------------                                                                                                                      |
+     * | {@code Currency}                      | Type     | The Move type for the {@code Currency} whose exchange rate is being updated. {@code Currency} must be an already-registered currency on-chain. |
+     * | {@code tc_account}                    | {@code signer} | The signer of the sending account of this transaction. Must be the Treasury Compliance account.                                    |
+     * | {@code sliding_nonce}                 | {@code u64}    | The {@code sliding_nonce} (see: {@code SlidingNonce}) to be used for the transaction.                                                          |
+     * | {@code new_exchange_rate_numerator}   | {@code u64}    | The numerator for the new to micro-XDX exchange rate for {@code Currency}.                                                               |
+     * | {@code new_exchange_rate_denominator} | {@code u64}    | The denominator for the new to micro-XDX exchange rate for {@code Currency}.                                                             |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category             | Error Reason                            | Description                                                                                |
@@ -2693,10 +3027,10 @@ public abstract class ScriptCall {
      * | {@code Errors::LIMIT_EXCEEDED}   | {@code FixedPoint32::ERATIO_OUT_OF_RANGE}     | The quotient is unrepresentable as a {@code FixedPoint32}.                                       |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::update_dual_attestation_limit}</li></ul>
-     * <ul><li>{@code Script::update_minting_ability}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::update_dual_attestation_limit}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::update_minting_ability}</li></ul>
      */
-    public static final class UpdateExchangeRate extends ScriptCall {
+    public static final class UpdateExchangeRate extends ScriptFunctionCall {
         public final com.diem.types.TypeTag currency;
         public final @com.novi.serde.Unsigned Long sliding_nonce;
         public final @com.novi.serde.Unsigned Long new_exchange_rate_numerator;
@@ -2764,11 +3098,11 @@ public abstract class ScriptCall {
      * This transaction needs to be sent by the Treasury Compliance account.
      *
      * <p><b>Parameters</b></p>
-     * | Name            | Type      | Description                                                                                                                          |
-     * | ------          | ------    | -------------                                                                                                                        |
-     * | {@code Currency}      | Type      | The Move type for the {@code Currency} whose minting ability is being updated. {@code Currency} must be an already-registered currency on-chain. |
-     * | {@code account}       | {@code &signer} | Signer reference of the sending account. Must be the Diem Root account.                                                             |
-     * | {@code allow_minting} | {@code bool}    | Whether to allow minting of new coins in {@code Currency}.                                                                                 |
+     * | Name            | Type     | Description                                                                                                                          |
+     * | ------          | ------   | -------------                                                                                                                        |
+     * | {@code Currency}      | Type     | The Move type for the {@code Currency} whose minting ability is being updated. {@code Currency} must be an already-registered currency on-chain. |
+     * | {@code account}       | {@code signer} | Signer of the sending account. Must be the Diem Root account.                                                                        |
+     * | {@code allow_minting} | {@code bool}   | Whether to allow minting of new coins in {@code Currency}.                                                                                 |
      *
      * <p><b>Common Abort Conditions</b></p>
      * | Error Category             | Error Reason                          | Description                                          |
@@ -2777,10 +3111,10 @@ public abstract class ScriptCall {
      * | {@code Errors::NOT_PUBLISHED}    | {@code Diem::ECURRENCY_INFO}               | {@code Currency} is not a registered currency on-chain.    |
      *
      * <p><b>Related Scripts</b></p>
-     * <ul><li>{@code Script::update_dual_attestation_limit}</li></ul>
-     * <ul><li>{@code Script::update_exchange_rate}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::update_dual_attestation_limit}</li></ul>
+     * <ul><li>{@code TreasuryComplianceScripts::update_exchange_rate}</li></ul>
      */
-    public static final class UpdateMintingAbility extends ScriptCall {
+    public static final class UpdateMintingAbility extends ScriptFunctionCall {
         public final com.diem.types.TypeTag currency;
         public final Boolean allow_minting;
 
